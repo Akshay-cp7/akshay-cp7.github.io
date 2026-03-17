@@ -53,7 +53,7 @@
         text-transform: uppercase;
         color: rgba(255, 255, 255, 0.6);
         animation: fadeInOut 2.5s ease-in-out;
-        text-align: center; /* ADD THIS */
+        text-align: center;
       }
 
       @keyframes fadeInOut {
@@ -136,8 +136,8 @@
         -webkit-background-clip: text;
         background-clip: text;
         -webkit-text-fill-color: transparent;
-        padding-bottom: 0.15em; /* Adds space for descenders */
-        display: inline-block; /* Required for padding to work properly */
+        padding-bottom: 0.15em;
+        display: inline-block;
       }
 
       section {
@@ -159,7 +159,6 @@
         transition: transform 0.1s ease;
       }
 
-      /* Hide custom cursor on touch devices */
       @media (hover: none) and (pointer: coarse) {
         .custom-cursor {
           display: none;
@@ -204,7 +203,6 @@
         border-radius: 50%;
       }
 
-      /* Service Card Image Container */
       .service-image-container {
         width: 100%;
         height: 160px;
@@ -226,7 +224,6 @@
         }
       }
 
-      /* Project Card Image Container */
       .project-image-container {
         height: 200px;
       }
@@ -237,7 +234,6 @@
         }
       }
 
-      /* Project Image - No grayscale on mobile */
       .project-image {
         width: 100%;
         height: 100%;
@@ -246,7 +242,6 @@
         transform: scale(1.1);
       }
 
-      /* Only apply grayscale on desktop (hover-capable devices) */
       @media (hover: hover) and (pointer: fine) {
         .project-image {
           filter: grayscale(100%);
@@ -258,7 +253,6 @@
         }
       }
 
-      /* On touch devices, no grayscale and normal scale */
       @media (hover: none) and (pointer: coarse) {
         .project-image {
           filter: grayscale(0%);
@@ -266,7 +260,6 @@
         }
       }
 
-      /* Award Banner Styles */
       .award-banner {
         background: linear-gradient(
           135deg,
@@ -364,7 +357,6 @@
         }
       }
 
-      /* ✅ KEEP ONLY THESE */
       @media (max-width: 768px) {
         .loading-text {
           font-size: 0.65rem;
@@ -376,7 +368,7 @@
           height: 5px;
         }
       }
-      /* Bento Box Layout */
+
       .bento-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -429,7 +421,6 @@
         }
       }
 
-      /* Large Featured Item */
       .bento-large {
         grid-column: 1 / -1;
         padding: 2rem;
@@ -551,7 +542,6 @@
         }
       }
 
-      /* Small Items */
       .bento-content-small {
         display: flex;
         align-items: center;
@@ -599,7 +589,6 @@
         }
       }
 
-      /* Stats Box */
       .bento-stats-box {
         flex-direction: column;
         justify-content: center;
@@ -632,7 +621,7 @@
         color: rgba(255, 255, 255, 0.4);
         margin-top: 0.25rem;
       }
-      /* Organizer Logos */
+
       .organizer-logo-container {
         background: rgba(255, 255, 255, 0.05);
         border: 1px solid rgba(255, 215, 0, 0.15);
@@ -671,7 +660,7 @@
           padding: 0.5rem;
         }
       }
-      /* Bottom fade overlay for 3D model */
+
       .model-bottom-fade {
         position: absolute;
         bottom: 0;
@@ -690,16 +679,31 @@
         z-index: 10;
         border-radius: 0 0 1rem 1rem;
       }
+
+      /* Clickable highlight cards */
+      .highlight-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.4s ease;
+      }
+
+      @media (hover: hover) {
+        .highlight-card:hover {
+          transform: translateY(-4px);
+        }
+
+        .highlight-card:hover .glass {
+          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.05);
+        }
+      }
     </style>
   </head>
   <body>
     <!-- LOADING SCREEN -->
     <div id="loading-screen">
       <div class="loading-content">
-        <!-- <div class="loading-logo">Initializing Thrusters</div>
-            <div class="loading-bar-container">
-                <div class="loading-bar"></div>
-            </div> -->
         <div class="loading-text">Adjusting to orbit..</div>
         <div class="loading-dots">
           <div class="dot"></div>
@@ -713,19 +717,15 @@
     <div id="canvas-container"></div>
 
     <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50">
-      <div class="text-2xl font-black italic tracking-tighter">Portfolio.</div>
+      <a href="#home" class="text-2xl font-black italic tracking-tighter hover:text-gray-300 transition">Portfolio.</a>
       <div
         class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-medium"
       >
         <a href="#home" class="hover:text-gray-400 transition">Home</a>
-        <a href="#highlights" class="hover:text-gray-400 transition"
-          >Highlights</a
-        >
+        <a href="#highlights" class="hover:text-gray-400 transition">Highlights</a>
         <a href="#services" class="hover:text-gray-400 transition">Services</a>
         <a href="#about" class="hover:text-gray-400 transition">About</a>
-        <a href="#experience" class="hover:text-gray-400 transition"
-          >Experience</a
-        >
+        <a href="#experience" class="hover:text-gray-400 transition">Experience</a>
         <a href="#contact" class="hover:text-gray-400 transition">Contact</a>
       </div>
     </nav>
@@ -742,19 +742,22 @@
             <span class="text-5xl md:text-8xl">AKSHAY C P</span>
           </h1>
           <p class="text-xl md:text-2xl text-gray-400 max-w-xl">
-            I enjoy merging programming with 3D and augmented reality to create applications that place digital experiences into the real world.
+            I enjoy merging programming with 3D and augmented reality to create
+            applications that place digital experiences into the real world.
           </p>
           <div class="mt-8 flex gap-4">
-            <button
-              class="px-8 py-4 glass hover:bg-white hover:text-black transition-all duration-300 font-bold uppercase tracking-widest text-xs"
+            <a
+              href="#highlights"
+              class="px-8 py-4 glass hover:bg-white hover:text-black transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
             >
               Projects
-            </button>
-            <button
-              class="px-8 py-4 border border-white/20 rounded-xl hover:bg-white/10 transition-all duration-300 font-bold uppercase tracking-widest text-xs"
+            </a>
+            <a
+              href="#contact"
+              class="px-8 py-4 border border-white/20 rounded-xl hover:bg-white/10 transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
             >
               Contact
-            </button>
+            </a>
           </div>
         </div>
       </section>
@@ -792,7 +795,6 @@
               "
             >
             </model-viewer>
-            <!-- Bottom fade overlay to hide cropped edges -->
             <div class="model-bottom-fade"></div>
           </div>
 
@@ -802,7 +804,11 @@
               <div>
                 <h2 class="text-4xl font-bold mb-4 text-gradient">ABOUT ME</h2>
                 <p class="text-gray-400 text-lg leading-relaxed">
-                  Flutter developer with 2 years of experience working on ERP systems and business applications. Alongside my professional work, I enjoy exploring creative side projects, especially combining Flutter with 3D and augmented reality to build interactive real-world experiences.
+                  Flutter developer with 2 years of experience working on ERP
+                  systems and business applications. Alongside my professional
+                  work, I enjoy exploring creative side projects, especially
+                  combining Flutter with 3D and augmented reality to build
+                  interactive real-world experiences.
                 </p>
               </div>
               <div>
@@ -824,8 +830,24 @@
                   >Recognition</span
                 >
                 <ul class="mt-2 space-y-2 text-gray-400">
-                  <li>🏆 Tripo 3D AI Contest Winner (2025)</li>
-                  <li>📱 10+ Apps on Google Play Store</li>
+                  <li>
+                    <a
+                      href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="hover:text-white transition-colors"
+                      >🏆 Tripo 3D AI Contest Winner (2025) ↗</a
+                    >
+                  </li>
+                  <li>
+                    <a
+                      href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="hover:text-white transition-colors"
+                      >📱 10+ Apps on Google Play Store ↗</a
+                    >
+                  </li>
                   <li>🎓 B.Tech Computer Science</li>
                 </ul>
               </div>
@@ -833,96 +855,125 @@
           </div>
         </div>
       </section>
-      <!-- highlights Section -->
 
+      <!-- Highlights Section -->
       <section id="highlights" class="max-w-7xl mx-auto">
         <div class="w-full">
           <h2 class="text-5xl font-bold mb-12 text-gradient">Highlights</h2>
-          <!-- <p class="text-gray-400 text-lg mb-12 max-w-2xl">Some of my works on google play.</p> -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div
-              class="glass p-4 group cursor-pointer overflow-hidden md:mb-20"
+            <!-- Highlight 1 - Tripo AI Winner -->
+            <a
+              href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="highlight-card md:mb-20"
             >
-              <div
-                class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-              >
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEjaXgCVFOvwx-rwmeLKKsbHM2wu8V-PfC6Q0xxY85aBvAdFT91gR_I1iJum7DdIv4Q7OOFuxtH1CdoIa9aqg6K3_r2Cnpt0bxVR31KjBQ3I1h2VDHP6VUg3ZVysRAxK4tTg4ZepTUHtCi5x1KpXZH9CNEUSkqaJKUeoiCHRLyuiL3IaoJeTOTVLcompRgXn"
-                  class="project-image"
-                  alt="project"
-                />
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEjaXgCVFOvwx-rwmeLKKsbHM2wu8V-PfC6Q0xxY85aBvAdFT91gR_I1iJum7DdIv4Q7OOFuxtH1CdoIa9aqg6K3_r2Cnpt0bxVR31KjBQ3I1h2VDHP6VUg3ZVysRAxK4tTg4ZepTUHtCi5x1KpXZH9CNEUSkqaJKUeoiCHRLyuiL3IaoJeTOTVLcompRgXn"
+                    class="project-image"
+                    alt="Tripo AI Winner"
+                  />
+                </div>
+                <div class="px-4 pb-1 pt-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    Global AI Event Winner 2025
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Tripo AI 3D Boss fight in Multiverse Event.
+                  </p>
+                </div>
               </div>
-              <div class="px-4 pb-1 pt-2">
-                <h3 class="text-lg font-bold text-gray-400">
-                  Global AI Event Winner 2025
-                </h3>
-                <p class="text-gray-500 text-xs">
-                  Tripo AI 3D Boss fight in Multiverse Event.
-                </p>
-              </div>
-            </div>
-            <div
-              class="glass p-4 group cursor-pointer overflow-hidden mt-0 md:mt-20"
+            </a>
+
+            <!-- Highlight 2 - GLB AR Viewer PRO -->
+            <a
+              href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="highlight-card mt-0 md:mt-20"
             >
-              <div
-                class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-              >
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEjFRWyLGHKO6Ml3Q6OgSOb4B5HJJ_60bpHrxB7_sNwUqeYk3Y2i4FuTUh3uJI8mqMEkMHLHKJbAoSjojrLxgkIdOK2lQ2AeRYVEFvwiNvwv71_6q3lZ2oW90HOBhykQeSFIhEah9i9JRd5hlDXZebIivus02N9oDSk9C0X6knsaWEyA7aUob5HLeVCDMq53"
-                  class="project-image"
-                  alt="project"
-                />
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEjFRWyLGHKO6Ml3Q6OgSOb4B5HJJ_60bpHrxB7_sNwUqeYk3Y2i4FuTUh3uJI8mqMEkMHLHKJbAoSjojrLxgkIdOK2lQ2AeRYVEFvwiNvwv71_6q3lZ2oW90HOBhykQeSFIhEah9i9JRd5hlDXZebIivus02N9oDSk9C0X6knsaWEyA7aUob5HLeVCDMq53"
+                    class="project-image"
+                    alt="GLB AR Viewer PRO"
+                  />
+                </div>
+                <div class="px-2 pb-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    GLB AR Viewer PRO
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Ranked #4 as top paid app (House and home category) on
+                    Google Play
+                  </p>
+                </div>
               </div>
-              <div class="px-2 pb-2">
-                <h3 class="text-lg font-bold text-gray-400">GLB AR Viewer PRO</h3>
-                <p class="text-gray-500 text-xs">
-                  Ranked #4 as top paid app (House and home category) on Google Play
-                </p>
-              </div>
-            </div>
-            <div
-              class="glass p-4 group cursor-pointer overflow-hidden md:mb-20"
+            </a>
+
+            <!-- Highlight 3 - Published Apps -->
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="highlight-card md:mb-20"
             >
-              <div
-                class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-              >
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEiXFPdRqx9oKJC-fukoj3sYcfsDYPd1b-YmJKCcbvaUMhm6uIQf3kLlACblhysdph7Lbj0hzyngHSuPkYvimL3jy1IJyw5tL4P4Ro5TYXvHH_x0fRMnUECuGkE66dyNXQRRms-leVrfLNWJMGuhoCnzPmEmb12CNT7MZvY8fMZcEBL2bR3u8OSdBLtukoBQ"
-                  class="project-image"
-                  alt="project"
-                />
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEiXFPdRqx9oKJC-fukoj3sYcfsDYPd1b-YmJKCcbvaUMhm6uIQf3kLlACblhysdph7Lbj0hzyngHSuPkYvimL3jy1IJyw5tL4P4Ro5TYXvHH_x0fRMnUECuGkE66dyNXQRRms-leVrfLNWJMGuhoCnzPmEmb12CNT7MZvY8fMZcEBL2bR3u8OSdBLtukoBQ"
+                    class="project-image"
+                    alt="Published Apps"
+                  />
+                </div>
+                <div class="px-2 pb-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    Published Apps on Google Play
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Building practical tools and experimental apps while
+                    exploring technologies.
+                  </p>
+                </div>
               </div>
-              <div class="px-2 pb-2">
-                <h3 class="text-lg font-bold text-gray-400">
-                  Published Apps on Google Play
-                </h3>
-                <p class="text-gray-500 text-xs">
-                  Building practical tools and experimental apps while exploring technologies.
-                </p>
-              </div>
-            </div>
+            </a>
+
+            <!-- Highlight 4 - Campus Management -->
             <div
-              class="glass p-4 group cursor-pointer overflow-hidden mt-0 md:mt-20"
+              class="highlight-card mt-0 md:mt-20"
             >
-              <div
-                class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-              >
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEgjSJb5W24vViaAYSGhBJrmR4LDkOcInmFyC-w9ZeTgOQK1LlwWJDqaQyQ6fWzNOeHtmjOea4yjhZZYR3cmCfPbaqBkxbIp_-qKtMmFiPCrCutiforFiD81eljzclsshoHB0nvm5XIvaWwSiwXfixZMEgM3bFk6wosvSKzRTZ82ZXkwzOQcgxA4O1qOzqhy"
-                  class="project-image"
-                  alt="project"
-                />
-              </div>
-              <div class="px-2 pb-2">
-                <h3 class="text-lg font-bold text-gray-400">
-                  Campus Management Apps
-                </h3>
-                <p class="text-gray-500 text-xs">
-                  Build Apps For College Campus management System
-                </p>
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEgjSJb5W24vViaAYSGhBJrmR4LDkOcInmFyC-w9ZeTgOQK1LlwWJDqaQyQ6fWzNOeHtmjOea4yjhZZYR3cmCfPbaqBkxbIp_-qKtMmFiPCrCutiforFiD81eljzclsshoHB0nvm5XIvaWwSiwXfixZMEgM3bFk6wosvSKzRTZ82ZXkwzOQcgxA4O1qOzqhy"
+                    class="project-image"
+                    alt="Campus Management"
+                  />
+                </div>
+                <div class="px-2 pb-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    Campus Management Apps
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Build Apps For College Campus management System
+                  </p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
       <!-- Experience Section -->
       <section id="experience" class="max-w-7xl mx-auto">
@@ -950,25 +1001,6 @@
                   entry, with seamless integration to the ERP backend APIs.
                 </p>
               </div>
-
-              <!--                         
-                        <div class="relative pl-8">
-                            <div class="timeline-line"></div>
-                            <div class="timeline-dot"></div>
-                            <span class="text-xs font-bold tracking-widest text-gray-500 uppercase">2020 - 2024</span>
-                            <h3 class="text-xl font-bold mt-2">Frontend Developer</h3>
-                            <p class="text-gray-400 mt-1">Tech Startup Inc.</p>
-                            <p class="text-gray-500 text-sm mt-3 leading-relaxed">Built responsive web applications using React and TypeScript. Implemented complex animations and 3D visualizations.</p>
-                        </div>
-                        
-                        <div class="relative pl-8">
-                            <div class="timeline-line"></div>
-                            <div class="timeline-dot"></div>
-                            <span class="text-xs font-bold tracking-widest text-gray-500 uppercase">2018 - 2020</span>
-                            <h3 class="text-xl font-bold mt-2">Junior Web Developer</h3>
-                            <p class="text-gray-400 mt-1">Creative Studio</p>
-                            <p class="text-gray-500 text-sm mt-3 leading-relaxed">Started my journey in web development, learning the fundamentals and building client websites.</p>
-                        </div> -->
             </div>
 
             <div class="glass p-8">
@@ -985,8 +1017,6 @@
                   <p class="text-gray-400 text-sm">
                     APJ Abdul Kalam Technological University<br />
                     Vedavyasa Institute of Technology, Malappuram
-                    <!-- </p>
-        <p class="text-gray-500 text-sm mt-1">CGPA: 7.1</p> -->
                   </p>
                 </div>
               </div>
@@ -994,6 +1024,7 @@
           </div>
         </div>
       </section>
+
       <!-- Skills Section -->
       <section id="skills" class="max-w-7xl mx-auto">
         <div class="w-full">
@@ -1001,8 +1032,8 @@
             SKILLS & EXPERTISE
           </h2>
           <p class="text-gray-400 text-lg mb-12 max-w-2xl">
-            Years of hands-on experience building mobile apps, ERP integrations,
-            and interactive experiences.
+            Years of hands-on experience building mobile apps, ERP
+            integrations, and interactive experiences.
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -1043,8 +1074,8 @@
               <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
-                    >3D / AR
-                  </span>
+                    >3D / AR</span
+                  >
                   <span class="text-gray-500 text-sm">80%</span>
                 </div>
                 <div class="skill-bar">
@@ -1103,6 +1134,7 @@
         </div>
       </section>
 
+      <!-- App Showcase Section -->
       <section id="app-showcase" class="max-w-7xl mx-auto py-20 px-4">
         <div class="w-full">
           <div
@@ -1114,7 +1146,9 @@
               </h3>
             </div>
             <a
-              href="#"
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
               class="mt-4 md:mt-0 text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2"
             >
               View all apps
@@ -1137,12 +1171,17 @@
 
           <div class="bento-grid">
             <!-- Featured Large App -->
-            <a href="#" class="bento-item bento-large group">
+            <a
+              href="https://play.google.com/store/apps/details?id=com.arzDrzapps.bulk_image_cropper"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item bento-large group"
+            >
               <div class="bento-content">
                 <div class="bento-icon-large">
                   <img
                     src="https://play-lh.googleusercontent.com/ztGUFbX1zTfSflCSls6GgOSEVqSJKhKY2mYpgIzLjVLQKLFWa8OYxXeLldv7zm_ltIg=s256-rw"
-                    alt="Featured App"
+                    alt="Bulk Image Cropper"
                   />
                 </div>
                 <div class="bento-text">
@@ -1151,10 +1190,6 @@
                   <p class="bento-desc">
                     Crop thousands of images in a single click.
                   </p>
-                  <!-- <div class="bento-stats">
-                            <span>⭐ 4.8</span>
-                            <span>10K+ Downloads</span>
-                        </div> -->
                 </div>
               </div>
               <div class="bento-arrow">
@@ -1176,11 +1211,16 @@
             </a>
 
             <!-- Regular Apps -->
-            <a href="#" class="bento-item group">
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item group"
+            >
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/kXHpGqSh-hXCzvGEvo74h4NowVQmL-3sfxDX-Bj59FYRbpr14l-k1pspge_C88oSHA=s256-rw"
-                  alt="App"
+                  alt="IMGAC"
                   class="bento-icon"
                 />
                 <div>
@@ -1191,11 +1231,16 @@
               <span class="bento-arrow-sm">→</span>
             </a>
 
-            <a href="#" class="bento-item group">
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item group"
+            >
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s256-rw"
-                  alt="App"
+                  alt="ID Cards to PDF"
                   class="bento-icon"
                 />
                 <div>
@@ -1206,11 +1251,16 @@
               <span class="bento-arrow-sm">→</span>
             </a>
 
-            <a href="#" class="bento-item group">
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item group"
+            >
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/ZSuFpoxR2ri65tfrZQYUWCjzHDB1CZH6IFTldQ9LRdOJPlmfdTSsZh2BTlz8dbbvI27Bw614-ximmFp8ae2AUA=s256-rw"
-                  alt="App"
+                  alt="Token Number Announcer"
                   class="bento-icon"
                 />
                 <div>
@@ -1221,11 +1271,16 @@
               <span class="bento-arrow-sm">→</span>
             </a>
 
-            <a href="#" class="bento-item group">
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item group"
+            >
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/_s5h-96RNQIwgc5VE-VAOiXR4531sDX0vuwbM8RUvkW6Fzu7HClGZuUhGgFlrXvlmXg=s256-rw"
-                  alt="App"
+                  alt="Bulk Image Rotator"
                   class="bento-icon"
                 />
                 <div>
@@ -1237,11 +1292,16 @@
             </a>
 
             <!-- Stats Box -->
-            <div class="bento-item bento-stats-box">
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="bento-item bento-stats-box"
+            >
               <div class="stats-number">10+</div>
               <div class="stats-label">Published Apps</div>
               <div class="stats-sub">on Google Play Store</div>
-            </div>
+            </a>
           </div>
         </div>
       </section>
@@ -1262,7 +1322,7 @@
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEiPjQNNlQC5DwMbOOyS1Em8wQqEItYWEF_IJla8UO1feLwryzG63uXfX7U3Y9hngiDHDZnVxzQX6g1D3WOYRmHLcXtqcOHYiJWLpbvyub3Z58sxhlGxAjeMPF6ODCxLlH7X5H6zWsI25B5EqqWCsGFfSVhKUY-TX37udk88K3ZiWBJ1lOn6J0OFYCiJI0Oo"
-                  alt="Web Development"
+                  alt="App Development"
                   class="service-image"
                 />
               </div>
@@ -1279,7 +1339,7 @@
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEjTfkSSSHsALb4ds528eiOffyNYPuMUSKi2XGvmKZzyluLD_OmLxZHj-7HlKlKTG3sK1zri_3n1CCABJD0Ar9OMzBEXkps3S2N6R0ET8kh_tmtWXdszWVxFRg9LsA94TI6-qKdlI49PQsMtsJ8pEN8fufRbLmr7Fn9dHgmojfICf9evHKEq2euQJWHuOaO9"
-                  alt="3D & WebGL"
+                  alt="3D AR & VR"
                   class="service-image"
                 />
               </div>
@@ -1347,7 +1407,7 @@
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEjfSuiS4rnk-qsUFeWC9SYHiGLwWWnHWpUkKn8aSrZtN7iTOs9updslqXX1vs7FAc7T1whp8JFAU5vrJ34_H036XWdCc5N3xj8FlSd0LHXQonaSWgq3RthBEXIUn9sPVj7aUVrnetmEgUAPmJRHhsJb6aLczOlx7Z7DMOHqvT7lC_bdTaR3ctBd1Q12thu5"
-                  alt="Creative Animation"
+                  alt="Video & Animation"
                   class="service-image"
                 />
               </div>
@@ -1356,212 +1416,6 @@
                 Motion design and micro-interactions that bring interfaces to
                 life using GSAP and CSS animations.
               </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Testimonials Section -->
-      <section id="testimonials" class="max-w-7xl mx-auto">
-        <div class="w-full">
-          <h2 class="text-5xl font-bold mb-4 text-gradient">TESTIMONIALS</h2>
-          <p class="text-gray-400 text-lg mb-12 max-w-2xl">
-            What clients and colleagues say about working together.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="glass p-8">
-              <div class="flex items-center gap-1 mb-4">
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-              </div>
-              <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                "Exceptional work! The 3D experience they created for our
-                product launch exceeded all expectations. Truly a master of
-                their craft."
-              </p>
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-blue-500"
-                ></div>
-                <div>
-                  <p class="font-bold text-sm">Sarah Chen</p>
-                  <p class="text-gray-500 text-xs">CEO, TechVision</p>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass p-8">
-              <div class="flex items-center gap-1 mb-4">
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-              </div>
-              <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                "Working with OSM was a game-changer for our brand. The
-                attention to detail and creative solutions transformed our
-                online presence."
-              </p>
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-full bg-gradient-to-br from-orange-500 to-red-500"
-                ></div>
-                <div>
-                  <p class="font-bold text-sm">Marcus Johnson</p>
-                  <p class="text-gray-500 text-xs">
-                    Creative Director, Studio M
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div class="glass p-8">
-              <div class="flex items-center gap-1 mb-4">
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-                <svg
-                  class="w-5 h-5 text-yellow-400"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path
-                    d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                  />
-                </svg>
-              </div>
-              <p class="text-gray-400 text-sm leading-relaxed mb-6">
-                "Incredible talent and professionalism. Delivered ahead of
-                schedule with results that surpassed our initial vision. Highly
-                recommend!"
-              </p>
-              <div class="flex items-center gap-3">
-                <div
-                  class="w-10 h-10 rounded-full bg-gradient-to-br from-green-500 to-teal-500"
-                ></div>
-                <div>
-                  <p class="font-bold text-sm">Emily Rodriguez</p>
-                  <p class="text-gray-500 text-xs">Founder, GreenTech</p>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1581,8 +1435,13 @@
               </p>
 
               <div class="space-y-6">
-                <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 glass flex items-center justify-center">
+                <a
+                  href="mailto:com.akshaycp@gmail.com"
+                  class="flex items-center gap-4 group hover:opacity-80 transition-opacity"
+                >
+                  <div
+                    class="w-12 h-12 glass flex items-center justify-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -1604,12 +1463,16 @@
                     >
                       Email
                     </p>
-                    <p class="text-white">hello@osmportfolio.com</p>
+                    <p class="text-white group-hover:underline">
+                      com.akshaycp@gmail.com
+                    </p>
                   </div>
-                </div>
+                </a>
 
                 <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 glass flex items-center justify-center">
+                  <div
+                    class="w-12 h-12 glass flex items-center justify-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -1636,12 +1499,14 @@
                     >
                       Location
                     </p>
-                    <p class="text-white">San Francisco, CA</p>
+                    <p class="text-white">Kerala, India</p>
                   </div>
                 </div>
 
                 <div class="flex items-center gap-4">
-                  <div class="w-12 h-12 glass flex items-center justify-center">
+                  <div
+                    class="w-12 h-12 glass flex items-center justify-center"
+                  >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -1669,43 +1534,57 @@
               </div>
 
               <div class="flex gap-4 mt-8">
+                <!-- GitHub -->
                 <a
-                  href="#"
+                  href="https://github.com/Akshay-cp7"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
+                  title="GitHub"
                 >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
                     />
                   </svg>
                 </a>
+                <!-- LinkedIn -->
                 <a
-                  href="#"
+                  href="https://in.linkedin.com/in/akshay-cp7"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
+                  title="LinkedIn"
                 >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
                       d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
                     />
                   </svg>
                 </a>
+                <!-- Google Play Store -->
                 <a
-                  href="#"
+                  href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
+                  title="Google Play Store"
                 >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                  <svg
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
                     <path
-                      d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417a9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"
-                    />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                >
-                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                    <path
-                      d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.6.113.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"
+                      d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302a1 1 0 010 1.38l-2.302 2.302L15.2 12.694l2.498-3.186zM5.864 2.658L16.8 8.991l-2.302 2.302L5.864 2.658z"
                     />
                   </svg>
                 </a>
@@ -1747,10 +1626,10 @@
                     <option value="" class="bg-zinc-900">
                       Select a service
                     </option>
-                    <option value="web" class="bg-zinc-900">
-                      Web Development
+                    <option value="app" class="bg-zinc-900">
+                      App Development
                     </option>
-                    <option value="3d" class="bg-zinc-900">3D & WebGL</option>
+                    <option value="3d" class="bg-zinc-900">3D AR & VR</option>
                     <option value="design" class="bg-zinc-900">
                       UI/UX Design
                     </option>
@@ -1784,7 +1663,30 @@
     <footer
       class="p-12 text-center text-gray-600 text-sm tracking-widest border-t border-white/5"
     >
-      &copy; 2024 OSM PORTFOLIO. MADE WITH THREE.JS & PASSION.
+      <div class="mb-4">
+        <a
+          href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-gray-400 transition-colors mx-3"
+          >Google Play</a
+        >
+        <span class="text-gray-700">·</span>
+        <a
+          href="https://github.com/Akshay-cp7"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:text-gray-400 transition-colors mx-3"
+          >GitHub</a
+        >
+        <span class="text-gray-700">·</span>
+        <a
+          href="mailto:com.akshaycp@gmail.com"
+          class="hover:text-gray-400 transition-colors mx-3"
+          >Email</a
+        >
+      </div>
+      &copy; 2025 AKSHAY CP. MADE WITH THREE.JS & PASSION.
     </footer>
 
     <script>
@@ -1830,7 +1732,6 @@
           return;
         }
 
-        // Check if already loaded
         if (modelViewer.loaded) {
           console.log("Model already loaded");
           modelViewerReady = true;
@@ -1838,25 +1739,21 @@
           return;
         }
 
-        // Listen for load event
         modelViewer.addEventListener("load", () => {
           console.log("3D Model loaded successfully");
           modelViewerReady = true;
           checkAllLoaded();
         });
 
-        // Listen for error
         modelViewer.addEventListener("error", (e) => {
           console.error("Model loading error:", e);
-          modelViewerReady = true; // Mark as ready anyway to not block the site
+          modelViewerReady = true;
           checkAllLoaded();
         });
 
-        // Progress tracking (optional - for loading bar)
         modelViewer.addEventListener("progress", (e) => {
           const progress = e.detail.totalProgress * 100;
           console.log(`Model loading: ${progress.toFixed(0)}%`);
-          // You could update a loading bar here
         });
       }
 
@@ -1865,28 +1762,24 @@
       let mouseX = 0,
         mouseY = 0;
 
-      // Background (particles) rotation state
       let bgBaseRotX = 0;
       let bgBaseRotY = 0;
       let bgMouseRotX = 0;
       let bgMouseRotY = 0;
 
-      // Torus rotation state
       let torusBaseRotX = 0;
       let torusBaseRotY = 0;
       let torusMouseRotX = 0;
       let torusMouseRotY = 0;
 
-      // Smooth camera scrolling
       let targetCameraZ = 5;
       let currentCameraZ = 5;
       let currentScrollY = 0;
       let targetScrollY = 0;
 
-      // Detect mobile
       const isMobile =
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-          navigator.userAgent,
+          navigator.userAgent
         ) || window.innerWidth < 768;
 
       function initThree() {
@@ -1895,7 +1788,7 @@
           75,
           window.innerWidth / window.innerHeight,
           0.1,
-          1000,
+          1000
         );
         camera.position.z = 5;
 
@@ -1907,13 +1800,12 @@
         renderer.setPixelRatio(
           isMobile
             ? Math.min(window.devicePixelRatio, 1.5)
-            : Math.min(window.devicePixelRatio, 2),
+            : Math.min(window.devicePixelRatio, 2)
         );
         document
           .getElementById("canvas-container")
           .appendChild(renderer.domElement);
 
-        // Create Sparkles (Particles)
         const particlesGeometry = new THREE.BufferGeometry();
         const count = isMobile ? 1500 : 3000;
         const posArray = new Float32Array(count * 3);
@@ -1924,7 +1816,7 @@
 
         particlesGeometry.setAttribute(
           "position",
-          new THREE.BufferAttribute(posArray, 3),
+          new THREE.BufferAttribute(posArray, 3)
         );
 
         const particlesMaterial = new THREE.PointsMaterial({
@@ -1938,7 +1830,6 @@
         particles = new THREE.Points(particlesGeometry, particlesMaterial);
         scene.add(particles);
 
-        // Create Central Object
         const segments = isMobile ? 80 : 150;
         const geometry = new THREE.TorusKnotGeometry(1.3, 0.4, segments, 20);
         const material = new THREE.MeshStandardMaterial({
@@ -1950,7 +1841,6 @@
         torus = new THREE.Mesh(geometry, material);
         scene.add(torus);
 
-        // Lights
         const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
         scene.add(ambientLight);
 
@@ -1964,7 +1854,6 @@
 
         animate();
 
-        // Mark Three.js as ready
         console.log("Three.js scene ready");
         threeJsReady = true;
         checkAllLoaded();
@@ -1973,7 +1862,6 @@
       function animate() {
         requestAnimationFrame(animate);
 
-        // === PARTICLES (Background) ===
         bgBaseRotY += 0.001;
         bgBaseRotX += 0.0005;
 
@@ -1987,7 +1875,6 @@
           particles.rotation.x = bgBaseRotX + bgMouseRotX;
         }
 
-        // === TORUS (Central Object) ===
         if (torus) {
           torusBaseRotX += 0.005;
           torusBaseRotY += 0.005;
@@ -2002,7 +1889,6 @@
           torus.rotation.y = torusBaseRotY + torusMouseRotY;
         }
 
-        // === CAMERA SCROLL - SMOOTH ===
         currentScrollY += (targetScrollY - currentScrollY) * 0.08;
         targetCameraZ = 5 + currentScrollY * 0.001;
         currentCameraZ += (targetCameraZ - currentCameraZ) * 0.05;
@@ -2011,16 +1897,14 @@
         renderer.render(scene, camera);
       }
 
-      // --- SCROLL TRACKING ---
       window.addEventListener(
         "scroll",
         () => {
           targetScrollY = window.scrollY;
         },
-        { passive: true },
+        { passive: true }
       );
 
-      // --- MOUSE TRACKING (Desktop only) ---
       window.addEventListener("mousemove", (e) => {
         mouseX = e.clientX / window.innerWidth - 0.5;
         mouseY = e.clientY / window.innerHeight - 0.5;
@@ -2032,7 +1916,6 @@
         });
       });
 
-      // --- TOUCH TRACKING (Mobile) ---
       if (isMobile) {
         window.addEventListener(
           "touchmove",
@@ -2042,7 +1925,7 @@
               mouseY = e.touches[0].clientY / window.innerHeight - 0.5;
             }
           },
-          { passive: true },
+          { passive: true }
         );
 
         window.addEventListener(
@@ -2051,11 +1934,10 @@
             mouseX = 0;
             mouseY = 0;
           },
-          { passive: true },
+          { passive: true }
         );
       }
 
-      // --- RESPONSIVE ---
       window.addEventListener("resize", () => {
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
@@ -2065,7 +1947,6 @@
       // --- GSAP ANIMATIONS ---
       gsap.registerPlugin(ScrollTrigger);
 
-      // Hero Reveal
       gsap.from(".reveal", {
         opacity: 0,
         y: 100,
@@ -2074,7 +1955,6 @@
         stagger: 0.2,
       });
 
-      // Scroll Reveal for sections
       gsap.utils.toArray(".glass:not(#home .glass)").forEach((card) => {
         gsap.from(card, {
           scrollTrigger: {
@@ -2089,7 +1969,6 @@
         });
       });
 
-      // Award banner animation
       gsap.from(".award-banner", {
         scrollTrigger: {
           trigger: ".award-banner",
@@ -2102,7 +1981,6 @@
         ease: "power3.out",
       });
 
-      // Skill bar animations
       gsap.utils.toArray(".skill-progress").forEach((bar) => {
         gsap.from(bar, {
           scrollTrigger: {
@@ -2116,7 +1994,6 @@
         });
       });
 
-      // Section titles animation
       gsap.utils.toArray(".text-gradient").forEach((title) => {
         gsap.from(title, {
           scrollTrigger: {
@@ -2131,27 +2008,43 @@
         });
       });
 
+      // Highlight cards animation
+      gsap.utils.toArray(".highlight-card").forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom-=80px",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          y: 60,
+          duration: 0.8,
+          delay: i * 0.15,
+          ease: "power3.out",
+        });
+      });
+
       // --- INITIALIZATION ---
       window.onload = () => {
         initThree();
         initModelViewer();
       };
 
-      // Cursor scaling on links - only for non-touch devices
+      // Cursor scaling on links
       if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
         document
           .querySelectorAll(
-            "a, button, .group, .service-card, input, textarea, select",
+            "a, button, .group, .service-card, .highlight-card, .bento-item, input, textarea, select"
           )
           .forEach((el) => {
             el.addEventListener("mouseenter", () =>
               gsap.to("#cursor", {
                 scale: 3,
                 backgroundColor: "rgba(255,255,255,0.1)",
-              }),
+              })
             );
             el.addEventListener("mouseleave", () =>
-              gsap.to("#cursor", { scale: 1, backgroundColor: "transparent" }),
+              gsap.to("#cursor", { scale: 1, backgroundColor: "transparent" })
             );
           });
       }
