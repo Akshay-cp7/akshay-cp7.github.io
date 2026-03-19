@@ -1,15 +1,7 @@
 // ============================================
-// script.js — Runs after THREE, gsap, 
-// ScrollTrigger are all loaded and DOM is ready
+// script.js — Fixed: reliable CDN + proper
+// loading gate + first-frame tracking
 // ============================================
-
-// --- Safety check ---
-if (typeof THREE === "undefined") {
-  console.error("THREE.js not loaded");
-}
-if (typeof gsap === "undefined") {
-  console.error("GSAP not loaded");
-}
 
 // ============================================
 // LOADING STATE
@@ -17,19 +9,29 @@ if (typeof gsap === "undefined") {
 let threeJsReady = false;
 let modelViewerReady = false;
 let loadingScreenHidden = false;
+let firstFrameRendered = false;
 
 function checkAllLoaded() {
-  if (threeJsReady && modelViewerReady && !loadingScreenHidden) {
-    hideLoadingScreen();
+  if (
+    threeJsReady &&
+    firstFrameRendered &&
+    modelViewerReady &&
+    !loadingScreenHidden
+  ) {
+    // Small delay so the scene is visually stable
+    setTimeout(() => {
+      hideLoadingScreen();
+    }, 500);
   }
 }
 
-// Fallback timeout
+// Fallback timeout — don't leave users stuck forever
 setTimeout(() => {
   if (!loadingScreenHidden) {
+    console.warn("Fallback: forcing loading screen hide after 12s");
     hideLoadingScreen();
   }
-}, 8000);
+}, 12000);
 
 function hideLoadingScreen() {
   if (loadingScreenHidden) return;
@@ -55,35 +57,40 @@ function initModelViewer() {
     return;
   }
 
-  if (modelViewer.loaded) {
+  // Don't let model-viewer block loading forever
+  const modelTimeout = setTimeout(() => {
+    if (!modelViewerReady) {
+      console.warn("Model viewer timed out, proceeding anyway");
+      modelViewerReady = true;
+      checkAllLoaded();
+    }
+  }, 10000);
+
+  function onModelReady() {
+    if (modelViewerReady) return; // prevent double-fire
+    clearTimeout(modelTimeout);
     modelViewerReady = true;
     checkAllLoaded();
+  }
+
+  if (modelViewer.loaded) {
+    onModelReady();
     return;
   }
 
-  modelViewer.addEventListener("load", () => {
-    modelViewerReady = true;
-    checkAllLoaded();
-  });
+  modelViewer.addEventListener("load", onModelReady);
+  modelViewer.addEventListener("error", onModelReady);
 
-  modelViewer.addEventListener("error", () => {
-    modelViewerReady = true;
-    checkAllLoaded();
-  });
-
-  // model-viewer is a web component — might not be defined yet
   if (!customElements.get("model-viewer")) {
     customElements
       .whenDefined("model-viewer")
       .then(() => {
         if (modelViewer.loaded) {
-          modelViewerReady = true;
-          checkAllLoaded();
+          onModelReady();
         }
       })
       .catch(() => {
-        modelViewerReady = true;
-        checkAllLoaded();
+        onModelReady();
       });
   }
 }
@@ -108,6 +115,7 @@ let targetCameraZ = 5,
   currentCameraZ = 5;
 let currentScrollY = 0,
   targetScrollY = 0;
+let frameCount = 0;
 
 const isMobile =
   /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
@@ -116,80 +124,103 @@ const isMobile =
 
 function initThree() {
   const container = document.getElementById("canvas-container");
+
+  // Guard: no container
   if (!container) {
     console.error("canvas-container not found");
     threeJsReady = true;
+    firstFrameRendered = true;
     checkAllLoaded();
     return;
   }
 
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(
-    75,
-    window.innerWidth / window.innerHeight,
-    0.1,
-    1000
-  );
-  camera.position.z = 5;
-
-  renderer = new THREE.WebGLRenderer({
-    antialias: !isMobile,
-    alpha: true,
-  });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setPixelRatio(
-    isMobile
-      ? Math.min(window.devicePixelRatio, 1.5)
-      : Math.min(window.devicePixelRatio, 2)
-  );
-  container.appendChild(renderer.domElement);
-
-  // Particles
-  const particlesGeometry = new THREE.BufferGeometry();
-  const count = isMobile ? 1500 : 3000;
-  const posArray = new Float32Array(count * 3);
-  for (let i = 0; i < count * 3; i++) {
-    posArray[i] = (Math.random() - 0.5) * 15;
+  // Guard: THREE not loaded
+  if (typeof THREE === "undefined") {
+    console.error(
+      "THREE is undefined — check your CDN URL. Background will not render."
+    );
+    threeJsReady = true;
+    firstFrameRendered = true;
+    checkAllLoaded();
+    return;
   }
-  particlesGeometry.setAttribute(
-    "position",
-    new THREE.BufferAttribute(posArray, 3)
-  );
-  const particlesMaterial = new THREE.PointsMaterial({
-    size: isMobile ? 0.008 : 0.005,
-    color: 0xffffff,
-    transparent: true,
-    opacity: 0.8,
-    blending: THREE.AdditiveBlending,
-  });
-  particles = new THREE.Points(particlesGeometry, particlesMaterial);
-  scene.add(particles);
 
-  // Torus Knot
-  const segments = isMobile ? 80 : 150;
-  const geometry = new THREE.TorusKnotGeometry(1.3, 0.4, segments, 20);
-  const material = new THREE.MeshStandardMaterial({
-    color: 0x222222,
-    roughness: 0.1,
-    metalness: 1,
-    wireframe: true,
-  });
-  torus = new THREE.Mesh(geometry, material);
-  scene.add(torus);
+  try {
+    scene = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    camera.position.z = 5;
 
-  // Lights
-  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
-  const pointLight = new THREE.PointLight(0x0066ff, 2);
-  pointLight.position.set(2, 3, 4);
-  scene.add(pointLight);
-  const pointLight2 = new THREE.PointLight(0xff0066, 2);
-  pointLight2.position.set(-2, -3, 4);
-  scene.add(pointLight2);
+    renderer = new THREE.WebGLRenderer({
+      antialias: !isMobile,
+      alpha: true,
+    });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(
+      isMobile
+        ? Math.min(window.devicePixelRatio, 1.5)
+        : Math.min(window.devicePixelRatio, 2)
+    );
+    container.appendChild(renderer.domElement);
 
-  animate();
+    // Particles
+    const particlesGeometry = new THREE.BufferGeometry();
+    const count = isMobile ? 1500 : 3000;
+    const posArray = new Float32Array(count * 3);
+    for (let i = 0; i < count * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 15;
+    }
+    particlesGeometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(posArray, 3)
+    );
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: isMobile ? 0.008 : 0.005,
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8,
+      blending: THREE.AdditiveBlending,
+    });
+    particles = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particles);
 
-  threeJsReady = true;
-  checkAllLoaded();
+    // Torus Knot
+    const segments = isMobile ? 80 : 150;
+    const geometry = new THREE.TorusKnotGeometry(1.3, 0.4, segments, 20);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x222222,
+      roughness: 0.1,
+      metalness: 1,
+      wireframe: true,
+    });
+    torus = new THREE.Mesh(geometry, material);
+    scene.add(torus);
+
+    // Lights
+    scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const pointLight = new THREE.PointLight(0x0066ff, 2);
+    pointLight.position.set(2, 3, 4);
+    scene.add(pointLight);
+    const pointLight2 = new THREE.PointLight(0xff0066, 2);
+    pointLight2.position.set(-2, -3, 4);
+    scene.add(pointLight2);
+
+    // Mark Three.js setup done (but NOT first frame yet)
+    threeJsReady = true;
+    console.log("Three.js scene initialized");
+
+    // Start render loop
+    animate();
+  } catch (e) {
+    console.error("Three.js initialization failed:", e);
+    threeJsReady = true;
+    firstFrameRendered = true;
+    checkAllLoaded();
+  }
 }
 
 function animate() {
@@ -220,12 +251,25 @@ function animate() {
   camera.position.z = currentCameraZ;
 
   renderer.render(scene, camera);
+
+  // After 3 rendered frames, mark scene as visually ready
+  frameCount++;
+  if (frameCount === 3 && !firstFrameRendered) {
+    firstFrameRendered = true;
+    console.log("Three.js first frames rendered");
+    checkAllLoaded();
+  }
 }
 
 // ============================================
 // GSAP ANIMATIONS
 // ============================================
 function initGsapAnimations() {
+  if (typeof gsap === "undefined") {
+    console.warn("GSAP not loaded, skipping animations");
+    return;
+  }
+
   gsap.registerPlugin(ScrollTrigger);
 
   gsap.from(".reveal", {
@@ -310,6 +354,7 @@ function initGsapAnimations() {
 // ============================================
 function initCursor() {
   if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  if (typeof gsap === "undefined") return;
 
   document
     .querySelectorAll(
@@ -383,11 +428,24 @@ window.addEventListener("resize", () => {
 });
 
 // ============================================
-// RUN EVERYTHING
+// BOOT — Single entry point, with safety gate
 // ============================================
-// DOM is ready (scripts are at end of body)
-// Libraries are loaded (they come before this file)
-initThree();
-initGsapAnimations();
-initCursor();
-initModelViewer();
+function bootApp() {
+  console.log("Booting app...");
+  console.log("THREE available:", typeof THREE !== "undefined");
+  console.log("gsap available:", typeof gsap !== "undefined");
+  console.log("ScrollTrigger available:", typeof ScrollTrigger !== "undefined");
+
+  initThree();
+  initGsapAnimations();
+  initCursor();
+  initModelViewer();
+}
+
+// DOM is already ready (scripts at end of body),
+// but use DOMContentLoaded as extra safety
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", bootApp);
+} else {
+  bootApp();
+}
