@@ -1,533 +1,747 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+<!doctype html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-
-    <!-- Primary SEO Meta Tags -->
-    <title>Akshay CP | Flutter Developer & AR/VR Specialist | Portfolio</title>
-    <meta
-      name="title"
-      content="Akshay CP | Flutter Developer & AR/VR Specialist | Portfolio"
-    />
-    <meta
-      name="description"
-      content="Akshay CP is a Flutter developer with 2+ years of experience specializing in mobile app development, 3D AR/VR experiences, ERP systems, and UI/UX design. 10+ published apps on Google Play Store. Based in Kerala, India."
-    />
-    <meta
-      name="keywords"
-      content="Akshay CP, Flutter Developer, AR VR Developer, Mobile App Developer, 3D Developer, Google Play Apps, ERP Developer, UI UX Designer, Three.js, Firebase, Dart, Kerala India, Freelance Developer, GLB AR Viewer, Bulk Image Cropper"
-    />
-    <meta name="author" content="Akshay CP" />
-    <meta
-      name="robots"
-      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
-    />
-    <meta name="googlebot" content="index, follow" />
-    <meta name="language" content="English" />
-    <meta name="revisit-after" content="7 days" />
-    <meta name="rating" content="general" />
-    <link rel="canonical" href="https://akshaycp.dev/" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://akshaycp.dev/" />
-    <meta
-      property="og:title"
-      content="Akshay CP | Flutter Developer & AR/VR Specialist"
-    />
-    <meta
-      property="og:description"
-      content="Flutter developer with 2+ years of experience. Specializing in mobile apps, 3D AR/VR, ERP systems. 10+ apps on Google Play Store."
-    />
-    <meta
-      property="og:image"
-      content="https://blogger.googleusercontent.com/img/a/AVvXsEhp4sYZifCcnHLFrQQ81gcDxFLvA5e2VUTRuPZCuJ18Isf2hCFXTPLbl0sfXEJ1yb9-h4Uq0u5rvLLoKfEIp9EQ4NP8BV0mFxZVA-DxtgX1ARMOiJZ1fwm8VMfxPnwmUXymohITakorWWURAi-o6EdS-auPON_hzYhubwks1WBGmLsbUaklt2_UIUdJJaO2"
-    />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta
-      property="og:image:alt"
-      content="Akshay CP Portfolio - Flutter Developer & AR/VR Specialist website preview showing 3D portfolio design"
-    />
-    <meta property="og:site_name" content="Akshay CP Portfolio" />
-    <meta property="og:locale" content="en_US" />
-
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://akshaycp.dev/" />
-    <meta
-      name="twitter:title"
-      content="Akshay CP | Flutter Developer & AR/VR Specialist"
-    />
-    <meta
-      name="twitter:description"
-      content="Flutter developer with 2+ years of experience. Specializing in mobile apps, 3D AR/VR, ERP systems. 10+ apps on Google Play Store."
-    />
-    <meta
-      name="twitter:image"
-      content="https://blogger.googleusercontent.com/img/a/AVvXsEhp4sYZifCcnHLFrQQ81gcDxFLvA5e2VUTRuPZCuJ18Isf2hCFXTPLbl0sfXEJ1yb9-h4Uq0u5rvLLoKfEIp9EQ4NP8BV0mFxZVA-DxtgX1ARMOiJZ1fwm8VMfxPnwmUXymohITakorWWURAi-o6EdS-auPON_hzYhubwks1WBGmLsbUaklt2_UIUdJJaO2"
-    />
-    <meta
-      name="twitter:image:alt"
-      content="Akshay CP Portfolio - Flutter Developer & AR/VR Specialist website preview"
-    />
-    <meta name="twitter:creator" content="@akshaycp7" />
-    <meta name="twitter:site" content="@akshaycp7" />
-
-    <!-- Geo Tags -->
-    <meta name="geo.region" content="IN-KL" />
-    <meta name="geo.placename" content="Kerala" />
-    <meta name="geo.position" content="10.8505;76.2711" />
-    <meta name="ICBM" content="10.8505, 76.2711" />
-
-    <!-- Theme & Favicon -->
-    <meta name="theme-color" content="#000000" />
-    <meta name="msapplication-TileColor" content="#000000" />
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
-    />
-    <link
-      rel="apple-touch-icon"
-      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>"
-    />
-
-    <!-- Structured Data - Person Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Person",
-        "name": "Akshay CP",
-        "alternateName": "Akshay C P",
-        "url": "https://akshaycp.dev",
-        "image": "https://blogger.googleusercontent.com/img/a/AVvXsEhp4sYZifCcnHLFrQQ81gcDxFLvA5e2VUTRuPZCuJ18Isf2hCFXTPLbl0sfXEJ1yb9-h4Uq0u5rvLLoKfEIp9EQ4NP8BV0mFxZVA-DxtgX1ARMOiJZ1fwm8VMfxPnwmUXymohITakorWWURAi-o6EdS-auPON_hzYhubwks1WBGmLsbUaklt2_UIUdJJaO2",
-        "jobTitle": "Flutter Developer & AR/VR Specialist",
-        "description": "Flutter developer with 2+ years of experience specializing in mobile app development, 3D AR/VR experiences, and ERP systems.",
-        "email": "com.akshaycp@gmail.com",
-        "address": {
-          "@type": "PostalAddress",
-          "addressRegion": "Kerala",
-          "addressCountry": "IN"
-        },
-        "alumniOf": {
-          "@type": "EducationalOrganization",
-          "name": "APJ Abdul Kalam Technological University"
-        },
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Digital Wing Farook College"
-        },
-        "knowsAbout": [
-          "Flutter",
-          "Dart",
-          "Firebase",
-          "Three.js",
-          "AR/VR Development",
-          "Mobile App Development",
-          "UI/UX Design",
-          "ERP Systems",
-          "3D Modeling",
-          "REST APIs",
-          "GSAP",
-          "WebGL"
-        ],
-        "sameAs": [
-          "https://github.com/Akshay-cp7",
-          "https://in.linkedin.com/in/akshay-cp7",
-          "https://play.google.com/store/apps/dev?id=7948075848513102467"
-        ],
-        "award": "Tripo 3D AI Contest Winner (2025)"
-      }
-    </script>
-
-    <!-- Structured Data - Website Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebSite",
-        "name": "Akshay CP Portfolio",
-        "url": "https://akshaycp.dev",
-        "description": "Portfolio website of Akshay CP - Flutter Developer & AR/VR Specialist with 10+ published apps",
-        "author": {
-          "@type": "Person",
-          "name": "Akshay CP"
-        },
-        "inLanguage": "en"
-      }
-    </script>
-
-    <!-- Structured Data - ProfilePage Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "ProfilePage",
-        "mainEntity": {
-          "@type": "Person",
-          "name": "Akshay CP",
-          "jobTitle": "Flutter Developer & AR/VR Specialist",
-          "image": "https://blogger.googleusercontent.com/img/a/AVvXsEhp4sYZifCcnHLFrQQ81gcDxFLvA5e2VUTRuPZCuJ18Isf2hCFXTPLbl0sfXEJ1yb9-h4Uq0u5rvLLoKfEIp9EQ4NP8BV0mFxZVA-DxtgX1ARMOiJZ1fwm8VMfxPnwmUXymohITakorWWURAi-o6EdS-auPON_hzYhubwks1WBGmLsbUaklt2_UIUdJJaO2"
-        },
-        "dateCreated": "2025-01-01",
-        "dateModified": "2025-07-01"
-      }
-    </script>
-
-    <!-- Structured Data - Software Applications -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "name": "Published Apps by Akshay CP",
-        "description": "Mobile applications developed and published by Akshay CP on Google Play Store",
-        "numberOfItems": 10,
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "GLB AR Viewer PRO",
-              "applicationCategory": "UtilitiesApplication",
-              "operatingSystem": "Android",
-              "url": "https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro",
-              "author": { "@type": "Person", "name": "Akshay CP" },
-              "description": "3D model augmented reality viewer ranked #4 top paid app in House and Home category"
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Bulk Image Cropper",
-              "applicationCategory": "UtilitiesApplication",
-              "operatingSystem": "Android",
-              "url": "https://play.google.com/store/apps/details?id=com.arzDrzapps.bulk_image_cropper",
-              "author": { "@type": "Person", "name": "Akshay CP" },
-              "description": "Crop thousands of images in a single click"
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Token Number Announcer",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Android",
-              "author": { "@type": "Person", "name": "Akshay CP" }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "ID Cards to PDF",
-              "applicationCategory": "UtilitiesApplication",
-              "operatingSystem": "Android",
-              "author": { "@type": "Person", "name": "Akshay CP" }
-            }
-          },
-          {
-            "@type": "ListItem",
-            "position": 5,
-            "item": {
-              "@type": "SoftwareApplication",
-              "name": "Bulk Image Rotator",
-              "applicationCategory": "UtilitiesApplication",
-              "operatingSystem": "Android",
-              "author": { "@type": "Person", "name": "Akshay CP" }
-            }
-          }
-        ]
-      }
-    </script>
-
-    <!-- Structured Data - BreadcrumbList -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        "itemListElement": [
-          {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": "https://akshaycp.dev/#home"
-          },
-          {
-            "@type": "ListItem",
-            "position": 2,
-            "name": "Highlights",
-            "item": "https://akshaycp.dev/#highlights"
-          },
-          {
-            "@type": "ListItem",
-            "position": 3,
-            "name": "Services",
-            "item": "https://akshaycp.dev/#services"
-          },
-          {
-            "@type": "ListItem",
-            "position": 4,
-            "name": "About",
-            "item": "https://akshaycp.dev/#about"
-          },
-          {
-            "@type": "ListItem",
-            "position": 5,
-            "name": "Experience",
-            "item": "https://akshaycp.dev/#experience"
-          },
-          {
-            "@type": "ListItem",
-            "position": 6,
-            "name": "Contact",
-            "item": "https://akshaycp.dev/#contact"
-          }
-        ]
-      }
-    </script>
-
-    <!-- Structured Data - Offered Services -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Service",
-        "serviceType": "Software Development",
-        "provider": {
-          "@type": "Person",
-          "name": "Akshay CP",
-          "url": "https://akshaycp.dev"
-        },
-        "areaServed": {
-          "@type": "Place",
-          "name": "Worldwide"
-        },
-        "hasOfferCatalog": {
-          "@type": "OfferCatalog",
-          "name": "Development Services",
-          "itemListElement": [
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Flutter App Development",
-                "description": "Full-stack mobile app development with Flutter framework for Android and iOS"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "3D AR & VR Development",
-                "description": "Immersive 3D augmented and virtual reality experiences using Three.js and WebGL"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "UI/UX Design",
-                "description": "User-centered interface design with focus on aesthetics, usability, and design systems"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Performance Optimization",
-                "description": "Application speed optimization, Core Web Vitals improvement, and code auditing"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Responsive Design",
-                "description": "Mobile-first responsive design ensuring seamless experience across all devices"
-              }
-            },
-            {
-              "@type": "Offer",
-              "itemOffered": {
-                "@type": "Service",
-                "name": "Video & Animation",
-                "description": "Motion design and micro-interactions using GSAP and CSS animations"
-              }
-            }
-          ]
-        }
-      }
-    </script>
-
-    <!-- Preconnect to critical third-party origins -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-    <link rel="preconnect" href="https://ajax.googleapis.com" crossorigin />
-    <link
-      rel="preconnect"
-      href="https://blogger.googleusercontent.com"
-      crossorigin
-    />
-    <link
-      rel="preconnect"
-      href="https://play-lh.googleusercontent.com"
-      crossorigin
-    />
-
-    <!-- DNS Prefetch -->
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
-    <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
-
-    <!-- Preload critical resources -->
-    <link rel="preload" href="style.css" as="style" />
-
-    <!-- Preload Three.js for faster loading -->
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"
-      as="script"
-      crossorigin
-    />
-
-    <!-- Stylesheets -->
+    <title>Akshay CP | Portfolio</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link rel="stylesheet" href="style.css" />
-
-    <!-- Model Viewer (ES module - loads independently) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script
       type="module"
       src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"
     ></script>
-  </head>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap");
 
-  <body itemscope itemtype="https://schema.org/WebPage">
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #050505;
+        color: white;
+        font-family: "Inter", sans-serif;
+        overflow-x: hidden;
+      }
+
+      #loading-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #050505 0%, #1a1a1a 100%);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(10px);
+      }
+
+      .loading-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+        text-align: center;
+      }
+
+      .loading-text {
+        font-size: 0.75rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.6);
+        animation: fadeInOut 2.5s ease-in-out;
+        text-align: center;
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+
+      .loading-dots {
+        display: flex;
+        gap: 0.5rem;
+      }
+
+      .dot {
+        width: 6px;
+        height: 6px;
+        background: rgba(255, 255, 255, 0.6);
+        border-radius: 50%;
+        animation: dotBounce 1.2s ease-in-out infinite;
+      }
+
+      .dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes dotBounce {
+        0%,
+        100% {
+          transform: translateY(0);
+          opacity: 0.5;
+        }
+        50% {
+          transform: translateY(-8px);
+          opacity: 1;
+        }
+      }
+
+      .loading-hidden {
+        animation: fadeOutUp 1s ease-out forwards;
+        pointer-events: none;
+      }
+
+      @keyframes fadeOutUp {
+        0% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+      }
+
+      #canvas-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .glass {
+        background: rgba(255, 255, 255, 0.03);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+      }
+
+      .text-gradient {
+        background: linear-gradient(to right, #fff, #666);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        padding-bottom: 0.15em;
+        display: inline-block;
+      }
+
+      section {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        padding: 4rem 2rem;
+        position: relative;
+      }
+
+      .custom-cursor {
+        width: 20px;
+        height: 20px;
+        border: 2px solid white;
+        border-radius: 50%;
+        position: fixed;
+        pointer-events: none;
+        z-index: 9999;
+        transition: transform 0.1s ease;
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        .custom-cursor {
+          display: none;
+        }
+      }
+
+      .skill-bar {
+        height: 4px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px;
+        overflow: hidden;
+      }
+
+      .skill-progress {
+        height: 100%;
+        background: linear-gradient(to right, #fff, #666);
+        border-radius: 2px;
+        transform-origin: left;
+      }
+
+      .timeline-line {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: linear-gradient(
+          to bottom,
+          transparent,
+          rgba(255, 255, 255, 0.3),
+          transparent
+        );
+      }
+
+      .timeline-dot {
+        position: absolute;
+        left: -4px;
+        top: 0;
+        width: 9px;
+        height: 9px;
+        background: white;
+        border-radius: 50%;
+      }
+
+      .service-image-container {
+        width: 100%;
+        height: 160px;
+        overflow: hidden;
+        border-radius: 0.75rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .service-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        transition: all 0.5s ease;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .service-card:hover .service-image {
+          transform: scale(1.1);
+        }
+      }
+
+      .project-image-container {
+        height: 200px;
+      }
+
+      @media (min-width: 768px) {
+        .project-image-container {
+          height: 320px;
+        }
+      }
+
+      .project-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: all 0.7s ease;
+        transform: scale(1.1);
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .project-image {
+          filter: grayscale(100%);
+        }
+
+        .group:hover .project-image {
+          filter: grayscale(0%);
+          transform: scale(1);
+        }
+      }
+
+      @media (hover: none) and (pointer: coarse) {
+        .project-image {
+          filter: grayscale(0%);
+          transform: scale(1);
+        }
+      }
+
+      .award-banner {
+        background: linear-gradient(
+          135deg,
+          rgba(255, 215, 0, 0.1) 0%,
+          rgba(255, 140, 0, 0.1) 50%,
+          rgba(255, 215, 0, 0.05) 100%
+        );
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .award-banner::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          rgba(255, 215, 0, 0.1),
+          transparent
+        );
+        animation: shimmer 3s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          left: -100%;
+        }
+        100% {
+          left: 100%;
+        }
+      }
+
+      .trophy-glow {
+        filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+        animation: trophyPulse 2s ease-in-out infinite;
+      }
+
+      @keyframes trophyPulse {
+        0%,
+        100% {
+          filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.5));
+        }
+        50% {
+          filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+        }
+      }
+
+      .sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: #ffd700;
+        border-radius: 50%;
+        animation: sparkle 2s ease-in-out infinite;
+      }
+
+      .sparkle:nth-child(1) {
+        top: 20%;
+        left: 10%;
+        animation-delay: 0s;
+      }
+
+      .sparkle:nth-child(2) {
+        top: 30%;
+        right: 15%;
+        animation-delay: 0.5s;
+      }
+
+      .sparkle:nth-child(3) {
+        bottom: 25%;
+        left: 20%;
+        animation-delay: 1s;
+      }
+
+      .sparkle:nth-child(4) {
+        bottom: 20%;
+        right: 10%;
+        animation-delay: 1.5s;
+      }
+
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .loading-text {
+          font-size: 0.65rem;
+          letter-spacing: 0.15em;
+        }
+
+        .dot {
+          width: 5px;
+          height: 5px;
+        }
+      }
+
+      .bento-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      @media (min-width: 768px) {
+        .bento-grid {
+          grid-template-columns: repeat(3, 1fr);
+          grid-template-rows: auto auto auto;
+          gap: 1.25rem;
+        }
+      }
+
+      .bento-item {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 1.25rem;
+        padding: 1.25rem;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        text-decoration: none;
+        color: inherit;
+      }
+
+      .bento-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          transparent 50%
+        );
+        opacity: 0;
+        transition: opacity 0.4s ease;
+      }
+
+      @media (hover: hover) {
+        .bento-item:hover {
+          background: rgba(255, 255, 255, 0.06);
+          border-color: rgba(255, 255, 255, 0.15);
+          transform: translateY(-4px);
+        }
+
+        .bento-item:hover::before {
+          opacity: 1;
+        }
+      }
+
+      .bento-large {
+        grid-column: 1 / -1;
+        padding: 2rem;
+        flex-direction: column;
+      }
+
+      @media (min-width: 768px) {
+        .bento-large {
+          grid-column: span 2;
+          grid-row: span 2;
+          padding: 2.5rem;
+        }
+      }
+
+      .bento-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        flex: 1;
+      }
+
+      @media (min-width: 768px) {
+        .bento-content {
+          flex-direction: row;
+          align-items: flex-start;
+        }
+      }
+
+      .bento-icon-large {
+        width: 100px;
+        height: 100px;
+        flex-shrink: 0;
+      }
+
+      @media (min-width: 768px) {
+        .bento-icon-large {
+          width: 120px;
+          height: 120px;
+        }
+      }
+
+      .bento-icon-large img {
+        width: 100%;
+        height: 100%;
+        border-radius: 24px;
+        object-fit: cover;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        transition: transform 0.4s ease;
+      }
+
+      @media (hover: hover) {
+        .bento-large:hover .bento-icon-large img {
+          transform: scale(1.05) rotate(-2deg);
+        }
+      }
+
+      .bento-text {
+        flex: 1;
+      }
+
+      .bento-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.75rem;
+      }
+
+      .bento-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+      }
+
+      @media (min-width: 768px) {
+        .bento-title {
+          font-size: 1.75rem;
+        }
+      }
+
+      .bento-desc {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.9rem;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
+
+      .bento-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .bento-arrow {
+        position: absolute;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        width: 40px;
+        height: 40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      @media (hover: hover) {
+        .bento-large:hover .bento-arrow {
+          background: white;
+          color: black;
+          transform: rotate(45deg);
+        }
+      }
+
+      .bento-content-small {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        flex: 1;
+      }
+
+      .bento-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        object-fit: cover;
+        flex-shrink: 0;
+        transition: transform 0.3s ease;
+      }
+
+      @media (hover: hover) {
+        .bento-item:hover .bento-icon {
+          transform: scale(1.1);
+        }
+      }
+
+      .bento-title-sm {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.15rem;
+      }
+
+      .bento-cat {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.5);
+      }
+
+      .bento-arrow-sm {
+        font-size: 1.25rem;
+        color: rgba(255, 255, 255, 0.3);
+        transition: all 0.3s ease;
+        align-self: center;
+      }
+
+      @media (hover: hover) {
+        .bento-item:hover .bento-arrow-sm {
+          color: white;
+          transform: translateX(4px);
+        }
+      }
+
+      .bento-stats-box {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05) 0%,
+          rgba(255, 255, 255, 0.02) 100%
+        );
+      }
+
+      .stats-number {
+        font-size: 3rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, #fff 0%, #666 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+      }
+
+      .stats-label {
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .stats-sub {
+        font-size: 0.75rem;
+        color: rgba(255, 255, 255, 0.4);
+        margin-top: 0.25rem;
+      }
+
+      .organizer-logo-container {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.15);
+        border-radius: 0.75rem;
+        padding: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        aspect-ratio: 16/10;
+        overflow: hidden;
+      }
+
+      .organizer-logo-container:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 215, 0, 0.4);
+        transform: translateY(-2px);
+      }
+
+      .organizer-logo {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        filter: grayscale(100%) brightness(0.8);
+        opacity: 0.7;
+        transition: all 0.3s ease;
+      }
+
+      .organizer-logo-container:hover .organizer-logo {
+        filter: grayscale(0%) brightness(1);
+        opacity: 1;
+      }
+
+      @media (max-width: 768px) {
+        .organizer-logo-container {
+          padding: 0.5rem;
+        }
+      }
+
+      .model-bottom-fade {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 180px;
+        background: linear-gradient(
+          to bottom,
+          transparent 0%,
+          rgba(5, 5, 5, 0.3) 30%,
+          rgba(5, 5, 5, 0.7) 60%,
+          rgba(5, 5, 5, 0.95) 85%,
+          rgba(5, 5, 5, 1) 100%
+        );
+        pointer-events: none;
+        z-index: 10;
+        border-radius: 0 0 1rem 1rem;
+      }
+
+      /* Clickable highlight cards */
+      .highlight-card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.4s ease;
+      }
+
+      @media (hover: hover) {
+        .highlight-card:hover {
+          transform: translateY(-4px);
+        }
+
+        .highlight-card:hover .glass {
+          border-color: rgba(255, 255, 255, 0.2);
+          background: rgba(255, 255, 255, 0.05);
+        }
+      }
+    </style>
+  </head>
+  <body>
     <!-- LOADING SCREEN -->
-    <div
-      id="loading-screen"
-      role="status"
-      aria-label="Loading portfolio content"
-      aria-live="polite"
-    >
+    <div id="loading-screen">
       <div class="loading-content">
-        <div class="loading-text" aria-hidden="true">Adjusting to orbit..</div>
-        <div class="loading-dots" aria-hidden="true">
+        <div class="loading-text">Adjusting to orbit..</div>
+        <div class="loading-dots">
           <div class="dot"></div>
           <div class="dot"></div>
           <div class="dot"></div>
         </div>
-        <span class="sr-only">Loading portfolio, please wait...</span>
       </div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="custom-cursor" id="cursor" aria-hidden="true"></div>
-    <div id="canvas-container" aria-hidden="true" role="presentation"></div>
+    <div class="custom-cursor" id="cursor"></div>
+    <div id="canvas-container"></div>
 
-    <!-- Skip to main content link for accessibility -->
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-bold focus:rounded"
-    >
-      Skip to main content
-    </a>
-
-    <!-- Navigation -->
-    <nav
-      class="fixed top-0 w-full p-6 flex justify-between items-center z-50"
-      role="navigation"
-      aria-label="Main navigation"
-      itemscope
-      itemtype="https://schema.org/SiteNavigationElement"
-    >
-      <a
-        href="#home"
-        class="text-2xl font-black italic tracking-tighter hover:text-gray-300 transition"
-        aria-label="Akshay CP Portfolio - Go to homepage"
-        itemprop="url"
-      >
-        <span itemprop="name">Portfolio.</span>
-      </a>
+    <nav class="fixed top-0 w-full p-6 flex justify-between items-center z-50">
+      <a href="#home" class="text-2xl font-black italic tracking-tighter hover:text-gray-300 transition">Portfolio.</a>
       <div
         class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-medium"
-        role="menubar"
       >
-        <a
-          href="#home"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >Home</a
-        >
-        <a
-          href="#highlights"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >Highlights</a
-        >
-        <a
-          href="#services"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >Services</a
-        >
-        <a
-          href="#about"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >About</a
-        >
-        <a
-          href="#experience"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >Experience</a
-        >
-        <a
-          href="#contact"
-          class="hover:text-gray-400 transition"
-          role="menuitem"
-          itemprop="url"
-          >Contact</a
-        >
+        <a href="#home" class="hover:text-gray-400 transition">Home</a>
+        <a href="#highlights" class="hover:text-gray-400 transition">Highlights</a>
+        <a href="#services" class="hover:text-gray-400 transition">Services</a>
+        <a href="#about" class="hover:text-gray-400 transition">About</a>
+        <a href="#experience" class="hover:text-gray-400 transition">Experience</a>
+        <a href="#contact" class="hover:text-gray-400 transition">Contact</a>
       </div>
     </nav>
 
-    <!-- Main Content -->
-    <main id="main-content" role="main" itemprop="mainContentOfPage">
+    <main>
       <!-- Hero Section -->
       <section
         id="home"
         class="flex flex-col justify-center items-start max-w-7xl mx-auto"
-        aria-labelledby="hero-heading"
-        itemscope
-        itemtype="https://schema.org/WPHeader"
       >
         <div class="reveal">
-          <header>
-            <h1
-              id="hero-heading"
-              class="font-black leading-none mb-4 text-gradient"
-              itemprop="headline"
-            >
-              <span class="text-3xl md:text-6xl block mb-2">HEY I'M</span>
-              <span class="text-5xl md:text-8xl">AKSHAY C P</span>
-            </h1>
-          </header>
-          <p
-            class="text-xl md:text-2xl text-gray-400 max-w-xl"
-            itemprop="description"
-          >
+          <h1 class="font-black leading-none mb-4 text-gradient">
+            <span class="text-3xl md:text-6xl block mb-2">HEY I'M</span>
+            <span class="text-5xl md:text-8xl">AKSHAY C P</span>
+          </h1>
+          <p class="text-xl md:text-2xl text-gray-400 max-w-xl">
             I enjoy merging programming with 3D and augmented reality to create
             applications that place digital experiences into the real world.
           </p>
@@ -535,14 +749,12 @@
             <a
               href="#highlights"
               class="px-8 py-4 glass hover:bg-white hover:text-black transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
-              aria-label="View my featured projects and highlights"
             >
               Projects
             </a>
             <a
               href="#contact"
               class="px-8 py-4 border border-white/20 rounded-xl hover:bg-white/10 transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
-              aria-label="Get in touch with me for project inquiries"
             >
               Contact
             </a>
@@ -550,21 +762,14 @@
         </div>
       </section>
 
-      <!-- About Section -->
-      <section
-        id="about"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="about-heading"
-        itemscope
-        itemtype="https://schema.org/AboutPage"
-      >
+      <section id="about" class="max-w-7xl mx-auto">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <!-- 3D Model Viewer -->
           <div class="glass aspect-square overflow-hidden relative p-0">
             <model-viewer
               id="avatar-model"
               src="https://raw.githubusercontent.com/Akshay-cp7/Glb_host/main/akshay_cp_animated3.glb"
-              alt="Akshay CP - Interactive 3D animated portrait model showcasing AR/VR development skills"
+              alt="Akshay CP 3D Portrait"
               loading="eager"
               reveal="auto"
               autoplay
@@ -577,7 +782,6 @@
               max-camera-orbit="auto 90deg 2.5m"
               exposure="1"
               shadow-intensity="1"
-              ar-status="not-presenting"
               style="
                 width: 100%;
                 height: 100%;
@@ -591,29 +795,15 @@
               "
             >
             </model-viewer>
-            <div class="model-bottom-fade" aria-hidden="true"></div>
+            <div class="model-bottom-fade"></div>
           </div>
 
           <!-- Info Side -->
-          <div itemscope itemtype="https://schema.org/Person">
-            <meta itemprop="name" content="Akshay CP" />
-            <meta itemprop="url" content="https://akshaycp.dev" />
-            <meta
-              itemprop="image"
-              content="https://blogger.googleusercontent.com/img/a/AVvXsEhp4sYZifCcnHLFrQQ81gcDxFLvA5e2VUTRuPZCuJ18Isf2hCFXTPLbl0sfXEJ1yb9-h4Uq0u5rvLLoKfEIp9EQ4NP8BV0mFxZVA-DxtgX1ARMOiJZ1fwm8VMfxPnwmUXymohITakorWWURAi-o6EdS-auPON_hzYhubwks1WBGmLsbUaklt2_UIUdJJaO2"
-            />
+          <div>
             <div class="space-y-8">
               <div>
-                <h2
-                  id="about-heading"
-                  class="text-4xl font-bold mb-4 text-gradient"
-                >
-                  ABOUT ME
-                </h2>
-                <p
-                  class="text-gray-400 text-lg leading-relaxed"
-                  itemprop="description"
-                >
+                <h2 class="text-4xl font-bold mb-4 text-gradient">ABOUT ME</h2>
+                <p class="text-gray-400 text-lg leading-relaxed">
                   Flutter developer with 2 years of experience working on ERP
                   systems and business applications. Alongside my professional
                   work, I enjoy exploring creative side projects, especially
@@ -622,63 +812,32 @@
                 </p>
               </div>
               <div>
-                <h3
+                <span
                   class="text-xs font-bold tracking-widest text-gray-500 uppercase"
+                  >Technologies</span
                 >
-                  Technologies
-                </h3>
-                <ul
-                  class="flex flex-wrap gap-2 mt-2"
-                  aria-label="Technical skills and technologies"
-                >
-                  <li>
-                    <span class="px-4 py-2 glass text-xs" itemprop="knowsAbout"
-                      >FLUTTER</span
-                    >
-                  </li>
-                  <li>
-                    <span class="px-4 py-2 glass text-xs" itemprop="knowsAbout"
-                      >DART</span
-                    >
-                  </li>
-                  <li>
-                    <span class="px-4 py-2 glass text-xs" itemprop="knowsAbout"
-                      >FIREBASE</span
-                    >
-                  </li>
-                  <li>
-                    <span class="px-4 py-2 glass text-xs" itemprop="knowsAbout"
-                      >THREE.JS</span
-                    >
-                  </li>
-                  <li>
-                    <span class="px-4 py-2 glass text-xs" itemprop="knowsAbout"
-                      >AR/VR</span
-                    >
-                  </li>
-                </ul>
+                <div class="flex flex-wrap gap-2 mt-2">
+                  <span class="px-4 py-2 glass text-xs">FLUTTER</span>
+                  <span class="px-4 py-2 glass text-xs">DART</span>
+                  <span class="px-4 py-2 glass text-xs">FIREBASE</span>
+                  <span class="px-4 py-2 glass text-xs">THREE.JS</span>
+                  <span class="px-4 py-2 glass text-xs">AR/VR</span>
+                </div>
               </div>
               <div>
-                <h3
+                <span
                   class="text-xs font-bold tracking-widest text-gray-500 uppercase"
+                  >Recognition</span
                 >
-                  Recognition
-                </h3>
-                <ul
-                  class="mt-2 space-y-2 text-gray-400"
-                  aria-label="Awards and recognition"
-                >
+                <ul class="mt-2 space-y-2 text-gray-400">
                   <li>
                     <a
                       href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
                       target="_blank"
                       rel="noopener noreferrer"
                       class="hover:text-white transition-colors"
-                      aria-label="Tripo 3D AI Contest Winner 2025 - View submission"
-                      itemprop="award"
+                      >🏆 Tripo 3D AI Contest Winner (2025) ↗</a
                     >
-                      🏆 Tripo 3D AI Contest Winner (2025) ↗
-                    </a>
                   </li>
                   <li>
                     <a
@@ -686,19 +845,10 @@
                       target="_blank"
                       rel="noopener noreferrer"
                       class="hover:text-white transition-colors"
-                      aria-label="View 10+ published apps on Google Play Store"
+                      >📱 10+ Apps on Google Play Store ↗</a
                     >
-                      📱 10+ Apps on Google Play Store ↗
-                    </a>
                   </li>
-                  <li
-                    itemprop="alumniOf"
-                    itemscope
-                    itemtype="https://schema.org/EducationalOrganization"
-                  >
-                    🎓
-                    <span itemprop="name">B.Tech Computer Science</span>
-                  </li>
+                  <li>🎓 B.Tech Computer Science</li>
                 </ul>
               </div>
             </div>
@@ -707,174 +857,100 @@
       </section>
 
       <!-- Highlights Section -->
-      <section
-        id="highlights"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="highlights-heading"
-      >
+      <section id="highlights" class="max-w-7xl mx-auto">
         <div class="w-full">
-          <h2
-            id="highlights-heading"
-            class="text-5xl font-bold mb-12 text-gradient"
-          >
-            Highlights
-          </h2>
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-8"
-            role="list"
-            aria-label="Featured projects and achievements"
-          >
+          <h2 class="text-5xl font-bold mb-12 text-gradient">Highlights</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Highlight 1 - Tripo AI Winner -->
-            <article
-              role="listitem"
+            <a
+              href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
+              target="_blank"
+              rel="noopener noreferrer"
               class="highlight-card md:mb-20"
-              itemscope
-              itemtype="https://schema.org/CreativeWork"
             >
-              <a
-                href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Global AI Event Winner 2025 - Tripo AI 3D Boss fight in Multiverse Event"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="https://blogger.googleusercontent.com/img/a/AVvXsEjaXgCVFOvwx-rwmeLKKsbHM2wu8V-PfC6Q0xxY85aBvAdFT91gR_I1iJum7DdIv4Q7OOFuxtH1CdoIa9aqg6K3_r2Cnpt0bxVR31KjBQ3I1h2VDHP6VUg3ZVysRAxK4tTg4ZepTUHtCi5x1KpXZH9CNEUSkqaJKUeoiCHRLyuiL3IaoJeTOTVLcompRgXn"
-                      class="project-image"
-                      alt="Akshay CP winning the Tripo 3D AI Global Boss Fight in Multiverse Event 2025"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <h3
-                      class="text-lg font-bold text-gray-400"
-                      itemprop="name"
-                    >
-                      Global AI Event Winner 2025
-                    </h3>
-                    <p class="text-gray-500 text-xs" itemprop="description">
-                      Tripo AI 3D Boss fight in Multiverse Event.
-                    </p>
-                  </div>
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEjaXgCVFOvwx-rwmeLKKsbHM2wu8V-PfC6Q0xxY85aBvAdFT91gR_I1iJum7DdIv4Q7OOFuxtH1CdoIa9aqg6K3_r2Cnpt0bxVR31KjBQ3I1h2VDHP6VUg3ZVysRAxK4tTg4ZepTUHtCi5x1KpXZH9CNEUSkqaJKUeoiCHRLyuiL3IaoJeTOTVLcompRgXn"
+                    class="project-image"
+                    alt="Tripo AI Winner"
+                  />
                 </div>
-              </a>
-            </article>
+                <div class="px-4 pb-1 pt-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    Global AI Event Winner 2025
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Tripo AI 3D Boss fight in Multiverse Event.
+                  </p>
+                </div>
+              </div>
+            </a>
 
             <!-- Highlight 2 - GLB AR Viewer PRO -->
-            <article
-              role="listitem"
+            <a
+              href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
               class="highlight-card mt-0 md:mt-20"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta
-                itemprop="applicationCategory"
-                content="UtilitiesApplication"
-              />
-              <meta itemprop="operatingSystem" content="Android" />
-              <a
-                href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GLB AR Viewer PRO - Ranked #4 top paid app on Google Play in House and Home category"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="https://blogger.googleusercontent.com/img/a/AVvXsEjFRWyLGHKO6Ml3Q6OgSOb4B5HJJ_60bpHrxB7_sNwUqeYk3Y2i4FuTUh3uJI8mqMEkMHLHKJbAoSjojrLxgkIdOK2lQ2AeRYVEFvwiNvwv71_6q3lZ2oW90HOBhykQeSFIhEah9i9JRd5hlDXZebIivus02N9oDSk9C0X6knsaWEyA7aUob5HLeVCDMq53"
-                      class="project-image"
-                      alt="GLB AR Viewer PRO app screenshot showing 3D model augmented reality viewer for Android"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-2 pb-2">
-                    <h3
-                      class="text-lg font-bold text-gray-400"
-                      itemprop="name"
-                    >
-                      GLB AR Viewer PRO
-                    </h3>
-                    <p class="text-gray-500 text-xs" itemprop="description">
-                      Ranked #4 as top paid app (House and home category) on
-                      Google Play
-                    </p>
-                  </div>
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEjFRWyLGHKO6Ml3Q6OgSOb4B5HJJ_60bpHrxB7_sNwUqeYk3Y2i4FuTUh3uJI8mqMEkMHLHKJbAoSjojrLxgkIdOK2lQ2AeRYVEFvwiNvwv71_6q3lZ2oW90HOBhykQeSFIhEah9i9JRd5hlDXZebIivus02N9oDSk9C0X6knsaWEyA7aUob5HLeVCDMq53"
+                    class="project-image"
+                    alt="GLB AR Viewer PRO"
+                  />
                 </div>
-              </a>
-            </article>
+                <div class="px-2 pb-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    GLB AR Viewer PRO
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Ranked #4 as top paid app (House and home category) on
+                    Google Play
+                  </p>
+                </div>
+              </div>
+            </a>
 
             <!-- Highlight 3 - Published Apps -->
-            <article
-              role="listitem"
+            <a
+              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
+              target="_blank"
+              rel="noopener noreferrer"
               class="highlight-card md:mb-20"
-              itemscope
-              itemtype="https://schema.org/CreativeWork"
             >
-              <a
-                href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View all published apps by Akshay CP on Google Play Store"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="https://blogger.googleusercontent.com/img/a/AVvXsEiXFPdRqx9oKJC-fukoj3sYcfsDYPd1b-YmJKCcbvaUMhm6uIQf3kLlACblhysdph7Lbj0hzyngHSuPkYvimL3jy1IJyw5tL4P4Ro5TYXvHH_x0fRMnUECuGkE66dyNXQRRms-leVrfLNWJMGuhoCnzPmEmb12CNT7MZvY8fMZcEBL2bR3u8OSdBLtukoBQ"
-                      class="project-image"
-                      alt="Collection of 10+ published apps by Akshay CP on Google Play Store"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-2 pb-2">
-                    <h3
-                      class="text-lg font-bold text-gray-400"
-                      itemprop="name"
-                    >
-                      Published Apps on Google Play
-                    </h3>
-                    <p class="text-gray-500 text-xs" itemprop="description">
-                      Building practical tools and experimental apps while
-                      exploring technologies.
-                    </p>
-                  </div>
+              <div class="glass p-4 group cursor-pointer overflow-hidden">
+                <div
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                >
+                  <img
+                    src="https://blogger.googleusercontent.com/img/a/AVvXsEiXFPdRqx9oKJC-fukoj3sYcfsDYPd1b-YmJKCcbvaUMhm6uIQf3kLlACblhysdph7Lbj0hzyngHSuPkYvimL3jy1IJyw5tL4P4Ro5TYXvHH_x0fRMnUECuGkE66dyNXQRRms-leVrfLNWJMGuhoCnzPmEmb12CNT7MZvY8fMZcEBL2bR3u8OSdBLtukoBQ"
+                    class="project-image"
+                    alt="Published Apps"
+                  />
                 </div>
-              </a>
-            </article>
+                <div class="px-2 pb-2">
+                  <h3 class="text-lg font-bold text-gray-400">
+                    Published Apps on Google Play
+                  </h3>
+                  <p class="text-gray-500 text-xs">
+                    Building practical tools and experimental apps while
+                    exploring technologies.
+                  </p>
+                </div>
+              </div>
+            </a>
 
             <!-- Highlight 4 - Campus Management -->
-            <article
-              role="listitem"
+            <div
               class="highlight-card mt-0 md:mt-20"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta
-                itemprop="applicationCategory"
-                content="EducationalApplication"
-              />
-              <meta itemprop="operatingSystem" content="Android" />
               <div class="glass p-4 group cursor-pointer overflow-hidden">
                 <div
                   class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
@@ -882,121 +958,67 @@
                   <img
                     src="https://blogger.googleusercontent.com/img/a/AVvXsEgjSJb5W24vViaAYSGhBJrmR4LDkOcInmFyC-w9ZeTgOQK1LlwWJDqaQyQ6fWzNOeHtmjOea4yjhZZYR3cmCfPbaqBkxbIp_-qKtMmFiPCrCutiforFiD81eljzclsshoHB0nvm5XIvaWwSiwXfixZMEgM3bFk6wosvSKzRTZ82ZXkwzOQcgxA4O1qOzqhy"
                     class="project-image"
-                    alt="Campus Management System app for college ERP operations including attendance and mark entry"
-                    loading="lazy"
-                    decoding="async"
-                    width="600"
-                    height="400"
-                    itemprop="image"
+                    alt="Campus Management"
                   />
                 </div>
                 <div class="px-2 pb-2">
-                  <h3 class="text-lg font-bold text-gray-400" itemprop="name">
+                  <h3 class="text-lg font-bold text-gray-400">
                     Campus Management Apps
                   </h3>
-                  <p class="text-gray-500 text-xs" itemprop="description">
-                    Built apps for college campus management system including
-                    attendance and academic operations
+                  <p class="text-gray-500 text-xs">
+                    Build Apps For College Campus management System
                   </p>
                 </div>
               </div>
-            </article>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Experience Section -->
-      <section
-        id="experience"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="experience-heading"
-      >
+      <section id="experience" class="max-w-7xl mx-auto">
         <div class="w-full">
-          <h2
-            id="experience-heading"
-            class="text-5xl font-bold mb-4 text-gradient"
-          >
-            EXPERIENCE
-          </h2>
+          <h2 class="text-5xl font-bold mb-4 text-gradient">EXPERIENCE</h2>
           <p class="text-gray-400 text-lg mb-12 max-w-2xl">
             A journey through building real-world mobile products, from
             institutional ERP systems to independently published apps.
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-            <!-- Work Experience -->
             <div class="space-y-12">
-              <article
-                class="relative pl-8"
-                itemscope
-                itemtype="https://schema.org/OrganizationRole"
-              >
-                <div class="timeline-line" aria-hidden="true"></div>
-                <div class="timeline-dot" aria-hidden="true"></div>
-                <time
+              <div class="relative pl-8">
+                <div class="timeline-line"></div>
+                <div class="timeline-dot"></div>
+                <span
                   class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                  datetime="2024"
-                  itemprop="startDate"
+                  >2024 - 2026 - Present</span
                 >
-                  2024 - 2026 - Present
-                </time>
-                <h3 class="text-xl font-bold mt-2" itemprop="roleName">
-                  Flutter ERP Developer
-                </h3>
-                <p
-                  class="text-gray-400 mt-1"
-                  itemprop="memberOf"
-                  itemscope
-                  itemtype="https://schema.org/Organization"
-                >
-                  <span itemprop="name">Digital Wing Farook College</span>
-                </p>
-                <p
-                  class="text-gray-500 text-sm mt-3 leading-relaxed"
-                  itemprop="description"
-                >
+                <h3 class="text-xl font-bold mt-2">Flutter ERP Developer</h3>
+                <p class="text-gray-400 mt-1">Digital Wing Farook College</p>
+                <p class="text-gray-500 text-sm mt-3 leading-relaxed">
                   Led the development of mobile applications for college
                   academic operations, including attendance marking and mark
                   entry, with seamless integration to the ERP backend APIs.
                 </p>
-              </article>
+              </div>
             </div>
 
-            <!-- Education -->
             <div class="glass p-8">
               <h3 class="text-xl font-bold mb-6">Education</h3>
               <div class="space-y-6">
-                <article
-                  class="pb-6"
-                  itemscope
-                  itemtype="https://schema.org/EducationalOccupationalCredential"
-                >
-                  <time
+                <div class="pb-6">
+                  <span
                     class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                    datetime="2020/2024"
+                    >2020 – 2024</span
                   >
-                    2020 – 2024
-                  </time>
-                  <h4
-                    class="text-lg font-bold mt-1"
-                    itemprop="credentialCategory"
-                  >
+                  <h4 class="text-lg font-bold mt-1">
                     B.Tech in Computer Science
                   </h4>
-                  <p
-                    class="text-gray-400 text-sm"
-                    itemprop="recognizedBy"
-                    itemscope
-                    itemtype="https://schema.org/EducationalOrganization"
-                  >
-                    <span itemprop="name"
-                      >APJ Abdul Kalam Technological University</span
-                    ><br />
-                    <span
-                      >Vedavyasa Institute of Technology, Malappuram</span
-                    >
+                  <p class="text-gray-400 text-sm">
+                    APJ Abdul Kalam Technological University<br />
+                    Vedavyasa Institute of Technology, Malappuram
                   </p>
-                </article>
+                </div>
               </div>
             </div>
           </div>
@@ -1004,16 +1026,9 @@
       </section>
 
       <!-- Skills Section -->
-      <section
-        id="skills"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="skills-heading"
-      >
+      <section id="skills" class="max-w-7xl mx-auto">
         <div class="w-full">
-          <h2
-            id="skills-heading"
-            class="text-5xl font-bold mb-4 text-gradient"
-          >
+          <h2 class="text-5xl font-bold mb-4 text-gradient">
             SKILLS & EXPERTISE
           </h2>
           <p class="text-gray-400 text-lg mb-12 max-w-2xl">
@@ -1022,193 +1037,95 @@
           </p>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <!-- Technical Skills -->
-            <div
-              class="space-y-8"
-              role="list"
-              aria-label="Technical development skills"
-            >
-              <div role="listitem">
+            <div class="space-y-8">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >Flutter / Dart</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="95 percent proficiency"
-                    >95%</span
-                  >
+                  <span class="text-gray-500 text-sm">95%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="95"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="Flutter and Dart proficiency: 95%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 95%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >ERP Integration / REST APIs</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="90 percent proficiency"
-                    >90%</span
-                  >
+                  <span class="text-gray-500 text-sm">90%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="90"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="ERP Integration and REST APIs proficiency: 90%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 90%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >Firebase / Backend Services</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="85 percent proficiency"
-                    >85%</span
-                  >
+                  <span class="text-gray-500 text-sm">85%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="85"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="Firebase and Backend Services proficiency: 85%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 85%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >3D / AR</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="80 percent proficiency"
-                    >80%</span
-                  >
+                  <span class="text-gray-500 text-sm">80%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="80"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="3D and AR proficiency: 80%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 80%"></div>
                 </div>
               </div>
             </div>
 
-            <!-- Design & Tool Skills -->
-            <div
-              class="space-y-8"
-              role="list"
-              aria-label="Design and tool skills"
-            >
-              <div role="listitem">
+            <div class="space-y-8">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >UI/UX Design</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="90 percent proficiency"
-                    >90%</span
-                  >
+                  <span class="text-gray-500 text-sm">90%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="90"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="UI/UX Design proficiency: 90%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 90%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >Figma / Adobe Suite</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="85 percent proficiency"
-                    >85%</span
-                  >
+                  <span class="text-gray-500 text-sm">85%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="85"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="Figma and Adobe Suite proficiency: 85%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 85%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >Video Editing / Animations</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="80 percent proficiency"
-                    >80%</span
-                  >
+                  <span class="text-gray-500 text-sm">80%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="80"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="Video Editing and Animations proficiency: 80%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 80%"></div>
                 </div>
               </div>
-              <div role="listitem">
+              <div>
                 <div class="flex justify-between mb-2">
                   <span class="text-sm font-bold uppercase tracking-widest"
                     >Version Control / Git</span
                   >
-                  <span
-                    class="text-gray-500 text-sm"
-                    aria-label="85 percent proficiency"
-                    >85%</span
-                  >
+                  <span class="text-gray-500 text-sm">85%</span>
                 </div>
-                <div
-                  class="skill-bar"
-                  role="progressbar"
-                  aria-valuenow="85"
-                  aria-valuemin="0"
-                  aria-valuemax="100"
-                  aria-label="Version Control and Git proficiency: 85%"
-                >
+                <div class="skill-bar">
                   <div class="skill-progress" style="width: 85%"></div>
                 </div>
               </div>
@@ -1218,29 +1135,21 @@
       </section>
 
       <!-- App Showcase Section -->
-      <section
-        id="app-showcase"
-        class="max-w-7xl mx-auto py-20 px-4"
-        aria-labelledby="app-showcase-heading"
-      >
+      <section id="app-showcase" class="max-w-7xl mx-auto py-20 px-4">
         <div class="w-full">
           <div
             class="flex flex-col md:flex-row md:items-end md:justify-between mb-12"
           >
             <div>
-              <h2
-                id="app-showcase-heading"
-                class="text-3xl md:text-5xl font-bold mt-2 text-gradient"
-              >
+              <h3 class="text-3xl md:text-5xl font-bold mt-2 text-gradient">
                 More on Google Play
-              </h2>
+              </h3>
             </div>
             <a
               href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
               target="_blank"
               rel="noopener noreferrer"
               class="mt-4 md:mt-0 text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2"
-              aria-label="View all published apps by Akshay CP on Google Play Store"
             >
               View all apps
               <svg
@@ -1249,7 +1158,6 @@
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
-                aria-hidden="true"
               >
                 <path
                   stroke-linecap="round"
@@ -1261,50 +1169,30 @@
             </a>
           </div>
 
-          <div
-            class="bento-grid"
-            role="list"
-            aria-label="Published mobile applications"
-          >
+          <div class="bento-grid">
             <!-- Featured Large App -->
             <a
               href="https://play.google.com/store/apps/details?id=com.arzDrzapps.bulk_image_cropper"
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item bento-large group"
-              role="listitem"
-              aria-label="Bulk Image Cropper - Featured app: Crop thousands of images in a single click"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta itemprop="operatingSystem" content="Android" />
-              <meta
-                itemprop="applicationCategory"
-                content="UtilitiesApplication"
-              />
               <div class="bento-content">
                 <div class="bento-icon-large">
                   <img
                     src="https://play-lh.googleusercontent.com/ztGUFbX1zTfSflCSls6GgOSEVqSJKhKY2mYpgIzLjVLQKLFWa8OYxXeLldv7zm_ltIg=s256-rw"
-                    alt="Bulk Image Cropper app icon - batch image cropping tool for Android"
-                    loading="lazy"
-                    decoding="async"
-                    width="256"
-                    height="256"
-                    itemprop="image"
+                    alt="Bulk Image Cropper"
                   />
                 </div>
                 <div class="bento-text">
                   <span class="bento-badge">Featured</span>
-                  <h3 class="bento-title" itemprop="name">
-                    Bulk Image Cropper
-                  </h3>
-                  <p class="bento-desc" itemprop="description">
+                  <h4 class="bento-title">Bulk Image Cropper</h4>
+                  <p class="bento-desc">
                     Crop thousands of images in a single click.
                   </p>
                 </div>
               </div>
-              <div class="bento-arrow" aria-hidden="true">
+              <div class="bento-arrow">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="w-6 h-6"
@@ -1328,31 +1216,19 @@
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item group"
-              role="listitem"
-              aria-label="IMGAC - Utilities app on Google Play"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta itemprop="operatingSystem" content="Android" />
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/kXHpGqSh-hXCzvGEvo74h4NowVQmL-3sfxDX-Bj59FYRbpr14l-k1pspge_C88oSHA=s256-rw"
-                  alt="IMGAC app icon - image utility application for Android"
+                  alt="IMGAC"
                   class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
                 />
                 <div>
-                  <h3 class="bento-title-sm" itemprop="name">IMGAC</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">
-                    Utilities
-                  </p>
+                  <h4 class="bento-title-sm">IMGAC</h4>
+                  <p class="bento-cat">Utilities</p>
                 </div>
               </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
+              <span class="bento-arrow-sm">→</span>
             </a>
 
             <a
@@ -1360,33 +1236,19 @@
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item group"
-              role="listitem"
-              aria-label="ID Cards to PDF - Convert ID cards to PDF format"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta itemprop="operatingSystem" content="Android" />
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s256-rw"
-                  alt="ID Cards to PDF app icon - convert identification cards to PDF documents"
+                  alt="ID Cards to PDF"
                   class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
                 />
                 <div>
-                  <h3 class="bento-title-sm" itemprop="name">
-                    ID Cards to PDF
-                  </h3>
-                  <p class="bento-cat" itemprop="applicationCategory">
-                    Utilities
-                  </p>
+                  <h4 class="bento-title-sm">ID Cards to pdf</h4>
+                  <p class="bento-cat">Utilities</p>
                 </div>
               </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
+              <span class="bento-arrow-sm">→</span>
             </a>
 
             <a
@@ -1394,33 +1256,19 @@
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item group"
-              role="listitem"
-              aria-label="Token Number Announcer - Productivity app for token management"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta itemprop="operatingSystem" content="Android" />
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/ZSuFpoxR2ri65tfrZQYUWCjzHDB1CZH6IFTldQ9LRdOJPlmfdTSsZh2BTlz8dbbvI27Bw614-ximmFp8ae2AUA=s256-rw"
-                  alt="Token Number Announcer app icon - automated token calling system"
+                  alt="Token Number Announcer"
                   class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
                 />
                 <div>
-                  <h3 class="bento-title-sm" itemprop="name">
-                    Token Number Announcer
-                  </h3>
-                  <p class="bento-cat" itemprop="applicationCategory">
-                    Productivity
-                  </p>
+                  <h4 class="bento-title-sm">Token Number Announcer</h4>
+                  <p class="bento-cat">Productivity</p>
                 </div>
               </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
+              <span class="bento-arrow-sm">→</span>
             </a>
 
             <a
@@ -1428,31 +1276,19 @@
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item group"
-              role="listitem"
-              aria-label="Bulk Image Rotator - Rotate multiple images at once"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
             >
-              <meta itemprop="operatingSystem" content="Android" />
               <div class="bento-content-small">
                 <img
                   src="https://play-lh.googleusercontent.com/_s5h-96RNQIwgc5VE-VAOiXR4531sDX0vuwbM8RUvkW6Fzu7HClGZuUhGgFlrXvlmXg=s256-rw"
-                  alt="Bulk Image Rotator app icon - batch rotate images tool for Android"
+                  alt="Bulk Image Rotator"
                   class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
                 />
                 <div>
-                  <h3 class="bento-title-sm" itemprop="name">
-                    Bulk Image Rotator
-                  </h3>
-                  <p class="bento-cat" itemprop="applicationCategory">Tools</p>
+                  <h4 class="bento-title-sm">Bulk image rotator</h4>
+                  <p class="bento-cat">Tools</p>
                 </div>
               </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
+              <span class="bento-arrow-sm">→</span>
             </a>
 
             <!-- Stats Box -->
@@ -1461,10 +1297,8 @@
               target="_blank"
               rel="noopener noreferrer"
               class="bento-item bento-stats-box"
-              role="listitem"
-              aria-label="10+ published apps on Google Play Store - View all"
             >
-              <div class="stats-number" aria-hidden="true">10+</div>
+              <div class="stats-number">10+</div>
               <div class="stats-label">Published Apps</div>
               <div class="stats-sub">on Google Play Store</div>
             </a>
@@ -1473,231 +1307,126 @@
       </section>
 
       <!-- Services Section -->
-      <section
-        id="services"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="services-heading"
-        itemscope
-        itemtype="https://schema.org/Service"
-      >
+      <section id="services" class="max-w-7xl mx-auto">
         <div class="w-full">
-          <h2
-            id="services-heading"
-            class="text-5xl font-bold mb-4 text-gradient"
-          >
-            SERVICES
-          </h2>
-          <p
-            class="text-gray-400 text-lg mb-12 max-w-2xl"
-            itemprop="description"
-          >
+          <h2 class="text-5xl font-bold mb-4 text-gradient">SERVICES</h2>
+          <p class="text-gray-400 text-lg mb-12 max-w-2xl">
             Specialized solutions tailored to bring your digital vision to life
             with cutting-edge technology and creative excellence.
           </p>
 
-          <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-8"
-            role="list"
-            aria-label="Professional services offered"
-          >
-            <article
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEiPjQNNlQC5DwMbOOyS1Em8wQqEItYWEF_IJla8UO1feLwryzG63uXfX7U3Y9hngiDHDZnVxzQX6g1D3WOYRmHLcXtqcOHYiJWLpbvyub3Z58sxhlGxAjeMPF6ODCxLlH7X5H6zWsI25B5EqqWCsGFfSVhKUY-TX37udk88K3ZiWBJ1lOn6J0OFYCiJI0Oo"
-                  alt="Mobile and web app development service illustration showing Flutter cross-platform development"
+                  alt="App Development"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                App Development
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
-                Full-stack mobile app development with Flutter. From responsive
-                landing pages to complex cross-platform applications.
+              <h3 class="text-xl font-bold mb-3">App Development</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
+                Full-stack development with modern frameworks. From responsive
+                landing pages to complex web applications.
               </p>
-            </article>
+            </div>
 
-            <article
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEjTfkSSSHsALb4ds528eiOffyNYPuMUSKi2XGvmKZzyluLD_OmLxZHj-7HlKlKTG3sK1zri_3n1CCABJD0Ar9OMzBEXkps3S2N6R0ET8kh_tmtWXdszWVxFRg9LsA94TI6-qKdlI49PQsMtsJ8pEN8fufRbLmr7Fn9dHgmojfICf9evHKEq2euQJWHuOaO9"
-                  alt="3D augmented reality and virtual reality development service with Three.js and WebGL"
+                  alt="3D AR & VR"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                3D AR & VR
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
+              <h3 class="text-xl font-bold mb-3">3D AR & VR</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
                 Immersive 3D experiences using Three.js and WebGL. Interactive
                 visualizations and virtual environments.
               </p>
-            </article>
+            </div>
 
-            <article
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEhLNq74ne_dibmT0ijfZPCF73lZjNn8_OqOOtRNdLlXUlvmwSvF28ymPZuAqtAc-yWOHnPlbQq7Axxv-5xVFr3Jed8rheFyxZiPfYZag8bsjX24yotWs-OBDLRmfIhYYhCuVQoRVYX9ai_js3GhFbsTdiIMZ_3HflG7dm_Sm-c3sIda4AQeUXaijZyKtM9n"
-                  alt="UI UX design service showing user interface prototyping and design systems"
+                  alt="UI/UX Design"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                UI/UX Design
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
+              <h3 class="text-xl font-bold mb-3">UI/UX Design</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
                 User-centered design with focus on aesthetics and usability.
                 Prototyping and design systems.
               </p>
-            </article>
+            </div>
 
-            <article
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEgZiL4WxydiKJ8REBvX5UPbz35ZYUEJgm04C5lTEcMOn69pmJ5wiVJxl6blakHzqzaAAoUhDqj6QbiJHM0ObOkhYH2l4NV4oGtAWtjVyvtv7YPqIvOW2MRmDPfvKSirOXCe2XtGnFxbxiCI_N0KzlahF2KsbaCH7QZX5ouTrhVUfLs2EFfTWmGtW1A8Fqqk"
-                  alt="Application performance optimization service for Core Web Vitals and code auditing"
+                  alt="Performance Optimization"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                Performance Optimization
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
+              <h3 class="text-xl font-bold mb-3">Performance Optimization</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
                 Speed up your existing applications. Core Web Vitals
                 optimization and code auditing.
               </p>
-            </article>
+            </div>
 
-            <article
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEgyna81PbevAw6A6AhaFxYRYHQCY6kxWgcmqWwvcIhrRnWXLAEQjcHTDSf7By4FcNFd7jMql77KBgR5jq9gki6IeGmPsoAxkHiEGVkso14Fqyfsf-hWMKA8KLEo290NFhkROk_QZ5ktllKyupbB--nhm7k38L3X6KOBbO0-AxQyxeDxpnQnHVqdtj-m3gc-"
-                  alt="Responsive mobile-first web design service for all devices and screen sizes"
+                  alt="Responsive Design"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                Responsive Design
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
+              <h3 class="text-xl font-bold mb-3">Responsive Design</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
                 Mobile-first approach ensuring seamless experience across all
                 devices and screen sizes.
               </p>
-            </article>
+            </div>
 
-            <article
+            <div
               class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
             >
               <div class="service-image-container">
                 <img
                   src="https://blogger.googleusercontent.com/img/a/AVvXsEjfSuiS4rnk-qsUFeWC9SYHiGLwWWnHWpUkKn8aSrZtN7iTOs9updslqXX1vs7FAc7T1whp8JFAU5vrJ34_H036XWdCc5N3xj8FlSd0LHXQonaSWgq3RthBEXIUn9sPVj7aUVrnetmEgUAPmJRHhsJb6aLczOlx7Z7DMOHqvT7lC_bdTaR3ctBd1Q12thu5"
-                  alt="Video editing and motion design animation service using GSAP and CSS animations"
+                  alt="Video & Animation"
                   class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
                 />
               </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">
-                Video & Animation
-              </h3>
-              <p
-                class="text-gray-400 text-sm leading-relaxed"
-                itemprop="description"
-              >
+              <h3 class="text-xl font-bold mb-3">Video & Animation</h3>
+              <p class="text-gray-400 text-sm leading-relaxed">
                 Motion design and micro-interactions that bring interfaces to
                 life using GSAP and CSS animations.
               </p>
-            </article>
+            </div>
           </div>
         </div>
       </section>
 
       <!-- Contact Section -->
-      <section
-        id="contact"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="contact-heading"
-        itemscope
-        itemtype="https://schema.org/ContactPage"
-      >
+      <section id="contact" class="max-w-7xl mx-auto">
         <div class="w-full">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <div>
-              <h2
-                id="contact-heading"
-                class="text-5xl font-bold mb-4 text-gradient"
-              >
+              <h2 class="text-5xl font-bold mb-4 text-gradient">
                 LET'S CREATE<br />TOGETHER
               </h2>
               <p class="text-gray-400 text-lg mb-8 max-w-md">
@@ -1705,20 +1434,13 @@
                 vision to life with cutting-edge technology.
               </p>
 
-              <address
-                class="space-y-6 not-italic"
-                itemscope
-                itemtype="https://schema.org/Person"
-              >
-                <meta itemprop="name" content="Akshay CP" />
+              <div class="space-y-6">
                 <a
                   href="mailto:com.akshaycp@gmail.com"
                   class="flex items-center gap-4 group hover:opacity-80 transition-opacity"
-                  aria-label="Send email to com.akshaycp@gmail.com"
                 >
                   <div
                     class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1727,7 +1449,6 @@
                       stroke-width="1.5"
                       stroke="currentColor"
                       class="w-5 h-5"
-                      aria-hidden="true"
                     >
                       <path
                         stroke-linecap="round"
@@ -1742,24 +1463,15 @@
                     >
                       Email
                     </p>
-                    <p
-                      class="text-white group-hover:underline"
-                      itemprop="email"
-                    >
+                    <p class="text-white group-hover:underline">
                       com.akshaycp@gmail.com
                     </p>
                   </div>
                 </a>
 
-                <div
-                  class="flex items-center gap-4"
-                  itemprop="address"
-                  itemscope
-                  itemtype="https://schema.org/PostalAddress"
-                >
+                <div class="flex items-center gap-4">
                   <div
                     class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1768,7 +1480,6 @@
                       stroke-width="1.5"
                       stroke="currentColor"
                       class="w-5 h-5"
-                      aria-hidden="true"
                     >
                       <path
                         stroke-linecap="round"
@@ -1788,17 +1499,13 @@
                     >
                       Location
                     </p>
-                    <p class="text-white">
-                      <span itemprop="addressRegion">Kerala</span>,
-                      <span itemprop="addressCountry">India</span>
-                    </p>
+                    <p class="text-white">Kerala, India</p>
                   </div>
                 </div>
 
                 <div class="flex items-center gap-4">
                   <div
                     class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -1807,7 +1514,6 @@
                       stroke-width="1.5"
                       stroke="currentColor"
                       class="w-5 h-5"
-                      aria-hidden="true"
                     >
                       <path
                         stroke-linecap="round"
@@ -1825,29 +1531,21 @@
                     <p class="text-white">Open for freelance projects</p>
                   </div>
                 </div>
-              </address>
+              </div>
 
-              <div
-                class="flex gap-4 mt-8"
-                role="list"
-                aria-label="Social media profiles"
-              >
+              <div class="flex gap-4 mt-8">
                 <!-- GitHub -->
                 <a
                   href="https://github.com/Akshay-cp7"
                   target="_blank"
                   rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="Visit Akshay CP's GitHub profile"
-                  aria-label="GitHub - View source code and open source projects"
-                  role="listitem"
-                  itemprop="sameAs"
+                  title="GitHub"
                 >
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    aria-hidden="true"
                   >
                     <path
                       d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
@@ -1860,16 +1558,12 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="Connect with Akshay CP on LinkedIn"
-                  aria-label="LinkedIn - Professional profile and networking"
-                  role="listitem"
-                  itemprop="sameAs"
+                  title="LinkedIn"
                 >
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    aria-hidden="true"
                   >
                     <path
                       d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
@@ -1882,16 +1576,12 @@
                   target="_blank"
                   rel="noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="View Akshay CP's apps on Google Play Store"
-                  aria-label="Google Play Store - Browse published mobile applications"
-                  role="listitem"
-                  itemprop="sameAs"
+                  title="Google Play Store"
                 >
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
                     viewBox="0 0 24 24"
-                    aria-hidden="true"
                   >
                     <path
                       d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302a1 1 0 010 1.38l-2.302 2.302L15.2 12.694l2.498-3.186zM5.864 2.658L16.8 8.991l-2.302 2.302L5.864 2.658z"
@@ -1901,67 +1591,39 @@
               </div>
             </div>
 
-            <!-- Contact Form -->
             <div class="glass p-8">
-              <form
-                class="space-y-6"
-                action="mailto:com.akshaycp@gmail.com"
-                method="POST"
-                enctype="text/plain"
-                aria-label="Contact form - Send a project inquiry to Akshay CP"
-                name="contact-form"
-              >
+              <form class="space-y-6">
                 <div>
                   <label
-                    for="contact-name"
                     class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
+                    >Name</label
                   >
-                    Name
-                  </label>
                   <input
                     type="text"
-                    id="contact-name"
-                    name="name"
-                    required
-                    autocomplete="name"
                     class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
                     placeholder="John Doe"
-                    aria-required="true"
                   />
                 </div>
                 <div>
                   <label
-                    for="contact-email"
                     class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
+                    >Email</label
                   >
-                    Email
-                  </label>
                   <input
                     type="email"
-                    id="contact-email"
-                    name="email"
-                    required
-                    autocomplete="email"
                     class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
                     placeholder="john@example.com"
-                    aria-required="true"
                   />
                 </div>
                 <div>
                   <label
-                    for="contact-project-type"
                     class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
+                    >Project Type</label
                   >
-                    Project Type
-                  </label>
                   <select
-                    id="contact-project-type"
-                    name="project-type"
-                    required
                     class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
-                    aria-required="true"
                   >
-                    <option value="" class="bg-zinc-900" disabled selected>
+                    <option value="" class="bg-zinc-900">
                       Select a service
                     </option>
                     <option value="app" class="bg-zinc-900">
@@ -1976,25 +1638,18 @@
                 </div>
                 <div>
                   <label
-                    for="contact-message"
                     class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
+                    >Message</label
                   >
-                    Message
-                  </label>
                   <textarea
-                    id="contact-message"
-                    name="message"
                     rows="4"
-                    required
                     class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all resize-none"
                     placeholder="Tell me about your project..."
-                    aria-required="true"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
                   class="w-full px-8 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-all duration-300 rounded-lg"
-                  aria-label="Submit contact form and send message"
                 >
                   Send Message
                 </button>
@@ -2005,56 +1660,394 @@
       </section>
     </main>
 
-    <!-- Footer -->
     <footer
       class="p-12 text-center text-gray-600 text-sm tracking-widest border-t border-white/5"
-      role="contentinfo"
-      itemscope
-      itemtype="https://schema.org/WPFooter"
     >
-      <nav class="mb-4" aria-label="Footer navigation">
+      <div class="mb-4">
         <a
           href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
           target="_blank"
           rel="noopener noreferrer"
           class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="View Akshay CP's apps on Google Play"
+          >Google Play</a
         >
-          Google Play
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
+        <span class="text-gray-700">·</span>
         <a
           href="https://github.com/Akshay-cp7"
           target="_blank"
           rel="noopener noreferrer"
           class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="Visit Akshay CP's GitHub repositories"
+          >GitHub</a
         >
-          GitHub
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
+        <span class="text-gray-700">·</span>
         <a
           href="mailto:com.akshaycp@gmail.com"
           class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="Send an email to Akshay CP"
+          >Email</a
         >
-          Email
-        </a>
-      </nav>
-      <p>
-        <small
-          >&copy; <time datetime="2025">2025</time> AKSHAY CP. MADE WITH
-          THREE.JS & PASSION.</small
-        >
-      </p>
+      </div>
+      &copy; 2025 AKSHAY CP. MADE WITH THREE.JS & PASSION.
     </footer>
 
-    <!-- ========================================== -->
-    <!-- SCRIPTS: Correct CDN URLs, load in order   -->
-    <!-- ========================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-    <script src="script.js"></script>
+    <script>
+      // --- LOADING STATE TRACKING ---
+      let threeJsReady = false;
+      let modelViewerReady = false;
+      let loadingScreenHidden = false;
+
+      function checkAllLoaded() {
+        if (threeJsReady && modelViewerReady && !loadingScreenHidden) {
+          hideLoadingScreen();
+        }
+      }
+
+      // Fallback: Hide loading screen after max 8 seconds even if model fails
+      setTimeout(() => {
+        if (!loadingScreenHidden) {
+          console.log("Fallback: Hiding loading screen after timeout");
+          hideLoadingScreen();
+        }
+      }, 8000);
+
+      // --- LOADING SCREEN ---
+      function hideLoadingScreen() {
+        if (loadingScreenHidden) return;
+        loadingScreenHidden = true;
+
+        const loadingScreen = document.getElementById("loading-screen");
+        loadingScreen.classList.add("loading-hidden");
+        setTimeout(() => {
+          loadingScreen.style.display = "none";
+        }, 1000);
+      }
+
+      // --- MODEL-VIEWER PRELOADING ---
+      function initModelViewer() {
+        const modelViewer = document.getElementById("avatar-model");
+
+        if (!modelViewer) {
+          console.log("Model viewer not found, marking as ready");
+          modelViewerReady = true;
+          checkAllLoaded();
+          return;
+        }
+
+        if (modelViewer.loaded) {
+          console.log("Model already loaded");
+          modelViewerReady = true;
+          checkAllLoaded();
+          return;
+        }
+
+        modelViewer.addEventListener("load", () => {
+          console.log("3D Model loaded successfully");
+          modelViewerReady = true;
+          checkAllLoaded();
+        });
+
+        modelViewer.addEventListener("error", (e) => {
+          console.error("Model loading error:", e);
+          modelViewerReady = true;
+          checkAllLoaded();
+        });
+
+        modelViewer.addEventListener("progress", (e) => {
+          const progress = e.detail.totalProgress * 100;
+          console.log(`Model loading: ${progress.toFixed(0)}%`);
+        });
+      }
+
+      // --- THREE.JS SCENE SETUP ---
+      let scene, camera, renderer, particles, torus;
+      let mouseX = 0,
+        mouseY = 0;
+
+      let bgBaseRotX = 0;
+      let bgBaseRotY = 0;
+      let bgMouseRotX = 0;
+      let bgMouseRotY = 0;
+
+      let torusBaseRotX = 0;
+      let torusBaseRotY = 0;
+      let torusMouseRotX = 0;
+      let torusMouseRotY = 0;
+
+      let targetCameraZ = 5;
+      let currentCameraZ = 5;
+      let currentScrollY = 0;
+      let targetScrollY = 0;
+
+      const isMobile =
+        /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+          navigator.userAgent
+        ) || window.innerWidth < 768;
+
+      function initThree() {
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera(
+          75,
+          window.innerWidth / window.innerHeight,
+          0.1,
+          1000
+        );
+        camera.position.z = 5;
+
+        renderer = new THREE.WebGLRenderer({
+          antialias: !isMobile,
+          alpha: true,
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(
+          isMobile
+            ? Math.min(window.devicePixelRatio, 1.5)
+            : Math.min(window.devicePixelRatio, 2)
+        );
+        document
+          .getElementById("canvas-container")
+          .appendChild(renderer.domElement);
+
+        const particlesGeometry = new THREE.BufferGeometry();
+        const count = isMobile ? 1500 : 3000;
+        const posArray = new Float32Array(count * 3);
+
+        for (let i = 0; i < count * 3; i++) {
+          posArray[i] = (Math.random() - 0.5) * 15;
+        }
+
+        particlesGeometry.setAttribute(
+          "position",
+          new THREE.BufferAttribute(posArray, 3)
+        );
+
+        const particlesMaterial = new THREE.PointsMaterial({
+          size: isMobile ? 0.008 : 0.005,
+          color: 0xffffff,
+          transparent: true,
+          opacity: 0.8,
+          blending: THREE.AdditiveBlending,
+        });
+
+        particles = new THREE.Points(particlesGeometry, particlesMaterial);
+        scene.add(particles);
+
+        const segments = isMobile ? 80 : 150;
+        const geometry = new THREE.TorusKnotGeometry(1.3, 0.4, segments, 20);
+        const material = new THREE.MeshStandardMaterial({
+          color: 0x222222,
+          roughness: 0.1,
+          metalness: 1,
+          wireframe: true,
+        });
+        torus = new THREE.Mesh(geometry, material);
+        scene.add(torus);
+
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0x0066ff, 2);
+        pointLight.position.set(2, 3, 4);
+        scene.add(pointLight);
+
+        const pointLight2 = new THREE.PointLight(0xff0066, 2);
+        pointLight2.position.set(-2, -3, 4);
+        scene.add(pointLight2);
+
+        animate();
+
+        console.log("Three.js scene ready");
+        threeJsReady = true;
+        checkAllLoaded();
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+
+        bgBaseRotY += 0.001;
+        bgBaseRotX += 0.0005;
+
+        const targetBgY = mouseX * 0.25;
+        const targetBgX = -mouseY * 0.18;
+        bgMouseRotY += (targetBgY - bgMouseRotY) * 0.06;
+        bgMouseRotX += (targetBgX - bgMouseRotX) * 0.06;
+
+        if (particles) {
+          particles.rotation.y = bgBaseRotY + bgMouseRotY;
+          particles.rotation.x = bgBaseRotX + bgMouseRotX;
+        }
+
+        if (torus) {
+          torusBaseRotX += 0.005;
+          torusBaseRotY += 0.005;
+
+          const targetMouseRotX = mouseY * 0.5;
+          const targetMouseRotY = mouseX * 0.5;
+
+          torusMouseRotX += (targetMouseRotX - torusMouseRotX) * 0.08;
+          torusMouseRotY += (targetMouseRotY - torusMouseRotY) * 0.08;
+
+          torus.rotation.x = torusBaseRotX + torusMouseRotX;
+          torus.rotation.y = torusBaseRotY + torusMouseRotY;
+        }
+
+        currentScrollY += (targetScrollY - currentScrollY) * 0.08;
+        targetCameraZ = 5 + currentScrollY * 0.001;
+        currentCameraZ += (targetCameraZ - currentCameraZ) * 0.05;
+        camera.position.z = currentCameraZ;
+
+        renderer.render(scene, camera);
+      }
+
+      window.addEventListener(
+        "scroll",
+        () => {
+          targetScrollY = window.scrollY;
+        },
+        { passive: true }
+      );
+
+      window.addEventListener("mousemove", (e) => {
+        mouseX = e.clientX / window.innerWidth - 0.5;
+        mouseY = e.clientY / window.innerHeight - 0.5;
+
+        gsap.to("#cursor", {
+          x: e.clientX - 10,
+          y: e.clientY - 10,
+          duration: 0.2,
+        });
+      });
+
+      if (isMobile) {
+        window.addEventListener(
+          "touchmove",
+          (e) => {
+            if (e.touches.length > 0) {
+              mouseX = e.touches[0].clientX / window.innerWidth - 0.5;
+              mouseY = e.touches[0].clientY / window.innerHeight - 0.5;
+            }
+          },
+          { passive: true }
+        );
+
+        window.addEventListener(
+          "touchend",
+          () => {
+            mouseX = 0;
+            mouseY = 0;
+          },
+          { passive: true }
+        );
+      }
+
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+
+      // --- GSAP ANIMATIONS ---
+      gsap.registerPlugin(ScrollTrigger);
+
+      gsap.from(".reveal", {
+        opacity: 0,
+        y: 100,
+        duration: 1.5,
+        ease: "power4.out",
+        stagger: 0.2,
+      });
+
+      gsap.utils.toArray(".glass:not(#home .glass)").forEach((card) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom-=100px",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          y: 50,
+          duration: 1,
+          ease: "power3.out",
+        });
+      });
+
+      gsap.from(".award-banner", {
+        scrollTrigger: {
+          trigger: ".award-banner",
+          start: "top bottom-=50px",
+          toggleActions: "play none none reverse",
+        },
+        opacity: 0,
+        scale: 0.95,
+        duration: 0.2,
+        ease: "power3.out",
+      });
+
+      gsap.utils.toArray(".skill-progress").forEach((bar) => {
+        gsap.from(bar, {
+          scrollTrigger: {
+            trigger: bar,
+            start: "top bottom-=50px",
+            toggleActions: "play none none reverse",
+          },
+          scaleX: 0,
+          duration: 1.5,
+          ease: "power3.out",
+        });
+      });
+
+      gsap.utils.toArray(".text-gradient").forEach((title) => {
+        gsap.from(title, {
+          scrollTrigger: {
+            trigger: title,
+            start: "top bottom-=100px",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          x: -50,
+          duration: 1,
+          ease: "power3.out",
+        });
+      });
+
+      // Highlight cards animation
+      gsap.utils.toArray(".highlight-card").forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: card,
+            start: "top bottom-=80px",
+            toggleActions: "play none none reverse",
+          },
+          opacity: 0,
+          y: 60,
+          duration: 0.8,
+          delay: i * 0.15,
+          ease: "power3.out",
+        });
+      });
+
+      // --- INITIALIZATION ---
+      window.onload = () => {
+        initThree();
+        initModelViewer();
+      };
+
+      // Cursor scaling on links
+      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+        document
+          .querySelectorAll(
+            "a, button, .group, .service-card, .highlight-card, .bento-item, input, textarea, select"
+          )
+          .forEach((el) => {
+            el.addEventListener("mouseenter", () =>
+              gsap.to("#cursor", {
+                scale: 3,
+                backgroundColor: "rgba(255,255,255,0.1)",
+              })
+            );
+            el.addEventListener("mouseleave", () =>
+              gsap.to("#cursor", { scale: 1, backgroundColor: "transparent" })
+            );
+          });
+      }
+    </script>
   </body>
 </html>
