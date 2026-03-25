@@ -357,4 +357,51 @@
             );
           });
       }
-  
+  // Contact Form - AJAX submission
+const contactForm = document.getElementById('contact-form');
+const submitBtn = document.getElementById('submit-btn');
+const formStatus = document.getElementById('form-status');
+
+if (contactForm) {
+  contactForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Disable button and show loading
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Sending...';
+    submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    formStatus.classList.add('hidden');
+
+    const formData = new FormData(contactForm);
+
+    try {
+      const response = await fetch('https://formspree.io/f/xpqyvnzl', {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        // Success
+        formStatus.textContent = '✅ Message sent successfully! I\'ll get back to you soon.';
+        formStatus.classList.remove('hidden', 'text-red-400');
+        formStatus.classList.add('text-green-400');
+        contactForm.reset();
+      } else {
+        throw new Error('Failed to send');
+      }
+    } catch (error) {
+      // Error
+      formStatus.textContent = '❌ Something went wrong. Please try emailing directly.';
+      formStatus.classList.remove('hidden', 'text-green-400');
+      formStatus.classList.add('text-red-400');
+    } finally {
+      // Re-enable button
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Send Message';
+      submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+  });
+}
