@@ -30,6 +30,93 @@
         }, 1000);
       }
 
+      // --- CAROUSEL FUNCTIONALITY ---
+      class Carousel {
+        constructor(containerId) {
+          this.container = document.getElementById(containerId);
+          if (!this.container) return;
+
+          this.slides = this.container.querySelectorAll(".carousel-slide");
+          this.indicators = document.querySelectorAll(
+            `.indicator[data-carousel-id="${containerId}"]`
+          );
+          this.prevBtn = this.container.querySelector(".carousel-prev");
+          this.nextBtn = this.container.querySelector(".carousel-next");
+          this.currentIndex = 0;
+          this.autoPlayInterval = null;
+
+          this.setupEventListeners();
+          this.startAutoPlay();
+        }
+
+        setupEventListeners() {
+          if (this.prevBtn) {
+            this.prevBtn.addEventListener("click", () => this.previousSlide());
+          }
+          if (this.nextBtn) {
+            this.nextBtn.addEventListener("click", () => this.nextSlide());
+          }
+
+          this.indicators.forEach((indicator) => {
+            indicator.addEventListener("click", () => {
+              const slideIndex = parseInt(indicator.getAttribute("data-slide"));
+              this.goToSlide(slideIndex);
+            });
+          });
+        }
+
+        showSlide(index) {
+          // Remove active class from all slides and indicators
+          this.slides.forEach((slide) => slide.classList.remove("active"));
+          this.indicators.forEach((indicator) =>
+            indicator.classList.remove("active")
+          );
+
+          // Add active class to current slide and indicator
+          this.slides[index].classList.add("active");
+          this.indicators[index].classList.add("active");
+        }
+
+        nextSlide() {
+          this.currentIndex = (this.currentIndex + 1) % this.slides.length;
+          this.showSlide(this.currentIndex);
+        }
+
+        previousSlide() {
+          this.currentIndex =
+            (this.currentIndex - 1 + this.slides.length) % this.slides.length;
+          this.showSlide(this.currentIndex);
+        }
+
+        goToSlide(index) {
+          this.currentIndex = index;
+          this.showSlide(this.currentIndex);
+        }
+
+        startAutoPlay() {
+          this.autoPlayInterval = setInterval(
+            () => this.nextSlide(),
+            5000
+          );
+        }
+
+        stopAutoPlay() {
+          if (this.autoPlayInterval) {
+            clearInterval(this.autoPlayInterval);
+          }
+        }
+
+        resetAutoPlay() {
+          this.stopAutoPlay();
+          this.startAutoPlay();
+        }
+      }
+
+      // Initialize carousels when DOM is loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        new Carousel("campus-carousel");
+      });
+
       // --- MODEL-VIEWER PRELOADING ---
       function initModelViewer() {
         const modelViewer = document.getElementById("avatar-model");

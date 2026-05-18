@@ -802,18 +802,58 @@
               <meta itemprop="operatingSystem" content="Android" />
               <div class="glass p-4 group cursor-pointer overflow-hidden">
                 <div
-                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
+                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative carousel-container"
+                  id="campus-carousel"
                 >
-                  <img
-                    src="https://akshaycp.com/fk.jpeg"
-                    class="project-image"
-                    alt="Campus Management ERP System app for college operations including attendance and mark entry"
-                    loading="lazy"
-                    decoding="async"
-                    width="600"
-                    height="400"
-                    itemprop="image"
-                  />
+                  <!-- Carousel Images -->
+                  <div class="carousel-slide active" data-index="0">
+                    <img
+                      src="https://akshaycp.com/fk.jpeg"
+                      class="project-image"
+                      alt="Campus Management ERP System app for college operations including attendance and mark entry"
+                      loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="400"
+                      itemprop="image"
+                    />
+                  </div>
+                  <div class="carousel-slide" data-index="1">
+                    <img
+                      src="https://akshaycp.com/first_app.jpeg"
+                      class="project-image"
+                      alt="First campus management application interface"
+                      loading="lazy"
+                      decoding="async"
+                      width="600"
+                      height="400"
+                      itemprop="image"
+                    />
+                  </div>
+
+                  <!-- Carousel Controls -->
+                  <div class="carousel-controls">
+                    <button
+                      class="carousel-btn carousel-prev"
+                      aria-label="Previous image"
+                      data-carousel-id="campus-carousel"
+                    >
+                      ❮
+                    </button>
+                    <button
+                      class="carousel-btn carousel-next"
+                      aria-label="Next image"
+                      data-carousel-id="campus-carousel"
+                    >
+                      ❯
+                    </button>
+                  </div>
+
+                  <!-- Carousel Indicators -->
+                  <div class="carousel-indicators">
+                    <span class="indicator active" data-slide="0" data-carousel-id="campus-carousel"></span>
+                    <span class="indicator" data-slide="1" data-carousel-id="campus-carousel"></span>
+                  </div>
                 </div>
                 <div class="px-2 pb-2">
                   <h3 class="text-lg font-bold text-gray-400" itemprop="name">
