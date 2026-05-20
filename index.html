@@ -25,11 +25,15 @@
     <meta name="language" content="English" />
     <meta name="revisit-after" content="7 days" />
     <meta name="rating" content="general" />
-    <link rel="canonical" href="https://akshaycp.dev/" />
+    <link rel="canonical" href="https://akshaycp.com/" />
+    <link rel="me" href="https://github.com/Akshay-cp7" />
+    <link rel="me" href="https://in.linkedin.com/in/akshay-cp7" />
+    <link rel="me" href="https://www.instagram.com/akshay_c_p__/" />
+    <link rel="me" href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://akshaycp.dev/" />
+    <meta property="og:url" content="https://akshaycp.com/" />
     <meta
       property="og:title"
       content="Akshay CP | Flutter App Developer, ERP Developer & 3D Developer"
@@ -90,9 +94,11 @@
       {
         "@context": "https://schema.org",
         "@type": "Person",
+        "@id": "https://akshaycp.com/#person",
         "name": "Akshay CP",
         "alternateName": "Akshay C P",
-        "url": "https://akshaycp.com",
+        "url": "https://akshaycp.com/",
+        "mainEntityOfPage": "https://akshaycp.com/",
         "image": "https://akshaycp.com/banner.png",
         "jobTitle": "Flutter App Developer, ERP Developer & 3D Developer",
         "description": "Flutter App Developer with 2+ years of experience specializing in mobile app development, ERP systems, and 3D interactive experiences.",
@@ -126,7 +132,8 @@
         "sameAs": [
           "https://github.com/Akshay-cp7",
           "https://in.linkedin.com/in/akshay-cp7",
-          "https://play.google.com/store/apps/dev?id=7948075848513102467"
+          "https://www.instagram.com/akshay_c_p__/",
+          "https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
         ],
         "award": [
           "Tripo 3D AI Contest Winner (2025)",
@@ -141,11 +148,10 @@
         "@context": "https://schema.org",
         "@type": "WebSite",
         "name": "Akshay CP Portfolio",
-        "url": "https://akshaycp.dev",
+        "url": "https://akshaycp.com/",
         "description": "Portfolio website of Akshay CP - Flutter App Developer, ERP Developer & 3D Developer with 10+ published apps",
         "author": {
-          "@type": "Person",
-          "name": "Akshay CP"
+          "@id": "https://akshaycp.com/#person"
         },
         "inLanguage": "en"
       }
@@ -156,11 +162,9 @@
       {
         "@context": "https://schema.org",
         "@type": "ProfilePage",
+        "url": "https://akshaycp.com/",
         "mainEntity": {
-          "@type": "Person",
-          "name": "Akshay CP",
-          "jobTitle": "Flutter App Developer, ERP Developer & 3D Developer",
-          "image": "https://akshaycp.com/banner.png"
+          "@id": "https://akshaycp.com/#person"
         },
         "dateCreated": "2025-01-01",
         "dateModified": "2026-05-16"
@@ -251,37 +255,37 @@
             "@type": "ListItem",
             "position": 1,
             "name": "Home",
-            "item": "https://akshaycp.dev/#home"
+            "item": "https://akshaycp.com/#home"
           },
           {
             "@type": "ListItem",
             "position": 2,
             "name": "Highlights",
-            "item": "https://akshaycp.dev/#highlights"
+            "item": "https://akshaycp.com/#highlights"
           },
           {
             "@type": "ListItem",
             "position": 3,
             "name": "Services",
-            "item": "https://akshaycp.dev/#services"
+            "item": "https://akshaycp.com/#services"
           },
           {
             "@type": "ListItem",
             "position": 4,
             "name": "About",
-            "item": "https://akshaycp.dev/#about"
+            "item": "https://akshaycp.com/#about"
           },
           {
             "@type": "ListItem",
             "position": 5,
             "name": "Experience",
-            "item": "https://akshaycp.dev/#experience"
+            "item": "https://akshaycp.com/#experience"
           },
           {
             "@type": "ListItem",
             "position": 6,
             "name": "Contact",
-            "item": "https://akshaycp.dev/#contact"
+            "item": "https://akshaycp.com/#contact"
           }
         ]
       }
@@ -296,7 +300,7 @@
         "provider": {
           "@type": "Person",
           "name": "Akshay CP",
-          "url": "https://akshaycp.dev"
+          "url": "https://akshaycp.com/"
         },
         "areaServed": {
           "@type": "Place",
@@ -1599,13 +1603,14 @@
                 <a
                   href="https://github.com/Akshay-cp7"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
                   title="Visit Akshay CP's GitHub profile"
                   aria-label="GitHub - View source code and open source projects"
                   role="listitem"
                   itemprop="sameAs"
                 >
+                  <span class="sr-only">Akshay CP GitHub profile</span>
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
@@ -1621,13 +1626,14 @@
                 <a
                   href="https://in.linkedin.com/in/akshay-cp7"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
                   title="Connect with Akshay CP on LinkedIn"
                   aria-label="LinkedIn - Professional profile and networking"
                   role="listitem"
                   itemprop="sameAs"
                 >
+                  <span class="sr-only">Akshay CP LinkedIn profile</span>
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
@@ -1639,17 +1645,41 @@
                     />
                   </svg>
                 </a>
+                <!-- Instagram -->
+                <a
+                  href="https://www.instagram.com/akshay_c_p__/"
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
+                  title="Follow Akshay CP on Instagram"
+                  aria-label="Instagram - View Akshay CP's profile and updates"
+                  role="listitem"
+                  itemprop="sameAs"
+                >
+                  <span class="sr-only">Akshay CP Instagram profile</span>
+                  <svg
+                    class="w-5 h-5"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M7.75 2h8.5A5.756 5.756 0 0122 7.75v8.5A5.756 5.756 0 0116.25 22h-8.5A5.756 5.756 0 012 16.25v-8.5A5.756 5.756 0 017.75 2zm0 1.5A4.255 4.255 0 003.5 7.75v8.5A4.255 4.255 0 007.75 20.5h8.5a4.255 4.255 0 004.25-4.25v-8.5a4.255 4.255 0 00-4.25-4.25h-8.5zm8.875 1.125a.875.875 0 110 1.75.875.875 0 010-1.75zM12 6.5A5.5 5.5 0 1112 17.5 5.5 5.5 0 0112 6.5zm0 1.5A4 4 0 1012 16a4 4 0 000-8z"
+                    />
+                  </svg>
+                </a>
                 <!-- Google Play Store -->
                 <a
                   href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
                   target="_blank"
-                  rel="noopener noreferrer"
+                  rel="me noopener noreferrer"
                   class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
                   title="View Akshay CP's apps on Google Play Store"
                   aria-label="Google Play Store - Browse published mobile applications"
                   role="listitem"
                   itemprop="sameAs"
                 >
+                  <span class="sr-only">Akshay CP Google Play developer profile</span>
                   <svg
                     class="w-5 h-5"
                     fill="currentColor"
@@ -1781,7 +1811,7 @@
         <a
           href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="me noopener noreferrer"
           class="hover:text-gray-400 transition-colors mx-3"
           aria-label="View Akshay CP's apps on Google Play"
         >
@@ -1791,11 +1821,31 @@
         <a
           href="https://github.com/Akshay-cp7"
           target="_blank"
-          rel="noopener noreferrer"
+          rel="me noopener noreferrer"
           class="hover:text-gray-400 transition-colors mx-3"
           aria-label="Visit Akshay CP's GitHub repositories"
         >
           GitHub
+        </a>
+        <span class="text-gray-700" aria-hidden="true">·</span>
+        <a
+          href="https://in.linkedin.com/in/akshay-cp7"
+          target="_blank"
+          rel="me noopener noreferrer"
+          class="hover:text-gray-400 transition-colors mx-3"
+          aria-label="View Akshay CP's LinkedIn profile"
+        >
+          LinkedIn
+        </a>
+        <span class="text-gray-700" aria-hidden="true">·</span>
+        <a
+          href="https://www.instagram.com/akshay_c_p__/"
+          target="_blank"
+          rel="me noopener noreferrer"
+          class="hover:text-gray-400 transition-colors mx-3"
+          aria-label="View Akshay CP's Instagram profile"
+        >
+          Instagram
         </a>
         <span class="text-gray-700" aria-hidden="true">·</span>
         <a
