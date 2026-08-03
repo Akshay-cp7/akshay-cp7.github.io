@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>+2 Chemistry Salt Analysis – Virtual Lab for Class 12</title>
+  <meta name="description" content="Practise qualitative salt analysis anytime. Cation and anion tests, flame tests and the brown ring test — a virtual chemistry lab built for Class 12 board practicals. Free on Google Play.">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue: #1B56D8;
+      --blue-dark: #123CA0;
+      --blue-deep: #0A1F5C;
+      --blue-light: #EDF3FF;
+      --blue-mid: #C7D9FA;
+      --cyan: #3EC8E8;
+      --green: #45C97F;
+      --white: #FFFFFF;
+      --off-white: #F5F8FF;
+      --text: #0C1730;
+      --muted: #5B6E93;
+      --line: #E3EAF7;
+    }
+
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--white);
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    /* ── shared section furniture ── */
+    section { padding: 5rem 1.5rem; }
+
+    .sec-label {
+      text-align: center;
+      font-size: 0.68rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--blue);
+      margin-bottom: 0.7rem;
+    }
+
+    .sec-title {
+      text-align: center;
+      font-size: clamp(1.7rem, 5.5vw, 2.7rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 3rem;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3.5rem 1.5rem 3.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(27,86,216,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(27,86,216,0.035) 1px, transparent 1px);
+      background-size: 42px 42px;
+      pointer-events: none;
+    }
+
+    .hero-glow {
+      position: absolute;
+      width: 620px; height: 620px;
+      background: radial-gradient(circle, rgba(62,200,232,0.16) 0%, rgba(69,201,127,0.06) 45%, transparent 70%);
+      top: 44%; left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+    .app-icon {
+      width: 92px; height: 92px;
+      border-radius: 23px;
+      overflow: hidden;
+      margin: 0 auto 1.6rem;
+      background: var(--white);
+      box-shadow: 0 14px 40px rgba(27,86,216,0.18), 0 0 0 1px var(--line);
+      animation: fadeUp 0.5s ease both;
+    }
+
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      background: var(--blue-light);
+      border: 1px solid var(--blue-mid);
+      color: var(--blue-dark);
+      font-size: 0.68rem;
+      letter-spacing: 0.14em;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 0.35rem 0.95rem;
+      border-radius: 100px;
+      margin-bottom: 1.3rem;
+      animation: fadeUp 0.5s 0.05s ease both;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    h1 {
+      font-weight: 800;
+      font-size: clamp(2.4rem, 9vw, 4.4rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    h1 .grad {
+      background: linear-gradient(100deg, var(--cyan), var(--green));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .tagline {
+      font-size: clamp(1rem, 2.6vw, 1.2rem);
+      color: var(--muted);
+      max-width: 33rem;
+      margin: 1.2rem auto 0;
+      animation: fadeUp 0.5s 0.15s ease both;
+    }
+
+    .cta-group {
+      margin-top: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.8rem;
+      animation: fadeUp 0.5s 0.2s ease both;
+    }
+
+    .btn-dl {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--blue);
+      color: var(--white);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.95rem 2rem;
+      border-radius: 100px;
+      box-shadow: 0 10px 28px rgba(27,86,216,0.32);
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .btn-dl:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 36px rgba(27,86,216,0.4);
+    }
+
+    .free-note { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── FLAME TESTS ── */
+    .flames { background: var(--off-white); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+    .flame-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .flame {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.3rem 1rem;
+      text-align: center;
+    }
+
+    .flame-swatch {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      margin: 0 auto 0.8rem;
+      box-shadow: 0 0 0 4px rgba(255,255,255,0.9), 0 6px 16px rgba(12,23,48,0.12);
+    }
+
+    .flame-ion { font-weight: 800; font-size: 1.05rem; }
+    .flame-colour { font-size: 0.78rem; color: var(--muted); margin-top: 0.15rem; }
+
+    /* ── FEATURES ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.1rem;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .f-card {
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 1.7rem 1.5rem;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .f-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--blue-mid);
+      box-shadow: 0 12px 30px rgba(12,23,48,0.07);
+    }
+
+    .f-icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
+    .f-title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.35rem; }
+    .f-desc { font-size: 0.9rem; color: var(--muted); }
+
+    /* ── HOW IT WORKS ── */
+    .how { background: var(--off-white); border-top: 1px solid var(--line); }
+
+    .steps { max-width: 700px; margin: 0 auto; display: grid; gap: 1.1rem; }
+
+    .step {
+      display: flex;
+      gap: 1.1rem;
+      align-items: flex-start;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 1.4rem 1.5rem;
+    }
+
+    .step-num {
+      flex: 0 0 auto;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: linear-gradient(140deg, var(--cyan), var(--green));
+      color: var(--white);
+      font-weight: 800;
+      font-size: 0.95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-body h3 { font-size: 1.02rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .step-body p { font-size: 0.9rem; color: var(--muted); }
+
+    /* ── PERFECT FOR ── */
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.7rem;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .tag {
+      background: var(--blue-light);
+      border: 1px solid var(--blue-mid);
+      color: var(--blue-dark);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 0.55rem 1.1rem;
+      border-radius: 100px;
+    }
+
+    /* ── FOOTER CTA ── */
+    .footer-cta {
+      background: var(--blue-deep);
+      color: var(--white);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .footer-cta::before {
+      content: '';
+      position: absolute;
+      width: 560px; height: 560px;
+      background: radial-gradient(circle, rgba(62,200,232,0.18) 0%, transparent 70%);
+      top: -30%; left: 50%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .footer-cta > * { position: relative; z-index: 1; }
+
+    .footer-cta h2 {
+      font-size: clamp(1.7rem, 5.5vw, 2.6rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+    }
+
+    .footer-cta p {
+      color: rgba(255,255,255,0.66);
+      margin: 0.9rem auto 2rem;
+      max-width: 30rem;
+    }
+
+    .btn-dl-white {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: var(--white);
+      color: var(--blue-deep);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.95rem 2rem;
+      border-radius: 100px;
+      transition: transform 0.18s ease;
+    }
+
+    .btn-dl-white:hover { transform: translateY(-2px); }
+
+    .footer-note {
+      margin-top: 2.6rem;
+      font-size: 0.78rem;
+      color: rgba(255,255,255,0.42);
+    }
+
+    .footer-note a { color: rgba(255,255,255,0.62); text-decoration: none; }
+    .footer-note a:hover { text-decoration: underline; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
+    @media (max-width: 560px) {
+      section { padding: 3.5rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="app-icon">
+        <img src="icon.png" alt="+2 Chemistry Salt Analysis app icon" width="92" height="92">
+      </div>
+      <div class="badge"><span class="badge-dot"></span>Free on Google Play</div>
+      <h1>Salt Analysis,<br><span class="grad">without the lab.</span></h1>
+      <p class="tagline">Practise every cation and anion test for your Class 12 chemistry practical — no chemicals, no mess, as many times as you like.</p>
+      <div class="cta-group">
+        <a class="btn-dl" href="https://play.google.com/store/apps/details?id=com.arzdrz.chemistry_salt_analysis" target="_blank" rel="noopener">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M3.18 23.76c.33.18.7.22 1.06.12l12.64-7.3-2.9-2.9-10.8 10.08zM.5 1.26C.19 1.6 0 2.12 0 2.8v18.4c0 .68.19 1.2.5 1.54l.08.08 10.3-10.3v-.24L.58 1.18.5 1.26zM20.9 10.37l-2.93-1.7-3.23 3.23 3.23 3.23 2.94-1.7c.84-.49.84-1.06-.01-1.06zM4.24.36L16.88 7.66l-2.9 2.9L4.16.48a.9.9 0 0 1 .08-.12z"/>
+          </svg>
+          Download for Android
+        </a>
+        <span class="free-note">Free · Works offline · No login required</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FLAME TESTS -->
+  <section class="flames">
+    <p class="sec-label">See it in action</p>
+    <h2 class="sec-title">Flame tests you can<br>actually repeat</h2>
+    <div class="flame-grid">
+      <div class="flame">
+        <div class="flame-swatch" style="background:#F2C230"></div>
+        <div class="flame-ion">Na⁺</div>
+        <div class="flame-colour">Golden yellow</div>
+      </div>
+      <div class="flame">
+        <div class="flame-swatch" style="background:#B07BD6"></div>
+        <div class="flame-ion">K⁺</div>
+        <div class="flame-colour">Lilac</div>
+      </div>
+      <div class="flame">
+        <div class="flame-swatch" style="background:#D8543A"></div>
+        <div class="flame-ion">Ca²⁺</div>
+        <div class="flame-colour">Brick red</div>
+      </div>
+      <div class="flame">
+        <div class="flame-swatch" style="background:#7DC24B"></div>
+        <div class="flame-ion">Ba²⁺</div>
+        <div class="flame-colour">Apple green</div>
+      </div>
+      <div class="flame">
+        <div class="flame-swatch" style="background:#C3244A"></div>
+        <div class="flame-ion">Sr²⁺</div>
+        <div class="flame-colour">Crimson</div>
+      </div>
+      <div class="flame">
+        <div class="flame-swatch" style="background:#2FA9A0"></div>
+        <div class="flame-ion">Cu²⁺</div>
+        <div class="flame-colour">Blue-green</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <p class="sec-label">What you get</p>
+    <h2 class="sec-title">A full practical,<br>in your pocket</h2>
+    <div class="feature-grid">
+      <div class="f-card">
+        <div class="f-icon">🧪</div>
+        <div class="f-title">Preliminary Tests</div>
+        <div class="f-desc">Colour, smell, solubility and physical observations — the way you'd start in the lab.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🔥</div>
+        <div class="f-title">Flame Tests</div>
+        <div class="f-desc">Realistic flame colours for every cation in the syllabus.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">⚗️</div>
+        <div class="f-title">Anion Tests</div>
+        <div class="f-desc">Dilute H₂SO₄, concentrated H₂SO₄, the paper ball test and more.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🔍</div>
+        <div class="f-title">Systematic Cation Analysis</div>
+        <div class="f-desc">Group-wise separation and confirmatory tests, step by step.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🟤</div>
+        <div class="f-title">Brown Ring Test</div>
+        <div class="f-desc">Nitrate detection visualised properly, not just described.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">📚</div>
+        <div class="f-title">Complete Salt Database</div>
+        <div class="f-desc">Ammonium, Lead, Copper, Aluminium, Zinc, Barium, Strontium, Calcium, Magnesium, plus carbonate, chloride, acetate, sulphate, phosphate, bromide and nitrate.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🎲</div>
+        <div class="f-title">Random Salt Challenge</div>
+        <div class="f-desc">Get an unknown salt and identify it — exactly like the exam.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🕘</div>
+        <div class="f-title">Test History</div>
+        <div class="f-desc">Every experiment you run is saved so you can review your reasoning.</div>
+      </div>
+      <div class="f-card">
+        <div class="f-icon">🛠️</div>
+        <div class="f-title">Custom Salts</div>
+        <div class="f-desc">Build your own practice sets for the salts you keep getting wrong.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how">
+    <p class="sec-label">How it works</p>
+    <h2 class="sec-title">Four steps to an answer</h2>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h3>Pick a salt — or get a random one</h3>
+          <p>Choose from the database, or take an unknown salt as a challenge.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h3>Run the preliminary tests</h3>
+          <p>Observe colour, solubility and the flame test before you commit.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h3>Work through the groups</h3>
+          <p>Systematic anion and cation tests, with the observation shown for each reagent.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <h3>Confirm and review</h3>
+          <p>Name the salt, then look back over every test you performed.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERFECT FOR -->
+  <section class="perfect">
+    <p class="sec-label">Perfect for</p>
+    <h2 class="sec-title">Made for Class 12</h2>
+    <div class="tags">
+      <span class="tag">🎓 +2 / Class 12 students</span>
+      <span class="tag">📝 Board practical exams</span>
+      <span class="tag">🏫 CBSE &amp; state boards</span>
+      <span class="tag">🎯 Competitive exam prep</span>
+      <span class="tag">🔁 Self-paced revision</span>
+      <span class="tag">🏠 No lab access at home</span>
+    </div>
+  </section>
+
+  <!-- FOOTER CTA -->
+  <section class="footer-cta">
+    <h2>Walk into your practical<br>already knowing the answer</h2>
+    <p>Free on Google Play. Practise as many salts as you want, as many times as you want.</p>
+    <a class="btn-dl-white" href="https://play.google.com/store/apps/details?id=com.arzdrz.chemistry_salt_analysis" target="_blank" rel="noopener">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M3.18 23.76c.33.18.7.22 1.06.12l12.64-7.3-2.9-2.9-10.8 10.08zM.5 1.26C.19 1.6 0 2.12 0 2.8v18.4c0 .68.19 1.2.5 1.54l.08.08 10.3-10.3v-.24L.58 1.18.5 1.26zM20.9 10.37l-2.93-1.7-3.23 3.23 3.23 3.23 2.94-1.7c.84-.49.84-1.06-.01-1.06zM4.24.36L16.88 7.66l-2.9 2.9L4.16.48a.9.9 0 0 1 .08-.12z"/>
+      </svg>
+      Download for Android
+    </a>
+    <p class="footer-note">
+      © 2026 Akshay C P · +2 Chemistry Salt Analysis ·
+      <a href="https://akshaycp.com/privacypolicy/chemistry-salt-analysis/">Privacy Policy</a>
+    </p>
+  </section>
+
+</body>
+</html>
