@@ -412,13 +412,20 @@
         row-gap: 1.2rem;
       }
 
-      /* Keep the square from eating the whole first screen. */
-      .ph-media { max-width: min(100%, 41vh); margin: 0 auto; width: 100%; }
+      /* Keep the square from eating the whole first screen. The rem cap stops
+         it ballooning in a tall, narrow desktop window. */
+      .ph-media { max-width: min(100%, 41vh, 21rem); margin: 0 auto; width: 100%; }
       .thumb { padding: 0.3rem; border-radius: 8px; }
 
       section { padding: 3.2rem 1.2rem; }
       .hero { padding: 1.6rem 1.2rem 2.5rem; }
       .btn-buy, .btn-sub, .price-note { max-width: none; }
+
+      /* On small screens the pinned bar is the only call to action. The
+         in-flow buttons are hidden so there is never a second one to
+         scroll past or collide with. */
+      .ph-buy .btn-buy,
+      .footer-cta .btn-buy-white { display: none; }
 
       .sticky-buy {
         display: block;
@@ -432,9 +439,9 @@
         padding-bottom: calc(0.65rem + env(safe-area-inset-bottom, 0px));
       }
 
-      .sticky-buy .btn-buy { padding: 0.85rem 1.5rem; }
+      .sticky-buy .btn-buy { display: inline-flex; padding: 0.9rem 1.5rem; }
 
-      /* Room so the sticky bar never covers the last line of the page. */
+      /* Room so the pinned bar never covers the last line of the page. */
       body { padding-bottom: 5.5rem; }
     }
   </style>
@@ -442,7 +449,7 @@
 <body>
 
   <div class="topbar">
-    <a class="brand" href="https://akshaycp.com/">Akshay C P</a>
+    <a class="brand" href="https://akshaycp.com/">Akshay</a>
     <div class="crumb"><a href="/products/">Products</a> &rsaquo; Allen Solly Analog Watch</div>
   </div>
 
