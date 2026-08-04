@@ -94,18 +94,6 @@
     .topbar .crumb a { color: var(--steel); text-decoration: none; }
     .topbar .crumb a:hover { text-decoration: underline; }
 
-    /* ── DISCLOSURE ── */
-    .disclosure {
-      background: var(--mist);
-      border-bottom: 1px solid var(--line);
-      padding: 0.7rem 1.5rem;
-      font-size: 0.78rem;
-      color: var(--steel);
-      text-align: center;
-    }
-
-    .disclosure strong { color: var(--graphite); font-weight: 600; }
-
     /* ── HERO ── */
     .hero { padding: 3rem 1.5rem 3.5rem; }
 
@@ -118,31 +106,41 @@
       align-items: start;
     }
 
+    /* Source images arrive in mixed aspect ratios, so the square box is the
+       container's job and the image just fits inside it. */
     .gallery-main {
       background: var(--mist);
       border: 1px solid var(--line);
       border-radius: 18px;
       overflow: hidden;
       aspect-ratio: 1 / 1;
+      display: grid;
+      place-items: center;
+      padding: 1.4rem;
     }
 
-    .gallery-main img { width: 100%; height: 100%; object-fit: contain; }
+    .gallery-main img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
 
     .thumbs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 0.6rem;
       margin-top: 0.6rem;
+      align-items: start;
     }
 
-    .thumbs img {
+    .thumb {
       background: var(--mist);
       border: 1px solid var(--line);
       border-radius: 10px;
       aspect-ratio: 1 / 1;
-      object-fit: contain;
-      width: 100%;
+      overflow: hidden;
+      display: grid;
+      place-items: center;
+      padding: 0.45rem;
     }
+
+    .thumb img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
 
     .eyebrow {
       font-size: 0.68rem;
@@ -410,23 +408,19 @@
     <div class="crumb"><a href="/products/">Products</a> &rsaquo; Allen Solly Analog Watch</div>
   </div>
 
-  <div class="disclosure">
-    <strong>Affiliate disclosure:</strong> the buy links on this page go to Flipkart through an affiliate link. If you buy, I may earn a small commission at no extra cost to you.
-  </div>
-
   <!-- HERO -->
   <section class="hero">
     <div class="hero-grid">
       <div>
         <div class="gallery-main">
           <img src="https://rukmini1.flixcart.com/image/832/832/xif0q/watch/s/5/7/-watermarked-original-imahfszbxhbwkarf.jpeg?q=70"
-               alt="Allen Solly AS000010E analog watch for men, black round dial with black metal strap" width="832" height="832">
+               alt="Allen Solly AS000010E analog watch for men, black round dial with black metal strap" width="624" height="832">
         </div>
         <div class="thumbs">
-          <img src="https://rukmini1.flixcart.com/image/312/312/xif0q/watch/t/v/2/-original-imahfszbhn42nhsm.jpeg?q=70" alt="Allen Solly watch, dial detail" loading="lazy" width="312" height="312">
-          <img src="https://rukmini1.flixcart.com/image/312/312/xif0q/watch/p/f/y/-original-imahfszbetcpcrkk.jpeg?q=70" alt="Allen Solly watch, side profile" loading="lazy" width="312" height="312">
-          <img src="https://rukmini1.flixcart.com/image/312/312/xif0q/watch/q/i/c/-original-imahjhuzygdhgyn7.jpeg?q=70" alt="Allen Solly watch, strap detail" loading="lazy" width="312" height="312">
-          <img src="https://rukmini1.flixcart.com/image/312/312/xif0q/watch/g/s/n/-original-imahfszbh4cyyhwq.jpeg?q=70" alt="Allen Solly watch, worn on the wrist" loading="lazy" width="312" height="312">
+          <div class="thumb"><img src="https://rukmini1.flixcart.com/image/416/416/xif0q/watch/t/v/2/-original-imahfszbhn42nhsm.jpeg?q=70" alt="Front and back of the watch, labelled: stylish brass dial, exquisite metal strap, water resistant" loading="lazy"></div>
+          <div class="thumb"><img src="https://rukmini1.flixcart.com/image/416/416/xif0q/watch/p/f/y/-original-imahfszbetcpcrkk.jpeg?q=70" alt="Straight-on view of the full watch and metal strap" loading="lazy"></div>
+          <div class="thumb"><img src="https://rukmini1.flixcart.com/image/416/416/xif0q/watch/q/i/c/-original-imahjhuzygdhgyn7.jpeg?q=70" alt="Size comparison: the 33 mm dial next to a 54 mm credit card" loading="lazy"></div>
+          <div class="thumb"><img src="https://rukmini1.flixcart.com/image/416/416/xif0q/watch/g/s/n/-original-imahfszbh4cyyhwq.jpeg?q=70" alt="Angled close-up of the dial, hands and crown" loading="lazy"></div>
         </div>
       </div>
 
@@ -480,6 +474,7 @@
         <div class="spec"><div class="spec-k">Movement</div><div class="spec-v">Quartz</div></div>
         <div class="spec"><div class="spec-k">Power source</div><div class="spec-v">Battery</div></div>
         <div class="spec"><div class="spec-k">Dial shape</div><div class="spec-v">Round</div></div>
+        <div class="spec"><div class="spec-k">Dial diameter</div><div class="spec-v">33 mm</div></div>
         <div class="spec"><div class="spec-k">Dial colour</div><div class="spec-v">Black</div></div>
         <div class="spec"><div class="spec-k">Strap material</div><div class="spec-v">Metal</div></div>
         <div class="spec"><div class="spec-k">Strap colour</div><div class="spec-v">Black</div></div>
@@ -530,6 +525,7 @@
           <ul>
             <li>The case is brass, not stainless steel — expect fashion-watch build, not a heirloom.</li>
             <li>"Water resistant" here means splashes and rain. Do not swim or shower in it.</li>
+            <li>The dial is 33 mm — Flipkart's own size chart puts it well under a credit card's width. That is a slim, dressy size, not the chunky 40 mm+ look.</li>
             <li>Metal link straps usually need a link or two removed to fit; a local watch shop does this in minutes.</li>
             <li>About 1 rating in 20 is a single star. Read a few of those on Flipkart before you order.</li>
           </ul>
@@ -572,8 +568,8 @@
     </a>
     <p class="footer-note">
       © 2026 Akshay C P · <a href="/products/">All products</a> · <a href="https://akshaycp.com/">Home</a> · <a href="https://akshaycp.com/support/">Support</a><br>
-      Product images and specifications are from the Flipkart listing and belong to Flipkart and Allen Solly.<br>
-      This page contains an affiliate link. Prices were last checked on 4 August 2026.
+      Product images, specifications and ratings are from the Flipkart listing and belong to Flipkart and Allen Solly.<br>
+      Prices were last checked on 4 August 2026 and can change without notice.
     </p>
   </section>
 
