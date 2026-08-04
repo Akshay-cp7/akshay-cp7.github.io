@@ -405,6 +405,23 @@
       html { scroll-behavior: auto; }
     }
 
+    @media (min-width: 781px) {
+      /* The hero owns the whole first screen so the specs section never peeks
+         in underneath. 3rem is deliberately just under the 48.56px topbar —
+         erring short costs a pixel of scroll, erring long shows a grey strip. */
+      .hero {
+        min-height: calc(100vh - 3rem);
+        display: flex;
+        align-items: center;
+      }
+
+      .hero-grid { width: 100%; }
+
+      /* Only bites on short viewports (laptops), where the square would
+         otherwise push the hero past one screen. */
+      .ph-media { max-width: min(100%, 66vh); }
+    }
+
     @media (max-width: 780px) {
       .hero-grid {
         grid-template-columns: 1fr;
