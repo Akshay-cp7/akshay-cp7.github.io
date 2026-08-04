@@ -306,10 +306,11 @@
 
     .rb-row { display: grid; grid-template-columns: 2.6rem 1fr 4.4rem; align-items: center; gap: 0.8rem; font-size: 0.85rem; }
     .rb-star { color: var(--graphite); font-weight: 600; }
-    .rb-track { background: var(--line); height: 8px; border-radius: 100px; overflow: hidden; }
-    .rb-fill { height: 100%; border-radius: 100px; background: var(--green); }
-    .rb-fill.low { background: var(--silver); }
-    .rb-num { color: var(--steel); text-align: right; }
+    .rb-track { background: var(--line); height: 9px; border-radius: 100px; overflow: hidden; }
+    /* display:block matters — the track is blockified by being a grid item, but
+       this fill is a nested span, so without it width/height never apply. */
+    .rb-fill { display: block; height: 100%; border-radius: 100px; background: var(--green); }
+    .rb-num { color: var(--steel); text-align: right; font-variant-numeric: tabular-nums; }
 
     /* ── VERDICT ── */
     .verdict { background: var(--mist); }
@@ -557,9 +558,9 @@
       <div class="rb-bars">
         <div class="rb-row"><span class="rb-star">5 ★</span><span class="rb-track"><span class="rb-fill" style="width:62.6%"></span></span><span class="rb-num">78,054</span></div>
         <div class="rb-row"><span class="rb-star">4 ★</span><span class="rb-track"><span class="rb-fill" style="width:23.8%"></span></span><span class="rb-num">29,628</span></div>
-        <div class="rb-row"><span class="rb-star">3 ★</span><span class="rb-track"><span class="rb-fill low" style="width:6.5%"></span></span><span class="rb-num">8,092</span></div>
-        <div class="rb-row"><span class="rb-star">2 ★</span><span class="rb-track"><span class="rb-fill low" style="width:2.3%"></span></span><span class="rb-num">2,891</span></div>
-        <div class="rb-row"><span class="rb-star">1 ★</span><span class="rb-track"><span class="rb-fill low" style="width:4.8%"></span></span><span class="rb-num">5,990</span></div>
+        <div class="rb-row"><span class="rb-star">3 ★</span><span class="rb-track"><span class="rb-fill" style="width:6.5%"></span></span><span class="rb-num">8,092</span></div>
+        <div class="rb-row"><span class="rb-star">2 ★</span><span class="rb-track"><span class="rb-fill" style="width:2.3%"></span></span><span class="rb-num">2,891</span></div>
+        <div class="rb-row"><span class="rb-star">1 ★</span><span class="rb-track"><span class="rb-fill" style="width:4.8%"></span></span><span class="rb-num">5,990</span></div>
       </div>
     </div>
   </section>
