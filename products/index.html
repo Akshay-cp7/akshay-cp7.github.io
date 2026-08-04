@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products – Akshay C P</title>
+  <meta name="description" content="Things I have looked at and think are worth the money — specs, real prices and an honest read before you buy.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="canonical" href="https://akshaycp.com/products/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Products – Akshay C P">
+  <meta property="og:description" content="Things I have looked at and think are worth the money — specs, real prices and an honest read before you buy.">
+  <meta property="og:url" content="https://akshaycp.com/products/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0B0D10;
+      --graphite: #262B33;
+      --steel: #6B7480;
+      --mist: #F4F6F9;
+      --line: #E4E8EE;
+      --white: #FFFFFF;
+      --amber: #B07A18;
+      --green: #1F8A5B;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .topbar a.brand { font-weight: 800; font-size: 0.95rem; color: var(--ink); text-decoration: none; }
+    .topbar .crumb { font-size: 0.8rem; color: var(--steel); }
+
+    .disclosure {
+      background: var(--mist);
+      border-bottom: 1px solid var(--line);
+      padding: 0.7rem 1.5rem;
+      font-size: 0.78rem;
+      color: var(--steel);
+      text-align: center;
+    }
+
+    .disclosure strong { color: var(--graphite); font-weight: 600; }
+
+    header.page {
+      max-width: 62rem;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 2.5rem;
+    }
+
+    .eyebrow {
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 0.6rem;
+    }
+
+    h1 {
+      font-size: clamp(1.9rem, 5.4vw, 2.9rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 0.8rem;
+    }
+
+    header.page p { color: var(--steel); max-width: 36rem; font-size: 1rem; }
+
+    main { max-width: 62rem; margin: 0 auto; padding: 0 1.5rem 5rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: 1.3rem; }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .card:hover { transform: translateY(-3px); box-shadow: 0 14px 34px rgba(11,13,16,0.09); }
+
+    .card-img { background: var(--mist); aspect-ratio: 4 / 3; }
+    .card-img img { width: 100%; height: 100%; object-fit: contain; }
+
+    .card-body { padding: 1.3rem 1.35rem 1.5rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1; }
+
+    .card-cat { font-size: 0.66rem; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--steel); }
+    .card-title { font-size: 1.08rem; font-weight: 700; letter-spacing: -0.015em; line-height: 1.3; }
+    .card-desc { font-size: 0.88rem; color: var(--steel); flex: 1; }
+
+    .card-foot { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; }
+    .card-price { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.02em; }
+    .card-was { font-size: 0.85rem; color: var(--steel); text-decoration: line-through; }
+    .card-rating { font-size: 0.78rem; font-weight: 700; color: var(--white); background: var(--green); padding: 0.12rem 0.42rem; border-radius: 5px; }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2.2rem 1.5rem 3rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--steel);
+      line-height: 1.8;
+    }
+
+    footer a { color: var(--graphite); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="brand" href="https://akshaycp.com/">Akshay C P</a>
+    <div class="crumb">Products</div>
+  </div>
+
+  <div class="disclosure">
+    <strong>Affiliate disclosure:</strong> buy links on these pages go to the retailer through affiliate links. If you buy, I may earn a small commission at no extra cost to you.
+  </div>
+
+  <header class="page">
+    <div class="eyebrow">Recommendations</div>
+    <h1>Things worth<br>the money</h1>
+    <p>Products I have looked at properly — the real specs, the real price, and what to watch out for. Every page links straight to the retailer; nothing is sold here.</p>
+  </header>
+
+  <main>
+    <div class="cards">
+      <a class="card" href="/products/allen-solly-analog-watch/">
+        <div class="card-img">
+          <img src="https://rukmini1.flixcart.com/image/832/832/xif0q/watch/s/5/7/-watermarked-original-imahfszbxhbwkarf.jpeg?q=70"
+               alt="Allen Solly AS000010E analog watch for men, black dial and black metal strap" width="832" height="832">
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Watches</div>
+          <div class="card-title">Allen Solly Analog Watch for Men</div>
+          <div class="card-desc">All-black dial and metal strap, quartz movement, water resistant. A high-street brand at an unbranded price.</div>
+          <div class="card-foot">
+            <span class="card-price">₹1,229</span>
+            <span class="card-was">₹3,095</span>
+            <span class="card-rating">4.4 ★</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    © 2026 Akshay C P · <a href="https://akshaycp.com/">Home</a> · <a href="https://akshaycp.com/support/">Support</a> · <a href="https://akshaycp.com/privacypolicy/">Privacy</a><br>
+    Product images and specifications belong to the respective retailers and brands.
+  </footer>
+
+</body>
+</html>
