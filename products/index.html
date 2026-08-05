@@ -102,8 +102,13 @@
       display: grid;
       place-items: center;
       padding: 1.2rem;
+      /* Load-bearing. As a column flex item this box defaults to
+         min-height:auto, so a tall source image pushes it past its
+         aspect-ratio and the cards end up different heights. */
+      min-height: 0;
     }
-    .card-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; }
+    /* Same reason one level down — the image is a grid item in here. */
+    .card-img img { max-width: 100%; max-height: 100%; width: auto; height: auto; min-width: 0; min-height: 0; }
 
     .card-body { padding: 1.3rem 1.35rem 1.5rem; display: flex; flex-direction: column; gap: 0.45rem; flex: 1; }
 
@@ -148,6 +153,22 @@
 
   <main>
     <div class="cards">
+      <a class="card" href="/products/rustet-1990-analog-watch/">
+        <div class="card-img">
+          <img src="https://rukmini1.flixcart.com/image/832/832/xif0q/watch/a/y/q/1-new-wheels-rolling-creative-fashion-che-youhui-league-fans-original-imahgnx8tefc7nvv.jpeg?q=70"
+               alt="RUSTET 1990 analog watch for men, black dial styled as an alloy car wheel with a red brake caliper" width="511" height="832">
+        </div>
+        <div class="card-body">
+          <div class="card-cat">Watches</div>
+          <div class="card-title">RUSTET 1990 Analog Watch for Men</div>
+          <div class="card-desc">A dial built like a five-spoke alloy wheel, red brake caliper and all. 43 mm, black steel bracelet, quartz.</div>
+          <div class="card-foot">
+            <span class="card-rating">4.0 ★</span>
+            <span class="card-ratings-n">395 ratings</span>
+            <span class="card-go">See details &rsaquo;</span>
+          </div>
+        </div>
+      </a>
       <a class="card" href="/products/allen-solly-analog-watch/">
         <div class="card-img">
           <img src="https://rukmini1.flixcart.com/image/832/832/xif0q/watch/s/5/7/-watermarked-original-imahfszbxhbwkarf.jpeg?q=70"
