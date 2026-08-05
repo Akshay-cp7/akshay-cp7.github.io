@@ -257,6 +257,41 @@
 
     .btn-buy:hover { transform: translateY(-2px); background: var(--graphite); }
 
+    .buy-row {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+      max-width: 26rem;
+    }
+
+    .buy-row .btn-buy { flex: 1; width: auto; max-width: none; }
+
+    /* Secondary to the Flipkart button — outlined, never filled, so there is
+       no doubt which one is the primary action. */
+    .btn-share {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      flex: none;
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 100px;
+      padding: 0.95rem 1.35rem;
+      cursor: pointer;
+      transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, opacity 0.12s ease, color 0.18s ease;
+    }
+
+    .btn-share:hover { background: var(--mist); border-color: var(--silver); transform: translateY(-2px); }
+    /* Press-dim, matching the back control. */
+    .btn-share:active { opacity: 0.5; }
+    .btn-share.copied { color: var(--green); border-color: var(--green); background: var(--white); }
+    .btn-share.failed { color: var(--amber); border-color: var(--amber); background: var(--white); }
+
     .btn-sub {
       font-size: 0.78rem;
       color: var(--steel);
@@ -505,12 +540,12 @@
 
       section { padding: 3.2rem 1.2rem; }
       .hero { padding: 1.6rem 1.2rem 2.5rem; }
-      .btn-buy, .btn-sub, .price-note { max-width: none; }
+      .btn-buy, .btn-sub, .price-note, .buy-row { max-width: none; }
 
       /* On small screens the pinned bar is the only call to action. The
          in-flow buttons are hidden so there is never a second one to
          scroll past or collide with. */
-      .ph-buy .btn-buy,
+      .ph-buy .buy-row,
       .footer-cta .btn-buy-white { display: none; }
 
       .sticky-buy {
@@ -526,6 +561,13 @@
       }
 
       .sticky-buy .btn-buy { display: inline-flex; padding: 0.9rem 1.5rem; }
+
+      /* Primary takes the room it needs; share collapses to the glyph so the
+         pair still fits a narrow phone. */
+      .sticky-row { display: flex; align-items: center; gap: 0.55rem; }
+      .sticky-row .btn-buy { flex: 1; }
+      .sticky-row .btn-share { padding: 0.85rem 1rem; }
+      .sticky-row .btn-share .share-label { display: none; }
 
       /* Room so the pinned bar never covers the last line of the page. */
       body { padding-bottom: 5.5rem; }
@@ -579,12 +621,23 @@
         </div>
         <p class="price-note">Checked on 5 August 2026, and that figure included a ₹90 promotional discount at the time. Flipkart moves this price often — the live listing is the one that counts.</p>
 
-        <a class="btn-buy" href="https://fktr.in/lWvRuxF" target="_blank" rel="nofollow sponsored noopener">
-          <span class="lbl-app">Open in the Flipkart app</span><span class="lbl-web">View on Flipkart</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 12h14M13 6l6 6-6 6"/>
-          </svg>
-        </a>
+        <div class="buy-row">
+          <a class="btn-buy" href="https://fktr.in/lWvRuxF" target="_blank" rel="nofollow sponsored noopener">
+            <span class="lbl-app">Open in the Flipkart app</span><span class="lbl-web">View on Flipkart</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </a>
+          <button class="btn-share" type="button"
+                  data-share-url="https://fktr.in/lWvRuxF"
+                  data-share-title="RUSTET 1990 Analog Watch for Men">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2"/>
+              <path d="M12 15V3"/><path d="M8.5 6.5L12 3l3.5 3.5"/>
+            </svg>
+            <span class="share-label">Share</span>
+          </button>
+        </div>
         <p class="btn-sub">Payment, delivery, warranty and returns are all handled by Flipkart and the seller — this page is not a store.</p>
 
         <ul class="quick-facts">
@@ -734,13 +787,93 @@
 
   <!-- STICKY MOBILE CTA -->
   <div class="sticky-buy">
-    <a class="btn-buy" href="https://fktr.in/lWvRuxF" target="_blank" rel="nofollow sponsored noopener">
-      <span class="lbl-app">Open in the Flipkart app</span><span class="lbl-web">View on Flipkart</span>
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M5 12h14M13 6l6 6-6 6"/>
-      </svg>
-    </a>
+    <div class="sticky-row">
+      <a class="btn-buy" href="https://fktr.in/lWvRuxF" target="_blank" rel="nofollow sponsored noopener">
+        <span class="lbl-app">Open in the Flipkart app</span><span class="lbl-web">View on Flipkart</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M5 12h14M13 6l6 6-6 6"/>
+        </svg>
+      </a>
+      <button class="btn-share" type="button" aria-label="Share this product"
+              data-share-url="https://fktr.in/lWvRuxF"
+              data-share-title="RUSTET 1990 Analog Watch for Men">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2"/>
+          <path d="M12 15V3"/><path d="M8.5 6.5L12 3l3.5 3.5"/>
+        </svg>
+        <span class="share-label">Share</span>
+      </button>
+    </div>
   </div>
+
+  <script>
+    /* Share the Flipkart referral link. Native share sheet where the browser
+       has one (every phone, Safari, most desktops), clipboard everywhere else.
+       Nothing here is required for the page to work — no JS, no broken page,
+       just a button that copies. */
+    (function () {
+      function flash(btn, text, ok) {
+        var label = btn.querySelector('.share-label');
+        if (btn._restore) { clearTimeout(btn._timer); label.textContent = btn._restore; }
+        btn._restore = label.textContent;
+        label.textContent = text;
+        btn.classList.add(ok ? 'copied' : 'failed');
+        btn._timer = setTimeout(function () {
+          label.textContent = btn._restore;
+          btn._restore = null;
+          btn.classList.remove('copied', 'failed');
+        }, 1900);
+      }
+
+      /* execCommand is deprecated but it is the only thing that works when the
+         page is not on a secure origin, so it stays as the last resort. */
+      function legacyCopy(url) {
+        var ta = document.createElement('textarea');
+        ta.value = url;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.top = '-1000px';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = false;
+        try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+        document.body.removeChild(ta);
+        return ok;
+      }
+
+      function copy(url, btn) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(url).then(
+            function () { flash(btn, 'Link copied', true); },
+            function () { var ok = legacyCopy(url); flash(btn, ok ? 'Link copied' : 'Copy failed', ok); }
+          );
+          return;
+        }
+        var ok = legacyCopy(url);
+        flash(btn, ok ? 'Link copied' : 'Copy failed', ok);
+      }
+
+      Array.prototype.forEach.call(document.querySelectorAll('.btn-share'), function (btn) {
+        btn.addEventListener('click', function () {
+          var url = btn.getAttribute('data-share-url');
+          var title = btn.getAttribute('data-share-title');
+
+          if (navigator.share) {
+            navigator.share({ title: title, text: title, url: url }).catch(function (err) {
+              /* Cancelling the sheet rejects with AbortError — that is the user
+                 saying no, so leave it alone. Anything else means the sheet did
+                 not work, and silently doing nothing would look broken. */
+              if (!err || err.name !== 'AbortError') copy(url, btn);
+            });
+            return;
+          }
+
+          copy(url, btn);
+        });
+      });
+    })();
+  </script>
 
 </body>
 </html>
