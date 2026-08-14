@@ -1,5 +1,32 @@
 /* ACCA FR Objective Test Quiz — local, self-contained, no server needed. */
 
+// ---------------- Theme (dark mode) ----------------
+const THEME_KEY = 'fr_quiz_theme';
+function applyTheme(theme) {
+  if (theme === 'dark' || theme === 'light') {
+    document.documentElement.setAttribute('data-theme', theme);
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+  }
+  const btn = document.getElementById('themeToggle');
+  if (btn) {
+    const isDark = theme === 'dark' || (theme !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    btn.textContent = isDark ? '☀️' : '🌙';
+  }
+}
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    const current = localStorage.getItem(THEME_KEY);
+    const isDark = current === 'dark' || (current !== 'light' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    const next = isDark ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, next);
+    applyTheme(next);
+  });
+}
+initTheme();
+
 const STORAGE_KEY = 'fr_quiz_progress_v1';
 
 function loadProgress() {
