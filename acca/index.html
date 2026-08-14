@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACCA FR — Objective Test Quiz</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== HOME / SETUP SCREEN ===== -->
+  <section id="screen-home" class="screen">
+    <header class="home-header">
+      <h1>ACCA Financial Reporting</h1>
+      <p class="subtitle">Objective Test Question Bank — BPP Exam Kit 2024/25</p>
+    </header>
+
+    <div class="home-stats" id="homeStats"></div>
+
+    <div class="home-card">
+      <h2>Start a session</h2>
+
+      <div class="field">
+        <label>Topic</label>
+        <select id="topicSelect"></select>
+      </div>
+
+      <div class="field">
+        <label>Question count</label>
+        <select id="countSelect">
+          <option value="10">10 questions</option>
+          <option value="20" selected>20 questions</option>
+          <option value="40">40 questions</option>
+          <option value="9999">All matching questions</option>
+        </select>
+      </div>
+
+      <div class="field checkbox-field">
+        <label><input type="checkbox" id="shuffleCheck" checked> Shuffle question order</label>
+      </div>
+
+      <div class="field checkbox-field">
+        <label><input type="checkbox" id="onlyUnansweredCheck"> Only questions I haven't answered correctly yet</label>
+      </div>
+
+      <div class="home-actions">
+        <button class="btn btn-primary" id="startBtn">Start quiz</button>
+        <button class="btn btn-ghost" id="reviewMissedBtn">Review missed questions</button>
+        <button class="btn btn-ghost btn-danger" id="resetBtn">Reset all progress</button>
+      </div>
+    </div>
+
+    <div class="home-card" id="topicBreakdown">
+      <h2>Progress by topic</h2>
+      <div id="topicBars"></div>
+    </div>
+  </section>
+
+  <!-- ===== QUIZ SCREEN ===== -->
+  <section id="screen-quiz" class="screen hidden">
+    <header class="quiz-header">
+      <button class="btn btn-ghost btn-sm" id="quitBtn">&larr; Exit</button>
+      <div class="quiz-progress">
+        <div class="quiz-progress-track"><div class="quiz-progress-fill" id="progressFill"></div></div>
+        <span id="progressLabel"></span>
+      </div>
+      <div class="quiz-score" id="quizScore"></div>
+    </header>
+
+    <main class="quiz-main">
+      <div class="q-meta">
+        <span class="tag" id="qTopic"></span>
+        <span class="tag tag-type" id="qType"></span>
+        <span class="tag tag-marks" id="qMarks"></span>
+      </div>
+
+      <div id="qScenario" class="q-scenario hidden"></div>
+
+      <h2 id="qText" class="q-text"></h2>
+
+      <div id="qOptions" class="q-options"></div>
+
+      <div id="qFeedback" class="q-feedback hidden"></div>
+
+      <div class="quiz-actions">
+        <button class="btn btn-primary" id="checkBtn">Check answer</button>
+        <button class="btn btn-primary hidden" id="nextBtn">Next question &rarr;</button>
+      </div>
+    </main>
+  </section>
+
+  <!-- ===== SUMMARY SCREEN ===== -->
+  <section id="screen-summary" class="screen hidden">
+    <div class="summary-card">
+      <h1>Session complete</h1>
+      <div class="summary-score" id="summaryScore"></div>
+      <div id="summaryBreakdown"></div>
+      <div class="home-actions">
+        <button class="btn btn-primary" id="backHomeBtn">Back to home</button>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
