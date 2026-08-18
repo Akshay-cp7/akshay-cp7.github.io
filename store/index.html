@@ -355,18 +355,80 @@
     var EMPTY = 'We are restocking just now, so there is nothing to show on this page. Message us and we will tell you what is coming back.';
     var BROKEN = 'The product list is not loading just now. Message us and we will send you photos and prices straight away.';
 
-    skeletons();
+    /*
+     * Loading has to survive the bot being briefly away — a redeploy takes
+     * under a minute, and a customer who opens the page inside that window used
+     * to be shown "not loading" for as long as they kept the page open, because
+     * one failed request was the end of it. On 18 August one of them tapped
+     * that error button and told us in chat that the page was empty, while the
+     * shop was working perfectly the whole time either side of it.
+     *
+     * So: retry, remember the last good answer, and try again whenever they
+     * come back to the tab.
+     */
+    var CACHE_KEY = 'store-catalogue';
+    var CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
+    var loaded = false;
 
-    fetch(API + '/store.json', { cache: 'no-store' })
-      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) {
-        var products = (data && data.products) || [];
-        if (!products.length) { state(EMPTY); return; }
-        grid.innerHTML = '';
-        products.forEach(function (p) { grid.appendChild(card(p)); });
-        grid.setAttribute('aria-busy', 'false');
-      })
-      .catch(function () { state(BROKEN); });
+    function remember(products) {
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), products: products }));
+      } catch (e) { /* private mode, or the quota is full. Not worth failing over. */ }
+    }
+
+    // Only ever used when the bot cannot be reached at all. A day old is the
+    // limit: past that, an honest "cannot load" beats a confidently wrong price.
+    function remembered() {
+      try {
+        var c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+        if (c && c.products && c.products.length && Date.now() - c.at < CACHE_MAX_AGE) return c.products;
+      } catch (e) { /* nothing usable */ }
+      return null;
+    }
+
+    function draw(products) {
+      grid.innerHTML = '';
+      grid.style.display = '';
+      products.forEach(function (p) { grid.appendChild(card(p)); });
+      grid.setAttribute('aria-busy', 'false');
+      loaded = true;
+    }
+
+    function load(attempt) {
+      attempt = attempt || 0;
+      return fetch(API + '/store.json', { cache: 'no-store' })
+        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+        .then(function (data) {
+          var products = (data && data.products) || [];
+          if (!products.length) { state(EMPTY); return; }
+          draw(products);
+          remember(products);
+        })
+        .catch(function () {
+          // Three tries over about seven seconds, which comfortably outlasts a
+          // container swapping over.
+          if (attempt < 2) {
+            return new Promise(function (go) { setTimeout(go, 2000 * (attempt + 1)); })
+              .then(function () { return load(attempt + 1); });
+          }
+          if (loaded) return;            // already showing something good
+          var cached = remembered();
+          if (cached) { draw(cached); return; }
+          state(BROKEN);
+        });
+    }
+
+    skeletons();
+    load();
+
+    // The page usually sits in WhatsApp's in-app browser while they carry on
+    // chatting. Coming back to it is the natural moment to try again, and it is
+    // exactly what would have rescued the customer above.
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'visible' && !loaded) load();
+    });
+    window.addEventListener('online', function () { if (!loaded) load(); });
+    window.addEventListener('pageshow', function (e) { if (e.persisted && !loaded) load(); });
   </script>
 
 </body>
