@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop – Akshay C P</title>
+  <meta name="description" content="Everything we sell, with photos and prices. Cash on Delivery all over India. Tap any product to chat about it on WhatsApp.">
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="canonical" href="https://akshaycp.com/store/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Shop – Akshay C P">
+  <meta property="og:description" content="Everything we sell, with photos and prices. Cash on Delivery all over India.">
+  <meta property="og:url" content="https://akshaycp.com/store/">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://whatsapp-bot-production-725a.up.railway.app">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0B0D10;
+      --graphite: #262B33;
+      --steel: #6B7480;
+      --mist: #F4F6F9;
+      --line: #E4E8EE;
+      --white: #FFFFFF;
+      --amber: #B07A18;
+      --green: #1F8A5B;
+      --wa: #25D366;
+      --wa-ink: #0B4A28;
+    }
+
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      background: var(--white);
+      color: var(--ink);
+      font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+      line-height: 1.55;
+      overflow-x: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    .topbar {
+      border-bottom: 1px solid var(--line);
+      padding: 0.9rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .topbar a.brand { font-weight: 800; font-size: 0.95rem; color: var(--ink); text-decoration: none; }
+    .topbar .crumb { font-size: 0.8rem; color: var(--steel); }
+
+    header.page {
+      max-width: 62rem;
+      margin: 0 auto;
+      padding: 3.2rem 1.5rem 2rem;
+    }
+
+    .eyebrow {
+      font-size: 0.66rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--amber);
+      margin-bottom: 0.6rem;
+    }
+
+    header.page h1 {
+      font-size: clamp(2rem, 7vw, 3.1rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.06;
+      margin-bottom: 0.9rem;
+    }
+
+    header.page p {
+      color: var(--steel);
+      font-size: 1.02rem;
+      max-width: 34rem;
+    }
+
+    .assurances {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.4rem;
+    }
+
+    .assurances span {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--graphite);
+      background: var(--mist);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.34rem 0.8rem;
+    }
+
+    main { max-width: 62rem; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+      gap: 1.4rem;
+    }
+
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 1rem;
+      overflow: hidden;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+    }
+
+    .card:hover { box-shadow: 0 10px 30px rgba(11, 13, 16, 0.09); transform: translateY(-2px); }
+
+    .card-img {
+      background: var(--mist);
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+    }
+
+    .card-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .card-body { padding: 1rem 1.05rem 1.15rem; display: flex; flex-direction: column; gap: 0.55rem; flex: 1; }
+
+    .card h2 {
+      font-size: 1.02rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+    }
+
+    .card .contents {
+      font-size: 0.83rem;
+      color: var(--steel);
+      flex: 1;
+    }
+
+    .price-row { display: flex; align-items: baseline; gap: 0.5rem; flex-wrap: wrap; }
+    .price { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; }
+    .mrp { font-size: 0.85rem; color: var(--steel); text-decoration: line-through; }
+    .save { font-size: 0.72rem; font-weight: 700; color: var(--green); }
+
+    .wa-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 0.25rem;
+      background: var(--wa);
+      color: #06331B;
+      font-weight: 700;
+      font-size: 0.87rem;
+      text-decoration: none;
+      border-radius: 0.6rem;
+      padding: 0.72rem 1rem;
+      transition: filter 0.15s ease;
+    }
+
+    .wa-btn:hover { filter: brightness(0.94); }
+    .wa-btn svg { width: 1.05rem; height: 1.05rem; flex: none; }
+
+    .state {
+      border: 1px dashed var(--line);
+      border-radius: 1rem;
+      padding: 3rem 1.5rem;
+      text-align: center;
+      color: var(--steel);
+      font-size: 0.92rem;
+    }
+
+    .state a {
+      display: inline-block;
+      margin-top: 1rem;
+      color: var(--wa-ink);
+      background: var(--wa);
+      font-weight: 700;
+      text-decoration: none;
+      border-radius: 0.6rem;
+      padding: 0.7rem 1.2rem;
+    }
+
+    .skeleton { border: 1px solid var(--line); border-radius: 1rem; overflow: hidden; }
+    .skeleton .bar { background: var(--mist); }
+    .skeleton .bar.img { aspect-ratio: 1 / 1; }
+    .skeleton .bar.line { height: 0.85rem; border-radius: 0.3rem; margin: 0.7rem 1.05rem; }
+    .skeleton .bar.line.short { width: 45%; }
+    .skeleton { animation: pulse 1.4s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 2.2rem 1.5rem 3rem;
+      text-align: center;
+      font-size: 0.78rem;
+      color: var(--steel);
+      line-height: 1.8;
+    }
+
+    footer a { color: var(--graphite); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="topbar">
+    <a class="brand" href="https://akshaycp.com/">Akshay</a>
+    <div class="crumb">Shop</div>
+  </div>
+
+  <header class="page">
+    <div class="eyebrow">Everything we sell</div>
+    <h1>Have a look<br>at the lot</h1>
+    <p>Every product, with a photo and the real price. Pick the one you like and it opens a WhatsApp chat about that product, so you do not have to explain what you are after.</p>
+    <div class="assurances">
+      <span>Cash on Delivery</span>
+      <span>Delivered all over India</span>
+      <span>10 to 15 days</span>
+      <span>No advance payment</span>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid" id="grid" aria-live="polite" aria-busy="true"></div>
+  </main>
+
+  <footer>
+    © 2026 Akshay C P · <a href="https://akshaycp.com/">Home</a> · <a href="https://akshaycp.com/support/">Support</a> · <a href="https://akshaycp.com/privacypolicy/">Privacy</a><br>
+    Prices shown are live from our own stock list. Payment is Cash on Delivery, nothing is collected on this page.
+  </footer>
+
+  <script>
+    // The catalogue lives in the WhatsApp bot's admin panel, which is the only
+    // place a product, a price or a photo is ever edited. This page renders
+    // whatever that says, so adding something in the panel puts it here with no
+    // change to this file.
+    var API = 'https://whatsapp-bot-production-725a.up.railway.app';
+    var FALLBACK_WA = 'https://wa.me/919911070741?text=' +
+      encodeURIComponent('Hi, I would like to see what products you have.');
+
+    var grid = document.getElementById('grid');
+
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+
+    function skeletons() {
+      for (var i = 0; i < 4; i++) {
+        var s = el('div', 'skeleton');
+        s.appendChild(el('div', 'bar img'));
+        s.appendChild(el('div', 'bar line'));
+        s.appendChild(el('div', 'bar line short'));
+        grid.appendChild(s);
+      }
+    }
+
+    function waIcon() {
+      var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('viewBox', '0 0 24 24');
+      svg.setAttribute('fill', 'currentColor');
+      svg.setAttribute('aria-hidden', 'true');
+      var path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      path.setAttribute('d', 'M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.41a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.44.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.16 0-.43.06-.65.31-.22.25-.85.83-.85 2.03s.87 2.35.99 2.51c.12.16 1.71 2.61 4.14 3.66.58.25 1.03.4 1.38.51.58.18 1.11.16 1.53.1.47-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.15-1.18-.06-.11-.22-.17-.47-.29Z');
+      svg.appendChild(path);
+      return svg;
+    }
+
+    function card(p) {
+      var c = el('article', 'card');
+
+      var imgWrap = el('div', 'card-img');
+      if (p.image) {
+        var img = el('img');
+        img.src = API + p.image;
+        img.alt = p.name;
+        img.loading = 'lazy';
+        imgWrap.appendChild(img);
+      }
+      c.appendChild(imgWrap);
+
+      var body = el('div', 'card-body');
+      body.appendChild(el('h2', null, p.name));
+
+      var row = el('div', 'price-row');
+      row.appendChild(el('span', 'price', '₹' + p.price));
+      if (p.mrp && p.mrp > p.price) {
+        row.appendChild(el('span', 'mrp', '₹' + p.mrp));
+        row.appendChild(el('span', 'save', 'save ₹' + (p.mrp - p.price)));
+      }
+      body.appendChild(row);
+
+      if (p.contents) body.appendChild(el('p', 'contents', p.contents));
+
+      var btn = el('a', 'wa-btn');
+      btn.href = p.wa_link;
+      btn.rel = 'noopener';
+      btn.appendChild(waIcon());
+      btn.appendChild(el('span', null, 'Chat on WhatsApp'));
+      body.appendChild(btn);
+
+      c.appendChild(body);
+      return c;
+    }
+
+    // If the bot is asleep or unreachable the visitor must still be able to
+    // reach a human, so the failure state is a WhatsApp button, not an apology.
+    function failed() {
+      grid.innerHTML = '';
+      grid.style.display = 'block';
+      var s = el('div', 'state');
+      s.appendChild(el('p', null, 'The product list is not loading just now. Message us and we will send you photos and prices straight away.'));
+      var a = el('a');
+      a.href = FALLBACK_WA;
+      a.rel = 'noopener';
+      a.textContent = 'Chat on WhatsApp';
+      s.appendChild(a);
+      grid.appendChild(s);
+    }
+
+    skeletons();
+
+    fetch(API + '/store.json', { cache: 'no-store' })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(function (data) {
+        var products = (data && data.products) || [];
+        if (!products.length) { failed(); return; }
+        grid.innerHTML = '';
+        products.forEach(function (p) { grid.appendChild(card(p)); });
+        grid.setAttribute('aria-busy', 'false');
+      })
+      .catch(failed);
+  </script>
+
+</body>
+</html>
