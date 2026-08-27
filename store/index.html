@@ -115,6 +115,41 @@
 
     main { max-width: 62rem; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
 
+    /* Kept scrollable rather than wrapped: on a phone one swipeable row stays
+       one row however many groups he adds, instead of pushing the first
+       product below the fold. */
+    .filters {
+      display: flex;
+      gap: 0.5rem;
+      margin: 0 0 1.5rem;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+
+    .chip {
+      flex: 0 0 auto;
+      font: inherit;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--graphite);
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0.46rem 0.95rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+    }
+    .chip:hover { border-color: var(--steel); }
+    .chip[aria-pressed="true"] {
+      background: var(--ink);
+      border-color: var(--ink);
+      color: var(--white);
+    }
+    .chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
@@ -280,6 +315,7 @@
   </header>
 
   <main>
+    <div class="filters" id="filters" hidden></div>
     <div class="grid" id="grid" aria-live="polite" aria-busy="true"></div>
   </main>
 
@@ -408,9 +444,11 @@
     var CACHE_MAX_AGE = 24 * 60 * 60 * 1000;
     var loaded = false;
 
-    function remember(products) {
+    function remember(products, categories) {
       try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), products: products }));
+        localStorage.setItem(CACHE_KEY, JSON.stringify({
+          at: Date.now(), products: products, categories: categories
+        }));
       } catch (e) { /* private mode, or the quota is full. Not worth failing over. */ }
     }
 
@@ -419,16 +457,65 @@
     function remembered() {
       try {
         var c = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
-        if (c && c.products && c.products.length && Date.now() - c.at < CACHE_MAX_AGE) return c.products;
+        // An entry written before groups existed has no categories at all, and
+        // must still draw: the chips simply do not appear for it.
+        if (c && c.products && c.products.length && Date.now() - c.at < CACHE_MAX_AGE) return c;
       } catch (e) { /* nothing usable */ }
       return null;
     }
 
-    function draw(products) {
+    var filterBar = document.getElementById('filters');
+    var shown = [];                 // everything on sale, whatever chip is active
+
+    function paint(list) {
       grid.innerHTML = '';
       grid.style.display = '';
-      products.forEach(function (p) { grid.appendChild(card(p)); });
+      list.forEach(function (p) { grid.appendChild(card(p)); });
       grid.setAttribute('aria-busy', 'false');
+    }
+
+    /**
+     * One chip per group that has something in it, plus All.
+     *
+     * Hidden below two groups, because a lone "All" next to a lone "Gardening"
+     * is a control that cannot do anything — and hidden entirely when the
+     * catalogue is small enough to take in at a glance, which is the only
+     * reason to be scrolling past things you did not come for.
+     */
+    function renderFilters(categories) {
+      filterBar.innerHTML = '';
+      var groups = (categories || []).filter(function (c) {
+        return shown.some(function (p) { return p.category === c.key; });
+      });
+      if (groups.length < 2) { filterBar.hidden = true; return; }
+      filterBar.hidden = false;
+
+      var all = [{ key: null, name: 'All' }].concat(groups);
+      all.forEach(function (g, i) {
+        var b = el('button', 'chip', g.name);
+        b.type = 'button';
+        b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
+        b.addEventListener('click', function () {
+          Array.prototype.forEach.call(filterBar.children, function (o) {
+            o.setAttribute('aria-pressed', String(o === b));
+          });
+          paint(g.key === null ? shown : shown.filter(function (p) {
+            return p.category === g.key;
+          }));
+          // Back to the top of the grid, or tapping a short group leaves them
+          // staring at whitespace where the tall one used to reach.
+          if (window.scrollY > filterBar.offsetTop) {
+            window.scrollTo({ top: filterBar.offsetTop - 16, behavior: 'smooth' });
+          }
+        });
+        filterBar.appendChild(b);
+      });
+    }
+
+    function draw(products, categories) {
+      shown = products;
+      renderFilters(categories);
+      paint(products);
       loaded = true;
     }
 
@@ -439,8 +526,9 @@
         .then(function (data) {
           var products = (data && data.products) || [];
           if (!products.length) { state(EMPTY); return; }
-          draw(products);
-          remember(products);
+          var categories = (data && data.categories) || [];
+          draw(products, categories);
+          remember(products, categories);
         })
         .catch(function () {
           // Three tries over about seven seconds, which comfortably outlasts a
@@ -451,7 +539,7 @@
           }
           if (loaded) return;            // already showing something good
           var cached = remembered();
-          if (cached) { draw(cached); return; }
+          if (cached) { draw(cached.products, cached.categories); return; }
           state(BROKEN);
         });
     }
