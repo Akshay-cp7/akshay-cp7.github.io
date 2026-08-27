@@ -115,23 +115,76 @@
 
     main { max-width: 62rem; margin: 0 auto; padding: 1rem 1.5rem 3rem; }
 
-    /* Kept scrollable rather than wrapped: on a phone one swipeable row stays
-       one row however many groups he adds, instead of pushing the first
-       product below the fold. */
-    .filters {
-      display: flex;
-      gap: 0.5rem;
-      margin: 0 0 1.5rem;
-      overflow-x: auto;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-    .filters::-webkit-scrollbar { display: none; }
+    /* The departments. Same grid as the products so the two levels feel like
+       one shop rather than two pages. */
+    /* Both .banners and .cathead set display, which outranks the browser's own
+       rule for [hidden] — without this the tiles never hide. */
+    [hidden] { display: none !important; }
 
-    .chip {
+    .banners {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+      gap: 1.4rem;
+      /* A department with no artwork is a short tile; stretching it to match a
+         tall neighbour just gives it a panel of empty white. */
+      align-items: start;
+    }
+
+    .dept {
+      display: block;
+      background: var(--white);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      padding: 0;
+      font: inherit;
+      text-align: left;
+      width: 100%;
+      transition: box-shadow 0.18s ease, transform 0.18s ease;
+    }
+    .dept:hover { box-shadow: 0 10px 30px rgba(11, 13, 16, 0.09); transform: translateY(-2px); }
+    .dept:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    /* The artwork is square and carries its own title, so it is the tile. */
+    .dept img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
+
+    /* A department he adds before drawing a banner for it still needs a way in,
+       or its products silently disappear from the shop. */
+    .dept .plate {
+      display: none;
+      aspect-ratio: 16 / 7;
+      align-items: center;
+      justify-content: center;
+      background: var(--mist);
+      color: var(--graphite);
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      padding: 1rem;
+      text-align: center;
+    }
+    .dept.no-art .plate { display: flex; }
+
+    .dept .foot {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.6rem;
+      padding: 0.85rem 1rem 0.95rem;
+      border-top: 1px solid var(--line);
+    }
+    .dept .foot b { font-size: 0.98rem; font-weight: 700; }
+    .dept .foot span { font-size: 0.8rem; color: var(--steel); white-space: nowrap; }
+
+    /* Heading shown once you are inside a department. */
+    .cathead { display: flex; align-items: center; gap: 0.9rem; margin-bottom: 1.5rem; }
+    .cathead h2 { margin: 0; font-size: 1.35rem; letter-spacing: -0.02em; }
+    .back {
       flex: 0 0 auto;
       font: inherit;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 600;
       color: var(--graphite);
       background: var(--white);
@@ -140,15 +193,9 @@
       padding: 0.46rem 0.95rem;
       cursor: pointer;
       white-space: nowrap;
-      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
     }
-    .chip:hover { border-color: var(--steel); }
-    .chip[aria-pressed="true"] {
-      background: var(--ink);
-      border-color: var(--ink);
-      color: var(--white);
-    }
-    .chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+    .back:hover { border-color: var(--steel); }
+    .back:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
     .grid {
       display: grid;
@@ -303,9 +350,9 @@
   </div>
 
   <header class="page">
-    <div class="eyebrow">Everything we sell</div>
-    <h1>Have a look<br>at the lot</h1>
-    <p>Tap any product to chat about it on WhatsApp.</p>
+    <div class="eyebrow">The under ₹300 mela</div>
+    <h1>Everything you<br>need, under ₹300</h1>
+    <p>Pick a department, then tap anything to chat about it on WhatsApp.</p>
     <div class="assurances">
       <span>Cash on Delivery</span>
       <span>Delivered all over India</span>
@@ -315,7 +362,11 @@
   </header>
 
   <main>
-    <div class="filters" id="filters" hidden></div>
+    <div class="banners" id="banners" hidden></div>
+    <div class="cathead" id="cathead" hidden>
+      <button class="back" id="backBtn" type="button">← All departments</button>
+      <h2 id="catTitle"></h2>
+    </div>
     <div class="grid" id="grid" aria-live="polite" aria-busy="true"></div>
   </main>
 
@@ -464,8 +515,16 @@
       return null;
     }
 
-    var filterBar = document.getElementById('filters');
-    var shown = [];                 // everything on sale, whatever chip is active
+    var banners  = document.getElementById('banners');
+    var cathead  = document.getElementById('cathead');
+    var catTitle = document.getElementById('catTitle');
+    var shown = [];                 // every product on sale
+    var depts = [];                 // the departments that have something in them
+
+    // Drawn once by hand rather than served, because they are artwork for the
+    // shop front, not data about a product. A department with no file here
+    // still gets a tile — see .no-art.
+    var ART = { gardening: 1, household: 1, decor: 1, toys: 1 };
 
     function paint(list) {
       grid.innerHTML = '';
@@ -474,48 +533,101 @@
       grid.setAttribute('aria-busy', 'false');
     }
 
-    /**
-     * One chip per group that has something in it, plus All.
-     *
-     * Hidden below two groups, because a lone "All" next to a lone "Gardening"
-     * is a control that cannot do anything — and hidden entirely when the
-     * catalogue is small enough to take in at a glance, which is the only
-     * reason to be scrolling past things you did not come for.
-     */
-    function renderFilters(categories) {
-      filterBar.innerHTML = '';
-      var groups = (categories || []).filter(function (c) {
-        return shown.some(function (p) { return p.category === c.key; });
-      });
-      if (groups.length < 2) { filterBar.hidden = true; return; }
-      filterBar.hidden = false;
-
-      var all = [{ key: null, name: 'All' }].concat(groups);
-      all.forEach(function (g, i) {
-        var b = el('button', 'chip', g.name);
-        b.type = 'button';
-        b.setAttribute('aria-pressed', i === 0 ? 'true' : 'false');
-        b.addEventListener('click', function () {
-          Array.prototype.forEach.call(filterBar.children, function (o) {
-            o.setAttribute('aria-pressed', String(o === b));
-          });
-          paint(g.key === null ? shown : shown.filter(function (p) {
-            return p.category === g.key;
-          }));
-          // Back to the top of the grid, or tapping a short group leaves them
-          // staring at whitespace where the tall one used to reach.
-          if (window.scrollY > filterBar.offsetTop) {
-            window.scrollTo({ top: filterBar.offsetTop - 16, behavior: 'smooth' });
-          }
-        });
-        filterBar.appendChild(b);
-      });
+    function countOf(key) {
+      return shown.filter(function (p) { return p.category === key; }).length;
     }
+
+    function deptTile(c) {
+      var b = el('button', 'dept');
+      b.type = 'button';
+      if (ART[c.key]) {
+        var img = el('img');
+        img.src = 'banners/' + c.key + '.jpg';
+        img.alt = c.name;
+        img.loading = 'lazy';
+        // If the file is missing the tile must still read as a department
+        // rather than as a broken picture.
+        img.addEventListener('error', function () {
+          b.classList.add('no-art');
+          img.remove();
+        });
+        b.appendChild(img);
+      } else {
+        b.classList.add('no-art');
+      }
+      b.appendChild(el('div', 'plate', c.name));
+
+      var foot = el('div', 'foot');
+      var n = countOf(c.key);
+      foot.appendChild(el('b', null, c.name));
+      foot.appendChild(el('span', null, n + (n === 1 ? ' item' : ' items')));
+      b.appendChild(foot);
+
+      b.addEventListener('click', function () { go(c.key); });
+      return b;
+    }
+
+    function drawDepartments() {
+      grid.innerHTML = '';            // the loading skeletons, if we got here first
+      banners.innerHTML = '';
+      depts.forEach(function (c) { banners.appendChild(deptTile(c)); });
+      banners.hidden = false;
+      cathead.hidden = true;
+      grid.style.display = 'none';
+      grid.setAttribute('aria-busy', 'false');
+    }
+
+    function drawCategory(key) {
+      var c = depts.filter(function (x) { return x.key === key; })[0];
+      if (!c) return drawDepartments();
+      banners.hidden = true;
+      cathead.hidden = false;
+      catTitle.textContent = c.name;
+      paint(shown.filter(function (p) { return p.category === key; }));
+    }
+
+    /** One department is not a choice, so that shop skips the front page. */
+    function route() {
+      var key = (location.hash || '').replace('#', '');
+      if (depts.length < 2) {
+        banners.hidden = true;
+        cathead.hidden = true;
+        paint(shown);
+        return;
+      }
+      if (key && depts.some(function (c) { return c.key === key; })) drawCategory(key);
+      else drawDepartments();
+      window.scrollTo({ top: 0 });
+    }
+
+    function go(key) {
+      // A hash rather than a variable, so a department can be linked to
+      // directly and the phone's back button leaves the shop the way it came.
+      if (location.hash.replace('#', '') === key) route();
+      else location.hash = key;
+    }
+
+    document.getElementById('backBtn').addEventListener('click', function () {
+      if (location.hash) location.hash = '';
+      else route();
+    });
+    window.addEventListener('hashchange', route);
 
     function draw(products, categories) {
       shown = products;
-      renderFilters(categories);
-      paint(products);
+      // Only departments with something in them, and never one the products
+      // do not actually use — an empty tile is a tap that leads nowhere.
+      depts = (categories || []).filter(function (c) { return countOf(c.key) > 0; });
+      // Anything filed under a department the panel did not list would be
+      // unreachable behind the tiles, so it goes in its own catch-all.
+      var loose = shown.filter(function (p) {
+        return !depts.some(function (c) { return c.key === p.category; });
+      });
+      if (loose.length) depts = depts.concat([{ key: '__other', name: 'More things' }]);
+      if (loose.length) {
+        loose.forEach(function (p) { p.category = '__other'; });
+      }
+      route();
       loaded = true;
     }
 
