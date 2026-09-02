@@ -246,6 +246,22 @@
         }
       }
 
+      /* Poster-style cards: show the whole artwork on a white mat, never crop it */
+      .project-image-container.image-mat {
+        background: #ffffff;
+      }
+
+      .project-image.image-contain {
+        object-fit: contain;
+        transform: none;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .group:hover .project-image.image-contain {
+          transform: none;
+        }
+      }
+
       /* Carousel Styles */
       .carousel-container {
         position: relative;
