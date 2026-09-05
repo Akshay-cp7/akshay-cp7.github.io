@@ -1056,9 +1056,24 @@
             institutional ERP systems to independently published apps and 3D experiences.
           </p> -->
 <br><br>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
+          <div class="exp-flow">
+            <!-- Education: a short box in the top right, with the roles running
+                 past it and on underneath, the way a newspaper sets a sidebar. -->
+            <aside class="glass edu-card">
+              <h3 class="text-[11px] font-bold tracking-[0.25em] text-gray-500 uppercase mb-3">Education</h3>
+              <article itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
+                <h4 class="text-base font-bold leading-snug" itemprop="credentialCategory">
+                  B.Tech in Computer Science
+                </h4>
+                <p class="text-gray-400 text-sm mt-1 leading-relaxed" itemprop="recognizedBy" itemscope itemtype="https://schema.org/EducationalOrganization">
+                  <span itemprop="name">APJ Abdul Kalam Technological University</span><br />
+                  <span>Vedavyasa Institute of Technology, Malappuram</span>
+                </p>
+              </article>
+            </aside>
+
             <!-- Work Experience -->
-            <div class="space-y-12">
+            <div class="exp-roles space-y-12">
               <article class="relative pl-8" itemscope itemtype="https://schema.org/OrganizationRole">
                 <div class="timeline-line" aria-hidden="true"></div>
                 <div class="timeline-dot" aria-hidden="true"></div>
@@ -1140,21 +1155,6 @@
 
             </div>
 
-            <!-- Education -->
-            <div class="glass p-8">
-              <h3 class="text-xl font-bold mb-6">Education</h3>
-              <div class="space-y-6">
-                <article class="pb-6" itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
-                  <h4 class="text-lg font-bold mt-1" itemprop="credentialCategory">
-                    B.Tech in Computer Science
-                  </h4>
-                  <p class="text-gray-400 text-sm" itemprop="recognizedBy" itemscope itemtype="https://schema.org/EducationalOrganization">
-                    <span itemprop="name">APJ Abdul Kalam Technological University</span><br />
-                    <span>Vedavyasa Institute of Technology, Malappuram</span>
-                  </p>
-                </article>
-              </div>
-            </div>
           </div>
         </div>
       </section>

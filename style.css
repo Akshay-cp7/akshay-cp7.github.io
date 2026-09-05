@@ -165,6 +165,46 @@
         transform-origin: left;
       }
 
+      /* ── Experience: newspaper set ──────────────────────────────────────
+         The roles column grew long enough that a two-column grid left the
+         Education card stretched down a screen of empty black. Education is
+         a short box in the top right instead, and the roles run past it and
+         continue full width underneath, the way a newspaper sets a sidebar.
+         On a phone there is no room to run past anything, so it stacks and
+         the roles come first. */
+      .exp-flow {
+        display: flex;
+        flex-direction: column;
+        gap: 2.5rem;
+      }
+      .exp-flow .exp-roles { order: 1; }
+      .exp-flow .edu-card { order: 2; }
+
+      .edu-card {
+        padding: 1.35rem 1.5rem 1.5rem;
+      }
+
+      @media (min-width: 768px) {
+        .exp-flow {
+          display: block;
+          /* Capped so the lines that run full width under the float stay a
+             readable measure. Unbounded it hit ~130 characters. */
+          max-width: 62rem;
+        }
+        /* The float is taller than the first role on a wide screen, so the
+           container has to be told to contain it. */
+        .exp-flow::after {
+          content: "";
+          display: block;
+          clear: both;
+        }
+        .edu-card {
+          float: right;
+          width: 19rem;
+          margin: 0.25rem 0 1.75rem 3rem;
+        }
+      }
+
       .timeline-line {
         position: absolute;
         left: 0;
