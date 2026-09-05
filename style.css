@@ -251,6 +251,12 @@
         background: #ffffff;
       }
 
+      /* Swaylo's mark ships on its own warm cream ground; a white
+         mat behind it would show as a visible box edge. */
+      .project-image-container.image-mat-cream {
+        background: #f9f4ef;
+      }
+
       .project-image.image-contain {
         object-fit: contain;
         transform: none;
