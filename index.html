@@ -13,11 +13,11 @@
     />
     <meta
       name="description"
-      content="Akshay CP is the founder of Swaylo AI and Shopdesk AI Assistant, and a Flutter App Developer with 2+ years of experience in mobile app development and ERP systems. 10+ published apps on Google Play Store. Based in Kerala, India."
+      content="Akshay CP is the founder of Swaylo AI — a low-cost conversational AI with voice and image recognition and automatic model switching — and of Shopdesk AI Assistant. Flutter App Developer with 2+ years of experience and 10+ apps on Google Play. Based in Kerala, India."
     />
     <meta
       name="keywords"
-      content="Akshay CP, Swaylo AI, Shopdesk AI Assistant, AI Developer, Conversational AI, WhatsApp AI Assistant, Flutter Developer, Flutter App Developer, ERP Developer, 3D Developer, Mobile App Developer, Google Play Apps, UI UX Designer, Firebase, Dart, Kerala India, Freelance Developer, GLB AR Viewer, PhotoWall AR, Campus Management, Business Applications"
+      content="Akshay CP, Swaylo AI, Shopdesk AI Assistant, AI Developer, Conversational AI, WhatsApp AI Assistant, Voice Recognition, Image Recognition, Speech to Text, Multimodal AI, LLM Routing, Flutter Developer, Flutter App Developer, ERP Developer, 3D Developer, Mobile App Developer, Google Play Apps, UI UX Designer, Firebase, Dart, Kerala India, Freelance Developer, GLB AR Viewer, PhotoWall AR, Campus Management, Business Applications"
     />
     <meta name="author" content="Akshay CP" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
@@ -121,6 +121,9 @@
         "knowsAbout": [
           "Conversational AI",
           "Large Language Models",
+          "Speech Recognition",
+          "Image Recognition",
+          "Multimodal AI",
           "WhatsApp Business Platform",
           "Flutter",
           "Dart",
@@ -153,7 +156,7 @@
         "@id": "https://swayloweb.com/#organization",
         "name": "Swaylo AI",
         "url": "https://swayloweb.com/",
-        "description": "A conversational AI that talks to customers — it answers in their own language, quotes real prices, verifies the address and books the order.",
+        "description": "A low-cost conversational AI with voice recognition, image recognition and automatic model switching. It answers customers in their own language, quotes real prices, verifies the address and books the order.",
         "founder": { "@id": "https://akshaycp.com/#person" },
         "foundingLocation": {
           "@type": "Place",
@@ -597,8 +600,10 @@
                 <h2 id="about-heading" class="text-4xl font-bold mb-4 text-gradient">ABOUT ME</h2>
                 <p class="text-gray-400 text-lg leading-relaxed" itemprop="description">
                   I build AI. <strong class="text-gray-300 font-bold">Swaylo AI</strong> is my own conversational
-                  engine — it reads a customer's message in ten Indian languages, answers it, checks the
-                  address and books the order, start to finish, with nobody watching.
+                  engine — cheap AI for texting that reads a customer's message in ten Indian languages,
+                  listens to their voice notes, reads their photos, and picks the right model for each
+                  job by itself. It answers, checks the address and books the order, start to finish,
+                  with nobody watching.
                   <strong class="text-gray-300 font-bold">Shopdesk AI Assistant</strong> is the first product
                   built on it, and I am the founder of both. Alongside that, 2 + years building Flutter
                   mobile apps, ERP systems and business applications, with 10+ published on Google Play.
@@ -704,7 +709,7 @@
                     <img
                       src="swaylo.png"
                       class="project-image image-contain"
-                      alt="Swaylo AI - the conversational AI engine built by Akshay CP that answers customers in their own language and books their orders"
+                      alt="Swaylo AI - the conversational AI engine built by Akshay CP with voice recognition, image recognition and automatic model switching"
                       loading="lazy"
                       decoding="async"
                       width="512"
@@ -720,10 +725,11 @@
                       Swaylo AI
                     </h3>
                     <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      The AI I built to talk to customers. It reads the message in ten Indian
-                      languages, quotes the real price, checks the address and books the order &mdash;
-                      the whole conversation, not a part of it. Shopdesk AI Assistant runs on it,
-                      and more applications are being built on it next.
+                      Cheap AI for texting, built to hold a real conversation. It reads text in ten
+                      Indian languages, transcribes voice notes, reads photos &mdash; including an
+                      address written by hand &mdash; and switches models by itself, sending each
+                      message to the cheapest one that can actually answer it. Shopdesk AI Assistant
+                      runs on it, with more applications next.
                     </p>
                     <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
                       swayloweb.com &#8599;
@@ -1063,12 +1069,21 @@
                   <a href="https://swayloweb.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">swayloweb.com &#8599;</a>
                 </p>
                 <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  My own conversational AI, built from scratch and running unattended in production.
-                  It reads whatever a customer types — ten Indian languages, in their own script or in
-                  Latin letters — answers from a real catalogue instead of inventing, verifies the
-                  delivery pincode against India Post mid-chat, books the order and cancels it if they
-                  change their mind. It knows to stop and hand the chat to a human when a question
-                  isn't its to answer.<br><br>
+                  My own conversational AI — cheap AI for texting, built from scratch and running
+                  unattended in production.<br><br>
+                  It takes a message in whatever form it arrives: typed in any of ten Indian languages,
+                  in their own script or in Latin letters; spoken as a voice note, which it transcribes;
+                  or a photo, which it reads — including a delivery address written by hand, which it
+                  types out into the order. It answers from a real catalogue instead of inventing,
+                  verifies the pincode against India Post mid-chat, books the order and cancels it if
+                  they change their mind, and knows to stop and hand the chat to a human when a
+                  question isn't its to answer.<br><br>
+                  The part I am proudest of is the routing: it classifies each message and sends it to
+                  the cheapest model that can do that job, so ordinary text — nearly all the traffic —
+                  never touches an expensive one, and vision or speech is paid for only when a customer
+                  actually sends a photo or a voice note. It runs across two providers and fails over
+                  between them mid-conversation, on the cheapest model the backup sells, so an outage
+                  degrades the answer instead of ending it.<br><br>
                   Shopdesk AI Assistant is the first product built on it. It is the engine, not the
                   product, and the next applications are being fitted to it now.
                 </p>
