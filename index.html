@@ -13,7 +13,7 @@
     />
     <meta
       name="description"
-      content="Akshay CP is the founder of Swaylo AI — a low-cost conversational AI with voice and image recognition and automatic model switching — and of Shopdesk AI Assistant. Flutter App Developer with 2+ years of experience and 10+ apps on Google Play. Based in Kerala, India."
+      content="Akshay CP is the founder of Swaylo AI — an AI engine that routes every message to the cheapest model that can answer it, with voice and image recognition and mid-conversation model switching — and of Shopdesk AI Assistant. Flutter App Developer with 10+ apps on Google Play. Based in Kerala, India."
     />
     <meta
       name="keywords"
@@ -124,6 +124,8 @@
           "Speech Recognition",
           "Image Recognition",
           "Multimodal AI",
+          "LLM Routing",
+          "Model Fallback",
           "WhatsApp Business Platform",
           "Flutter",
           "Dart",
@@ -156,7 +158,7 @@
         "@id": "https://swayloweb.com/#organization",
         "name": "Swaylo AI",
         "url": "https://swayloweb.com/",
-        "description": "A low-cost conversational AI with voice recognition, image recognition and automatic model switching. It answers customers in their own language, quotes real prices, verifies the address and books the order.",
+        "description": "An AI engine that classifies every message and routes it to the cheapest model that can answer it — text, speech or vision — switching mid-conversation and failing over between providers.",
         "founder": { "@id": "https://akshaycp.com/#person" },
         "foundingLocation": {
           "@type": "Place",
@@ -175,7 +177,7 @@
         "@type": "Organization",
         "@id": "https://akshaycp.com/#shopdesk",
         "name": "Shopdesk AI Assistant",
-        "description": "An AI salesperson for small businesses, built on Swaylo AI. It chats with customers on WhatsApp, answers product questions and takes orders on its own.",
+        "description": "An AI salesperson for small businesses, built on Swaylo AI. It is the half that chats on WhatsApp — it answers product questions, verifies the delivery address and takes orders on its own.",
         "founder": { "@id": "https://akshaycp.com/#person" },
         "parentOrganization": { "@id": "https://swayloweb.com/#organization" }
       }
@@ -522,10 +524,10 @@
             </h1>
           </header>
           <p class="text-xl md:text-2xl text-gray-400 max-w-xl" itemprop="description">
-            Founder of <strong class="text-gray-300 font-bold">Swaylo AI</strong> — my own conversational AI that
-            talks to customers, answers them in their language and closes the sale. Flutter and ERP
-            developer with 2 + years of experience and 10+ apps on Google Play. 3D and AR is where I
-            started, and it is a side project now.
+            Founder of <strong class="text-gray-300 font-bold">Swaylo AI</strong> — my own AI engine that picks a
+            different model for every message, so texting stays cheap. Shopdesk AI Assistant, the WhatsApp
+            salesperson built on it, is the first thing it runs. Flutter and ERP developer with 2 + years of
+            experience and 10+ apps on Google Play. 3D and AR is where I started, and it is a side project now.
           </p>
           <div class="mt-8 flex gap-4">
             <a
@@ -600,12 +602,13 @@
                 <h2 id="about-heading" class="text-4xl font-bold mb-4 text-gradient">ABOUT ME</h2>
                 <p class="text-gray-400 text-lg leading-relaxed" itemprop="description">
                   I build AI. <strong class="text-gray-300 font-bold">Swaylo AI</strong> is my own conversational
-                  engine — cheap AI for texting that reads a customer's message in ten Indian languages,
-                  listens to their voice notes, reads their photos, and picks the right model for each
-                  job by itself. It answers, checks the address and books the order, start to finish,
-                  with nobody watching.
+                  engine. Its whole idea is that it classifies every incoming message and routes it to the
+                  cheapest model that can answer it — small and fast for text, one that can hear for a voice
+                  note, one that can see for a photo — switching mid-conversation and failing over between
+                  providers without dropping the thread.
                   <strong class="text-gray-300 font-bold">Shopdesk AI Assistant</strong> is the first product
-                  built on it, and I am the founder of both. Alongside that, 2 + years building Flutter
+                  built on it — the WhatsApp salesperson that answers customers, checks their address and
+                  books their orders — and I am the founder of both. Alongside that, 2 + years building Flutter
                   mobile apps, ERP systems and business applications, with 10+ published on Google Play.
                   3D and augmented reality is where I started; it is a side project now.
                 </p>
@@ -719,17 +722,18 @@
                   </div>
                   <div class="px-4 pb-1 pt-2">
                     <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Founder &middot; My own AI
+                      Founder &middot; My own AI engine
                     </p>
                     <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
                       Swaylo AI
                     </h3>
                     <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Cheap AI for texting, built to hold a real conversation. It reads text in ten
-                      Indian languages, transcribes voice notes, reads photos &mdash; including an
-                      address written by hand &mdash; and switches models by itself, sending each
-                      message to the cheapest one that can actually answer it. Shopdesk AI Assistant
-                      runs on it, with more applications next.
+                      Cheap AI for texting. It classifies every message and routes it to the cheapest
+                      model that can answer it &mdash; small and fast for text, one that can hear for a
+                      voice note, one that can see for a photo, including an address written by hand.
+                      It switches mid-conversation and fails over between two providers without
+                      dropping the thread. Chatting on WhatsApp is Shopdesk's job; this is the engine
+                      underneath it.
                     </p>
                     <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
                       swayloweb.com &#8599;
@@ -1069,23 +1073,23 @@
                   <a href="https://swayloweb.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">swayloweb.com &#8599;</a>
                 </p>
                 <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  My own conversational AI — cheap AI for texting, built from scratch and running
-                  unattended in production.<br><br>
-                  It takes a message in whatever form it arrives: typed in any of ten Indian languages,
-                  in their own script or in Latin letters; spoken as a voice note, which it transcribes;
-                  or a photo, which it reads — including a delivery address written by hand, which it
-                  types out into the order. It answers from a real catalogue instead of inventing,
-                  verifies the pincode against India Post mid-chat, books the order and cancels it if
-                  they change their mind, and knows to stop and hand the chat to a human when a
-                  question isn't its to answer.<br><br>
-                  The part I am proudest of is the routing: it classifies each message and sends it to
-                  the cheapest model that can do that job, so ordinary text — nearly all the traffic —
-                  never touches an expensive one, and vision or speech is paid for only when a customer
-                  actually sends a photo or a voice note. It runs across two providers and fails over
-                  between them mid-conversation, on the cheapest model the backup sells, so an outage
-                  degrades the answer instead of ending it.<br><br>
-                  Shopdesk AI Assistant is the first product built on it. It is the engine, not the
-                  product, and the next applications are being fitted to it now.
+                  My own AI engine — cheap AI for texting, built from scratch and running unattended in
+                  production.<br><br>
+                  The idea is that most messages do not need a big model, so most messages do not get
+                  one. It classifies every message as it arrives and routes it to the cheapest model
+                  that can actually do that job: the small fast model for ordinary text, which is
+                  nearly all the traffic; a model that can hear when someone sends a voice note, which
+                  it transcribes and hands straight back; a model that can see when they send a photo,
+                  including a delivery address written by hand, which it types out as usable text.
+                  Vision and speech are billed only on the messages that actually contain them.<br><br>
+                  It switches mid-conversation and the customer never notices — three models can touch
+                  one thread and it still sounds like one assistant, with one memory and one tone. It
+                  runs across two providers and fails over between them mid-sentence, onto the backup's
+                  cheapest model, so an outage degrades the answer instead of ending it.<br><br>
+                  It handles ten Indian languages, in their own script or in Latin letters, and there
+                  is no keyword list or menu tree anywhere in it — it judges the message. Shopdesk AI
+                  Assistant is the first product built on it; the engine has no opinion about where a
+                  message came from, and the next applications are being fitted to it now.
                 </p>
               </article>
 
@@ -1102,8 +1106,12 @@
                   <span itemprop="name">Shopdesk</span> &middot; built on Swaylo AI
                 </p>
                 <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  Swaylo AI put to work as a salesperson. It handles every conversation the ads bring
-                  in — answers the product questions, takes the address, books the order — round the
+                  Swaylo AI put to work as a salesperson — this is the half that actually chats on
+                  WhatsApp. It handles every conversation the ads bring in: opens on the product they
+                  tapped at its real price, quotes from a live catalogue instead of inventing a number,
+                  verifies the delivery pincode against India Post mid-chat, books the order and cancels
+                  it if they change their mind, handles Cash on Delivery and UPI advances, and knows to
+                  stop and hand the chat to a human when a question isn't its to answer. Round the
                   clock, so the seller can stay focused on making and packing.
                 </p>
               </article>
