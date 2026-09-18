@@ -587,6 +587,10 @@
           grid-row: span 2;
           padding: 2.5rem;
         }
+
+        .bento-span2 {
+          grid-column: span 2;
+        }
       }
 
       .bento-content {
