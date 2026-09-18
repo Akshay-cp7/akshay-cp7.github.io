@@ -1,0 +1,1340 @@
+/* ESTASY — heads-up display.
+   Dark, cyan, and quiet until something is happening. Phone-first: this gets
+   read at 8 AM on a phone before work, so the briefing must be legible at a
+   glance and the chrome must never compete with it. */
+
+:root {
+  --bg:        #04070d;
+  --bg-panel:  rgba(12, 22, 34, .72);
+  --line:      rgba(64, 224, 208, .16);
+  --line-soft: rgba(64, 224, 208, .08);
+  --cyan:      #40e0d0;
+  --cyan-dim:  #2a9d94;
+  --ink:       #dcf3f0;
+  --ink-soft:  #8fb0b3;
+  --ink-faint: #55706f;
+  --warn:      #ffb454;
+  --bad:       #ff6b6b;
+  --good:      #52e08a;
+  --radius: 14px;
+  --font: ui-sans-serif, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  min-height: 100%;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+body::after {
+  /* Faint scanlines. Barely there — enough to read as a display, not a gimmick. */
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(64, 224, 208, .02) 0 1px,
+    transparent 1px 3px
+  );
+  mix-blend-mode: screen;
+}
+
+#field {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* ------------------------------------------------------------------ boot */
+
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-content: center;
+  gap: 28px;
+  justify-items: center;
+  background: var(--bg);
+  transition: opacity .6s ease, visibility .6s;
+}
+.boot.done { opacity: 0; visibility: hidden; }
+
+.boot-core {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  border-right-color: transparent;
+  border-bottom-color: transparent;
+  animation: spin 1s linear infinite;
+  box-shadow: 0 0 30px rgba(64, 224, 208, .35), inset 0 0 20px rgba(64, 224, 208, .2);
+}
+
+.boot-lines {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  line-height: 1.9;
+  color: var(--cyan-dim);
+  min-width: 240px;
+  min-height: 96px;
+}
+.boot-lines b { color: var(--cyan); font-weight: 500; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ------------------------------------------------------------------- app */
+
+.app {
+  position: relative;
+  z-index: 1;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: max(20px, env(safe-area-inset-top)) 18px calc(24px + env(safe-area-inset-bottom));
+  animation: rise .7s cubic-bezier(.2, .8, .2, 1) both;
+}
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+/* -------------------------------------------------------------- hud/core */
+
+.hud {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 4px 0 18px;
+}
+
+.core { width: 104px; height: 104px; flex: none; }
+.core svg { width: 100%; height: 100%; overflow: visible; }
+
+.ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 1.5;
+  transform-origin: 100px 100px;
+}
+.ring-outer { stroke-dasharray: 10 6; animation: spin 26s linear infinite; }
+.ring-mid   { stroke-dasharray: 3 9; animation: spin 15s linear infinite reverse; opacity: .8; }
+.ring-inner { stroke: var(--line-soft); }
+.ring-sweep {
+  stroke-width: 2.5;
+  stroke-dasharray: 90 460;
+  stroke-linecap: round;
+  animation: spin 4.5s linear infinite;
+}
+
+.ticks line { stroke: var(--line); stroke-width: 1.5; }
+
+.orb {
+  filter: drop-shadow(0 0 14px rgba(64, 224, 208, .55));
+  animation: breathe 4.5s ease-in-out infinite;
+  transform-origin: 100px 100px;
+}
+@keyframes breathe {
+  0%, 100% { opacity: .82; transform: scale(1); }
+  50%      { opacity: 1;   transform: scale(1.06); }
+}
+
+.orb-pulse {
+  fill: none;
+  stroke: var(--cyan);
+  stroke-width: 1.5;
+  transform-origin: 100px 100px;
+  animation: ripple 4.5s ease-out infinite;
+}
+@keyframes ripple {
+  0%   { opacity: .5; transform: scale(1); }
+  70%, 100% { opacity: 0; transform: scale(2.1); }
+}
+
+/* Busy: everything speeds up and the core burns brighter. */
+.core.busy .ring-outer { animation-duration: 5s; }
+.core.busy .ring-mid   { animation-duration: 3s; }
+.core.busy .ring-sweep { animation-duration: 1.1s; }
+.core.busy .orb        { animation-duration: 1.1s; }
+.core.busy .orb-pulse  { animation-duration: 1.1s; }
+.core.error .orb       { filter: drop-shadow(0 0 14px rgba(255, 107, 107, .6)); }
+.core.error .ring, .core.error .ticks line { stroke: rgba(255, 107, 107, .3); }
+
+.hud-text h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 300;
+  letter-spacing: .34em;
+  color: var(--cyan);
+  text-shadow: 0 0 22px rgba(64, 224, 208, .35);
+}
+.hud-state {
+  margin: 5px 0 0;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--cyan-dim);
+}
+.hud-state::before {
+  content: "";
+  display: inline-block;
+  width: 6px; height: 6px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: var(--cyan);
+  vertical-align: middle;
+  animation: blink 2.4s ease-in-out infinite;
+}
+@keyframes blink { 50% { opacity: .25; } }
+.hud-date { margin: 3px 0 0; font-size: 12.5px; color: var(--ink-faint); }
+
+/* ----------------------------------------------------------------- stats */
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+  gap: 8px;
+  margin-bottom: 18px;
+}
+
+.stat {
+  background: var(--bg-panel);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  padding: 11px 12px;
+  animation: rise .5s cubic-bezier(.2, .8, .2, 1) both;
+}
+.stat-label {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.stat-value {
+  margin-top: 4px;
+  font-size: 19px;
+  font-weight: 500;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.stat-value.muted { color: var(--ink-faint); font-size: 13px; font-weight: 400; }
+.stat-delta { font-size: 11px; margin-top: 2px; font-variant-numeric: tabular-nums; }
+.stat-delta.up   { color: var(--good); }
+.stat-delta.down { color: var(--bad); }
+.stat-delta.flat { color: var(--ink-faint); }
+
+/* ------------------------------------------------------------------ tabs */
+
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 16px;
+  /* Seven tabs do not fit across a phone. They share the width when there is
+     enough of it and the row scrolls sideways when there is not, rather than
+     squeezing "DASHBOARD" down to four letters. */
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 1 0 auto;
+  white-space: nowrap;
+  background: none;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  padding: 10px 6px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+}
+.tab:hover { color: var(--ink-soft); }
+.tab.is-active { color: var(--cyan); border-bottom-color: var(--cyan); }
+
+.view { display: none; animation: rise .35s ease both; }
+.view.is-active { display: block; }
+
+/* ---------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--bg-panel);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 20px 18px;
+  backdrop-filter: blur(10px);
+}
+
+.briefing { line-height: 1.62; font-size: 15px; }
+.briefing h2 {
+  margin: 22px 0 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--cyan);
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.briefing h2:first-child { margin-top: 0; }
+.briefing p  { margin: 0 0 12px; color: var(--ink); }
+.briefing ul { margin: 0 0 12px; padding-left: 0; list-style: none; }
+.briefing li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 5px;
+  color: var(--ink-soft);
+}
+.briefing li::before {
+  content: "";
+  position: absolute;
+  left: 2px; top: .62em;
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--cyan-dim);
+}
+.briefing strong { color: var(--cyan); font-weight: 500; }
+.briefing em { color: var(--ink-soft); }
+.briefing a { color: var(--cyan); text-decoration: none; border-bottom: 1px dotted var(--cyan-dim); }
+.briefing code {
+  font-family: var(--mono);
+  font-size: .88em;
+  background: rgba(64, 224, 208, .08);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.panel-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.btn {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--cyan);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background .2s, border-color .2s;
+}
+.btn:hover:not(:disabled) { background: rgba(64, 224, 208, .08); border-color: var(--cyan-dim); }
+.btn:disabled { opacity: .4; cursor: default; }
+.hint { font-size: 11.5px; color: var(--ink-faint); font-family: var(--mono); }
+
+.skeleton {
+  height: 130px;
+  border-radius: 8px;
+  background: linear-gradient(100deg, transparent 20%, rgba(64, 224, 208, .07) 50%, transparent 80%);
+  background-size: 220% 100%;
+  animation: shimmer 1.5s linear infinite;
+}
+@keyframes shimmer { to { background-position: -220% 0; } }
+
+/* ------------------------------------------------------------------ chat */
+
+.thread {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 180px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding: 4px 2px 12px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
+}
+
+.msg {
+  max-width: 88%;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  animation: rise .3s ease both;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.msg.user {
+  align-self: flex-end;
+  background: rgba(64, 224, 208, .12);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  border-bottom-right-radius: 4px;
+}
+.msg.model {
+  align-self: flex-start;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-soft);
+  color: var(--ink);
+  border-bottom-left-radius: 4px;
+}
+.msg.model strong { color: var(--cyan); font-weight: 500; }
+.msg.model code { font-family: var(--mono); font-size: .88em; }
+.msg .tools {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+
+.typing { display: inline-flex; gap: 5px; align-items: center; height: 12px; }
+.typing i {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--cyan-dim);
+  animation: bounce 1.2s ease-in-out infinite;
+}
+.typing i:nth-child(2) { animation-delay: .18s; }
+.typing i:nth-child(3) { animation-delay: .36s; }
+@keyframes bounce { 0%, 60%, 100% { opacity: .3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+
+.composer {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.composer input {
+  flex: 1;
+  background: var(--bg-panel);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  padding: 13px 15px;
+  color: var(--ink);
+  font-size: 15px; /* 16px-ish keeps iOS from zooming on focus */
+  font-family: inherit;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.composer input::placeholder { color: var(--ink-faint); }
+.composer input:focus {
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 0 3px rgba(64, 224, 208, .08);
+}
+.send {
+  flex: none;
+  width: 46px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: rgba(64, 224, 208, .1);
+  color: var(--cyan);
+  cursor: pointer;
+  display: grid;
+  place-content: center;
+  transition: background .2s;
+}
+.send:hover:not(:disabled) { background: rgba(64, 224, 208, .2); }
+.send:disabled { opacity: .4; cursor: default; }
+.send svg { width: 18px; height: 18px; fill: currentColor; }
+
+.chat-suggest { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 12px; }
+.chip {
+  background: transparent;
+  border: 1px solid var(--line-soft);
+  color: var(--ink-soft);
+  border-radius: 20px;
+  padding: 7px 13px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: border-color .2s, color .2s;
+}
+.chip:hover { border-color: var(--cyan-dim); color: var(--cyan); }
+
+/* ------------------------------------------------------------- dashboard */
+
+/* Data colours are validated, not chosen by eye — see scripts/validate_palette.
+   Categorical pair (business/personal) clears CVD ΔE 26.8 on this surface; the
+   sequential teal ramp is lightness-monotonic and every step clears 3:1. Kept
+   separate from --cyan, which is UI chrome: data must not wear the accent that
+   also means "button". */
+:root {
+  --series-1: #3987e5;   /* business */
+  --series-2: #d95926;   /* personal */
+  --seq-1: #18877c;
+  --seq-2: #1da697;
+  --seq-3: #23bcaa;
+  --seq-4: #31d2c0;
+  --seq-5: #4ae5d6;
+  --grid: rgba(143, 176, 179, .14);
+}
+
+.range-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.seg-btn {
+  background: none;
+  border: 0;
+  padding: 7px 14px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink-faint);
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.seg-btn + .seg-btn { border-left: 1px solid var(--line-soft); }
+.seg-btn.is-on { background: rgba(64, 224, 208, .12); color: var(--cyan); }
+
+.chart-panel { margin-bottom: 14px; }
+
+.chart-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+.chart-title {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+
+.link-btn {
+  background: none;
+  border: 0;
+  color: var(--cyan-dim);
+  font-size: 11.5px;
+  cursor: pointer;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.link-btn:hover { color: var(--cyan); }
+
+/* Legend is always present for 2+ series — identity is never colour alone. */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink-soft);   /* text token, never the series colour */
+}
+.legend-swatch { width: 10px; height: 10px; border-radius: 3px; flex: none; }
+
+.chart-wrap { position: relative; overflow-x: auto; }
+.chart-wrap svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+.grid-line { stroke: var(--grid); stroke-width: 1; }
+.axis-label { fill: var(--ink-faint); font-size: 10px; font-family: var(--mono); }
+.series-line { fill: none; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.series-dot { r: 4; stroke: var(--bg-panel); stroke-width: 2; }
+
+/* Bars: 4px rounded data-end anchored to the baseline. */
+.bar-row + .bar-row { margin-top: 8px; }
+.bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12.5px;
+  margin-bottom: 4px;
+}
+.bar-cat { color: var(--ink); text-transform: capitalize; }
+.bar-val { color: var(--ink-soft); font-variant-numeric: tabular-nums; }
+.bar-track { height: 10px; background: rgba(143, 176, 179, .09); border-radius: 5px; overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 0 5px 5px 0; transition: width .4s cubic-bezier(.2,.8,.2,1); }
+
+.crosshair { stroke: var(--cyan-dim); stroke-width: 1; stroke-dasharray: 3 3; }
+
+.tip {
+  position: absolute;
+  pointer-events: none;
+  background: #04070d;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 8px 11px;
+  font-size: 12px;
+  color: var(--ink);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity .12s;
+  z-index: 5;
+}
+.tip.on { opacity: 1; }
+.tip-day { color: var(--ink-faint); font-size: 10.5px; margin-bottom: 4px; font-family: var(--mono); }
+.tip-row { display: flex; align-items: center; gap: 7px; }
+.tip-row b { font-weight: 500; font-variant-numeric: tabular-nums; }
+
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.data-table th, .data-table td { text-align: left; padding: 7px 4px; border-bottom: 1px solid var(--line-soft); }
+.data-table th { color: var(--ink-faint); font-weight: 400; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
+.data-table td { color: var(--ink-soft); }
+.data-table td.num { text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+
+@media (prefers-reduced-motion: reduce) {
+  .bar-fill { transition: none; }
+}
+
+/* ---------------------------------------------------------------- memory */
+
+.panel-lead {
+  margin: 0 0 14px;
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+#memInput {
+  width: 100%;
+  background: rgba(4, 7, 13, .6);
+  border: 1px solid var(--line-soft);
+  border-radius: 10px;
+  padding: 13px 15px;
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.55;
+  resize: vertical;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+#memInput::placeholder { color: var(--ink-faint); }
+#memInput:focus {
+  border-color: var(--cyan-dim);
+  box-shadow: 0 0 0 3px rgba(64, 224, 208, .08);
+}
+
+.note {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 11px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 14px;
+  line-height: 1.5;
+  animation: rise .3s ease both;
+}
+.note:last-child { border-bottom: 0; }
+.note-kind {
+  flex: none;
+  margin-top: 2px;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--bg);
+  background: var(--cyan-dim);
+  border-radius: 4px;
+  padding: 3px 6px;
+  min-width: 62px;
+  text-align: center;
+}
+.note-kind.goal     { background: #52e08a; }
+.note-kind.habit    { background: #ffb454; }
+.note-kind.decision { background: #9d8cff; }
+.note-body { flex: 1; color: var(--ink); overflow-wrap: anywhere; }
+.note-drop {
+  flex: none;
+  background: none;
+  border: 0;
+  color: var(--ink-faint);
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  padding: 2px 4px;
+  transition: color .2s;
+}
+.note-drop:hover { color: var(--bad); }
+
+.empty { color: var(--ink-faint); font-size: 13.5px; padding: 8px 0; }
+.empty code, .panel-lead code {
+  font-family: var(--mono);
+  font-size: .92em;
+  color: var(--cyan);
+}
+
+/* -------------------------------------------------------------- findings */
+
+.finding {
+  padding: 15px 0;
+  border-bottom: 1px solid var(--line-soft);
+  animation: rise .3s ease both;
+}
+.finding:last-child { border-bottom: 0; }
+/* Acted-on and dismissed items stay visible but stop competing: the list is
+   also a record of what he decided not to do, and hiding that invites the
+   same suggestion to be raised again next week. */
+.finding.acted, .finding.dismissed { opacity: .45; }
+
+.finding-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.finding-head h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.finding-status {
+  flex: none;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.finding.new .finding-status { color: var(--cyan); }
+
+.finding p { margin: 8px 0 0; font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); }
+.finding-why { color: var(--ink) !important; }
+
+.finding-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  margin-top: 9px;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+.finding-meta a { color: var(--cyan-dim); }
+.finding-actions { display: flex; gap: 16px; margin-top: 11px; }
+
+/* A second line under a table cell — the dates a campaign actually ran. */
+.row-sub {
+  display: block;
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+  margin-top: 2px;
+}
+
+/* ---------------------------------------------------------------- system */
+
+.sys-row {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 13.5px;
+}
+.sys-row:last-child { border-bottom: 0; }
+.sys-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  min-width: 92px;
+}
+.sys-detail { color: var(--ink-soft); flex: 1; overflow-wrap: anywhere; }
+.dot { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+.dot.ok   { background: var(--good); box-shadow: 0 0 8px rgba(82, 224, 138, .6); }
+.dot.bad  { background: var(--bad);  box-shadow: 0 0 8px rgba(255, 107, 107, .6); }
+.dot.warn { background: var(--warn); box-shadow: 0 0 8px rgba(255, 180, 84, .6); }
+
+.sys-note {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-left: 2px solid var(--warn);
+  background: rgba(255, 180, 84, .06);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px;
+  color: var(--ink-soft);
+  line-height: 1.55;
+}
+
+/* --------------------------------------------------------- accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  #field { display: none; }
+}
+
+@media (max-width: 420px) {
+  .core { width: 82px; height: 82px; }
+  .hud-text h1 { font-size: 22px; }
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ------------------------------------------------------------- business */
+
+/* The outcome bars are a three-column row (name, magnitude, count) rather than
+   the stacked label-over-track used for spend categories: these four rows are
+   read against each other, and a shared column edge is what makes them
+   comparable at a glance. */
+.bar-row.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2fr auto;
+  align-items: center;
+  gap: 12px;
+}
+.bar-row.split .bar-label { display: block; margin: 0; color: var(--ink); }
+.bar-row.split .bar-value {
+  font-variant-numeric: tabular-nums;
+  font-size: 15px;
+  color: var(--ink);
+  text-align: right;
+  white-space: nowrap;
+}
+.bar-sub {
+  display: block;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.bar-fill.tone-good { background: var(--good); }
+.bar-fill.tone-bad  { background: var(--bad); }
+.bar-fill.tone-wait { background: var(--warn); }
+.bar-fill.tone-idle { background: rgba(143, 176, 179, .35); }
+
+.stat-sub {
+  margin-top: 4px;
+  font-size: 11px;
+  color: var(--ink-soft);
+}
+.stat.tone-good .stat-value { color: var(--good); }
+.stat.tone-bad  .stat-value { color: var(--bad); }
+
+.data-table .pos { color: var(--good); }
+.data-table .neg { color: var(--bad); }
+
+.sub-head {
+  margin: 18px 0 8px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+/* A bucket of four customers is not a trend. Saying so next to the row is the
+   only thing that stops a 75% being read as a finding. */
+.thin {
+  font-size: 10.5px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--warn);
+  opacity: .85;
+}
+
+/* Charts and tables must scroll inside their own box; the page itself never
+   scrolls sideways on a phone. */
+.chart-wrap, .data-table { max-width: 100%; }
+#view-business .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+
+@media (max-width: 560px) {
+  .bar-row.split { grid-template-columns: minmax(0, 1.2fr) 1fr auto; gap: 8px; }
+  .bar-row.split .bar-label { font-size: 12px; }
+}
+
+/* ----------------------------------------------------------------- map */
+
+.map-wrap { position: relative; width: 100%; }
+.india { width: 100%; height: auto; display: block; max-height: 78vh; }
+.india-land {
+  fill: rgba(79, 209, 197, .07);
+  stroke: var(--cyan-dim, #4fd1c5);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+/* A town with a parcel still moving gets a slow ring. Restless on purpose:
+   these are the ones whose money has not decided yet. */
+.place-wait {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.5;
+  opacity: .55;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ping 2.6s cubic-bezier(.2,.7,.3,1) infinite;
+}
+@keyframes ping {
+  0%   { transform: scale(.7); opacity: .7; }
+  70%  { transform: scale(2.1); opacity: 0; }
+  100% { transform: scale(2.1); opacity: 0; }
+}
+.place { cursor: pointer; }
+.place:hover circle, .place:focus circle { filter: brightness(1.35); }
+.place:focus { outline: none; }
+.place:focus-visible circle { stroke-dasharray: 3 2; }
+
+.van-route {
+  fill: none;
+  stroke: var(--warn);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 7;
+  opacity: .3;
+}
+.van { fill: var(--warn); opacity: .95; }
+.depot {
+  fill: var(--bg, #04070d);
+  stroke: var(--cyan-dim, #4fd1c5);
+  stroke-width: 2;
+  opacity: .9;
+  cursor: pointer;
+  transition: opacity .2s;
+}
+.depot:hover, .depot:focus-visible { fill: var(--cyan-dim, #4fd1c5); outline: none; }
+.depot.is-focus { fill: var(--cyan-dim, #4fd1c5); stroke: var(--ink, #dfeff0); }
+
+/* Areas, blurred on purpose: an average has no edge. */
+.region { filter: url(#soft); cursor: pointer; transition: opacity .2s; }
+.region-good { fill: url(#rg-good); }
+.region-warn { fill: url(#rg-warn); }
+.region-bad { fill: url(#rg-bad); }
+.region:hover, .region:focus-visible { outline: none; opacity: .85; }
+.recent { cursor: pointer; transition: opacity .2s; }
+.recent:focus { outline: none; }
+.recent:hover circle, .recent:focus circle { filter: brightness(1.35); }
+
+/* One seller's ledger, in the state table's seat while it is picked. */
+.seller-card h4 { margin: 6px 0 2px; font-size: 16px; }
+.card-back {
+  background: none; border: 1px solid var(--line-soft); border-radius: 8px;
+  color: var(--ink-faint); font-family: var(--mono); font-size: 11px; padding: 4px 10px; cursor: pointer;
+}
+.card-back:hover { color: var(--cyan); border-color: var(--cyan-dim); }
+.card-where { margin: 0 0 4px; color: var(--ink-soft); font-size: 13px; }
+.card-products { margin: 0 0 10px; color: var(--ink-faint); font-size: 12px; }
+.card-split { margin-bottom: 10px; }
+.card-lanes { margin: 4px 0; font-size: 13px; }
+.card-lanes .sub { display: inline; font-size: 11px; color: var(--ink-faint); margin-right: 6px; }
+.seller-ledger { margin-top: 10px; }
+.seller-ledger td { vertical-align: top; }
+.seller-ledger .sub { display: block; font-size: 11px; color: var(--ink-faint); }
+#view-business .seller-ledger { white-space: normal; }
+
+/* The track record. Off until asked for: forty lanes at once hide the towns. */
+.lane-hist {
+  fill: none;
+  stroke-width: 1.6;
+  opacity: 0;
+  transition: opacity .25s;
+  pointer-events: none;
+}
+.lane-good { stroke: var(--good); }
+.lane-bad { stroke: var(--bad); }
+.map-wrap.show-history .lane-hist { opacity: .45; }
+.map-wrap .lane-hist.is-focus { opacity: .9; stroke-width: 2.2; }
+.map-wrap.has-focus .is-dim { opacity: .12; }
+.map-wrap.has-focus .lane-hist.is-dim { opacity: 0; }
+.map-wrap.has-focus .van-group.is-focus .van-route { opacity: .7; }
+.map-history { margin-left: 10px; border: 1px solid var(--line-soft); border-radius: 8px; padding: 4px 10px; }
+.van .wheel { fill: var(--ink, #dfeff0); opacity: .8; }
+
+/* Sellers: a diamond where the promises say they sit, a ring for the doubt,
+   and lanes that only appear when you ask, because eleven sellers' worth of
+   lines at once is a plate of noodles. */
+.seller { cursor: pointer; }
+.seller:focus { outline: none; }
+.seller-mark {
+  fill: var(--cyan-dim, #4fd1c5);
+  fill-opacity: .85;
+  stroke: var(--bg, #0b1416);
+  stroke-width: 2;
+}
+.seller-halo {
+  fill: var(--cyan-dim, #4fd1c5);
+  fill-opacity: .05;
+  stroke: var(--cyan-dim, #4fd1c5);
+  stroke-width: 1.2;
+  stroke-dasharray: 5 6;
+  opacity: .55;
+}
+.seller-label {
+  font-family: var(--mono);
+  font-size: 15px;
+  fill: var(--ink, #dfeff0);
+  opacity: .8;
+  paint-order: stroke;
+  stroke: var(--bg, #0b1416);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.seller .lane, .seller .lane-days { opacity: 0; transition: opacity .2s; pointer-events: none; }
+.seller.on .lane { opacity: .75; }
+.seller.on .lane-days { opacity: .95; }
+.seller.on .seller-halo { opacity: 1; fill-opacity: .12; }
+.seller.on .seller-mark, .seller:hover .seller-mark { filter: brightness(1.35); }
+.lane-days {
+  font-family: var(--mono);
+  font-size: 13px;
+  fill: var(--ink, #dfeff0);
+  paint-order: stroke;
+  stroke: var(--bg, #0b1416);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+}
+.lane-chip {
+  display: inline-block;
+  padding: 1px 7px;
+  margin: 1px 0;
+  border-radius: 999px;
+  border: 1px solid var(--line, rgba(255,255,255,.12));
+  font-size: 12px;
+  white-space: nowrap;
+}
+.lane-chip.pos { border-color: var(--good); }
+.lane-chip.neg { border-color: var(--bad); }
+.seller-table td { vertical-align: top; }
+.seller-table .sub { display: block; font-size: 11px; color: var(--ink-faint); margin-top: 2px; }
+.lane-chip .sub { display: inline; margin: 0; }
+#view-business .seller-table { white-space: normal; }
+#view-business .seller-table td:first-child { min-width: 180px; }
+
+/* The one real finding the map produced, given room to be read. */
+.split-call {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 14px 0 4px;
+}
+.split-side {
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(143, 176, 179, .06);
+  text-align: center;
+}
+.split-rate { font-size: 30px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.tone-good-text { color: var(--good); }
+.tone-bad-text  { color: var(--bad); }
+.split-label {
+  font-size: 11px;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-top: 2px;
+}
+.split-sub { font-size: 11px; color: var(--ink-soft); opacity: .8; }
+
+/* animateMotion cannot be stopped from CSS, so the vans are held back in JS
+   when the reader asks for reduced motion; only the ring is handled here. */
+@media (prefers-reduced-motion: reduce) {
+  .place-wait { animation: none; opacity: .35; }
+}
+
+/* Prose caveats under a chart. Distinct from .note, which is the Memory tab's
+   bordered row and brought a flex layout that mangled a paragraph. */
+.caveat {
+  margin: 12px 0 4px;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+  border-left: 2px solid var(--warn);
+  padding-left: 11px;
+}
+
+/* --------------------------------------------------- ranked metric cards */
+
+/* The Analytics realtime card row. Auto-fit rather than a fixed column count:
+   one card per row on a phone, five across on the Mac, nothing to configure. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  gap: 12px;
+  margin: 14px 0;
+}
+.mc { display: flex; flex-direction: column; padding: 16px; }
+
+.mc-title {
+  font-size: 13px;
+  color: var(--ink-soft);
+  /* The dotted underline is Analytics' cue for a swappable dimension. Kept
+     because it reads as "this is a breakdown", even though ours is fixed. */
+  border-bottom: 1px dotted var(--line);
+  padding-bottom: 2px;
+}
+.mc-lead { margin: 14px 0 2px; }
+.mc-rank {
+  font-size: 12px;
+  color: var(--ink-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.mc-big { display: flex; align-items: baseline; gap: 8px; margin-top: 2px; }
+.mc-value { font-size: 26px; font-variant-numeric: tabular-nums; color: var(--ink); }
+.mc-share { font-size: 12px; color: var(--ink-soft); }
+
+/* Column sparkline: one bar per day, aligned to a common baseline. */
+.spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 38px;
+  margin: 10px 0 4px;
+}
+.spark i {
+  flex: 1;
+  min-width: 1px;
+  background: var(--cyan);
+  border-radius: 1px 1px 0 0;
+}
+
+.mc-cols {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line-soft);
+  font-size: 10px;
+  letter-spacing: .09em;
+  color: var(--ink-faint);
+}
+.mc-list { list-style: none; margin: 0; padding: 0; flex: 1; }
+.mc-list li { padding: 9px 0 0; }
+.mc-row { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+.mc-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+.mc-num { font-variant-numeric: tabular-nums; color: var(--ink-soft); flex: none; }
+/* Bar under the row, not beside it: the label keeps full width, which matters
+   when the label is a campaign name. */
+.mc-bar { height: 3px; margin-top: 5px; background: var(--line-soft); border-radius: 2px; }
+.mc-bar i { display: block; height: 100%; background: var(--cyan-dim); border-radius: 2px; }
+
+.mc-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 12px;
+  padding-top: 8px;
+  font-size: 11px;
+  color: var(--ink-faint);
+}
+.mc-nav {
+  background: none;
+  border: 0;
+  color: var(--ink-soft);
+  font-size: 17px;
+  line-height: 1;
+  padding: 2px 7px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.mc-nav:hover:not(:disabled) { background: rgba(64, 224, 208, .1); color: var(--cyan); }
+.mc-nav:disabled { opacity: .28; cursor: default; }
+.spark i.spark-nil { height: 2px; background: var(--line); border-radius: 0; }
+
+/* The app is a 720px phone-first column on purpose. The card row is the one
+   thing that genuinely wants more room — five ranked lists side by side is the
+   whole point of the pattern — so on a wide screen it alone breaks out of the
+   column, centred, while everything above it stays where it was. */
+@media (min-width: 1180px) {
+  .card-grid {
+    width: min(1360px, calc(100vw - 48px));
+    margin-left: calc(50% - min(680px, calc(50vw - 24px)));
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+@media (min-width: 860px) and (max-width: 1179px) {
+  .card-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Two fills in one track, laid end to end: ads then purchases. Flex rather
+   than absolute positioning so neither has to know the other's width. */
+.bar-track.split-track { display: flex; gap: 1px; }
+.split-track .bar-fill { border-radius: 0; }
+.split-track .bar-fill:first-child { border-radius: 5px 0 0 5px; }
+.split-track .bar-fill:last-child { border-radius: 0 5px 5px 0; }
+
+/* ------------------------------------------------------------ wide layout */
+
+/* The 720px column is right on a phone and wrong on a Mac: two thirds of the
+   screen sat empty while the map, the tables and the charts queued up behind
+   one another in a single scroll. From 1024px up the page opens into two
+   columns.
+
+   Panels pair in document order, which works because the pairs were chosen to
+   be about the same height. Where they are not, the markup says so: the two
+   short tables travel as one `.stack` item so the tall cohorts panel has
+   something its own size beside it, and the map — taller than any column —
+   keeps the full width and splits inside itself instead. Anything that is
+   really a row — the KPI strip, the five ranked cards, a view's own header —
+   spans both columns. Below 1024px not one rule here applies, so the phone
+   layout is exactly what it was. */
+
+.stack { display: contents; }
+
+@media (min-width: 1024px) {
+  .app {
+    max-width: min(1440px, calc(100vw - 40px));
+    display: grid;
+    grid-template-columns: minmax(230px, 300px) minmax(0, 1fr);
+    column-gap: 24px;
+    align-items: start;
+  }
+  /* The glance row moves up beside the orb instead of under it. */
+  .app > .hud { align-self: center; }
+  .app > .stats { align-self: center; margin-bottom: 0; }
+  .app > .stats:empty { display: none; }
+  .app > .tabs,
+  .app > .view { grid-column: 1 / -1; }
+
+  /* Six tabs stretched across 1440px read as a toolbar, not a nav. */
+  .tabs { justify-content: flex-start; }
+  .tab { flex: 0 0 auto; padding: 10px 22px; }
+
+  .view.is-active {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    align-items: start;
+  }
+  /* Without this a wide table inside a panel refuses to let its column shrink. */
+  .view.is-active > * { min-width: 0; }
+
+  .view.is-active > .stats,
+  .view.is-active > .card-grid,
+  .view.is-active > .view-head,
+  .view.is-active > .range-row,
+  .view.is-active > .panel-actions,
+  .view.is-active > .span-all { grid-column: 1 / -1; }
+
+  /* Margins were how panels were spaced in one column; the grid gap does it now. */
+  .chart-panel { margin-bottom: 0; }
+  .card-grid { width: auto; margin: 0; }
+
+  /* Three panels travelling as one grid item, so they can sit beside the map
+     and keep filling their own column instead of one tall grid row. */
+  .stack {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+  }
+
+  /* Title and range switch share a line; the view head is a header, not a panel. */
+  .view-head {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .view-head h2 { margin: 0 }
+
+  /* The map is the one panel taller than any column: it keeps the full width
+     and splits inside instead, with the state table reading beside the map
+     rather than a screen below it. */
+  .map-panel {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    column-gap: 26px;
+    grid-template-areas:
+      "head   head"
+      "map    states"
+      "note   states";
+    align-items: start;
+  }
+  .map-panel > .panel-head { grid-area: head; }
+  .map-panel > .map-wrap   { grid-area: map; }
+  .map-panel > #mapNote,
+  .map-panel > #sellerNote  { grid-area: note; }
+  .map-panel > #mapStates,
+  .map-panel > #sellerTable { grid-area: states; }
+
+  /* A business table is `display: block` so it can scroll sideways on a phone,
+     which also leaves it shrink-wrapped to its content. There is room here, so
+     it goes back to being a real table and fills the column it was given. */
+  #view-business .data-table { display: table; white-space: normal; }
+  /* The label column takes the slack so the figures stay grouped on the right;
+     spread evenly across 700px the eye loses which number is whose. */
+  #view-business .data-table th.num,
+  #view-business .data-table td.num { width: 1%; white-space: nowrap; }
+
+  /* Prose keeps a measure. A briefing read across 1440px is unreadable, and
+     the memory form and the system panel are lists, not dashboards. */
+  #view-briefing.is-active,
+  #view-findings.is-active,
+  #view-memory.is-active,
+  #view-system.is-active {
+    display: block;
+    max-width: 940px;
+  }
+}
+
+/* Five ranked cards need the full 1180px to be five across; between 1024 and
+   that they go three and two rather than shrinking below legibility. */
+@media (min-width: 1024px) and (max-width: 1179px) {
+  .card-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* ------------------------------------------------- demo copy of the panel
+
+   Everything above this line is the real ESTAZY stylesheet. These rules only
+   exist in the public demo: the banner that says the data is invented, and
+   base sizes for two headings that the live app only ever renders wide. */
+
+.demo-flag {
+  margin: 0 0 16px;
+  padding: 11px 14px;
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--cyan);
+  border-radius: 0 10px 10px 0;
+  background: rgba(64, 224, 208, .05);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+.demo-flag b { color: var(--cyan); font-weight: 600; }
+.demo-flag a { color: var(--cyan); text-decoration: none; border-bottom: 1px dotted var(--cyan-dim); }
+
+.panel-head h3,
+.view-head h2 {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: .01em;
+  color: var(--ink);
+}
+.view-head h2 { font-size: 20px; }
+
+.finding p strong { font-weight: 500; }
+
+@media (min-width: 1100px) {
+  .app > .demo-flag { grid-column: 1 / -1; align-self: center; }
+}
+
+/* A view holding a single panel should use the whole width — the live app
+   never has one, because every view there carries at least two. */
+@media (min-width: 1100px) {
+  .view.is-active > .panel:only-child { grid-column: 1 / -1; }
+  #view-advice .finding-head h3 { font-size: 16px; }
+}
+
+/* The live app feeds these bars single lowercase keys ("ads", "rent"), so it
+   capitalises them. The demo passes whole sentences already cased. */
+.bar-cat { text-transform: none; }
