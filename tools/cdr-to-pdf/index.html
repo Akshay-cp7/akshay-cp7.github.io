@@ -109,6 +109,7 @@ h3 { font-size: 17px; margin: 22px 0 4px; }
 ol.steps { padding-left: 22px; } ol.steps li { margin: 6px 0; }
 .app { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin: 36px 0; }
 .app p { margin: 0; }
+.app[hidden] { display: none; }
 footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 1px solid var(--line); margin-top: 40px; }
 @media (max-width: 520px) { .bar .name { width: 100%; } .drop { padding: 26px 14px; } }
 </style>
@@ -144,6 +145,7 @@ footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 
       </div>
       <p class="note" id="facts"></p>
       <div id="pages"></div>
+      <div id="moreAfter" hidden></div>
     </div>
   </main>
 
@@ -174,15 +176,18 @@ footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 
     <h3>Is it free?</h3>
     <p>Yes, with no sign up and no limit on how many files you convert.</p>
 
-    <div class="app">
+    <div class="app" id="cdrApp" hidden>
       <p><b>CDR Viewer for Android</b><br>Open CDR files from WhatsApp or email in one tap.</p>
-      <a class="btn" href="https://play.google.com/store/apps/details?id=com.arzDrzapps.cdr_viewer" rel="noopener">Get it on Google Play</a>
+      <a class="btn" href="https://play.google.com/store/apps/details?id=com.arzDrzapps.cdr_viewer&amp;referrer=utm_source%3Dakshaycp%26utm_medium%3Dweb%26utm_campaign%3Dcdr-to-pdf" rel="noopener">Get it on Google Play</a>
     </div>
+    <div id="moreInfo" hidden></div>
   </section>
 
   <footer>Made by <a href="/">Akshay CP</a>. CorelDRAW is a trademark of its owner; this tool is not made by or connected to them. Something didn't open right? Email <a href="mailto:akshaycpachu.123@gmail.com?subject=CDR%20to%20PDF">akshaycpachu.123@gmail.com</a>.</footer>
 </div>
 
+<script src="../assets/apps-data.js"></script>
+<script src="../assets/house-ads.js"></script>
 <script>
 (function () {
   'use strict';
@@ -191,6 +196,10 @@ footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 
   const $ = (id) => document.getElementById(id);
   const drop = $('drop'), pick = $('pick'), status = $('status'), pagesEl = $('pages');
   let result = null, mode = 'auto', stem = 'design';
+
+  const ADS = { page: 'cdr-to-pdf', tags: ['design', 'pdf', 'print'], skip: ['com.arzDrzapps.cdr_viewer'] };
+  if (HouseAds.android) $('cdrApp').hidden = false;
+  HouseAds.mount($('moreInfo'), ADS);
 
   function script(src) {
     return new Promise((ok, bad) => {
@@ -279,6 +288,7 @@ footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 
         facts.push((names.length === 1 ? '1 font was' : names.length + ' fonts were') + ' swapped for a close match (' + names.slice(0, 4).join(', ') + (names.length > 4 ? ' and more' : '') + ')');
       }
       $('facts').textContent = facts.join(' · ');
+      HouseAds.mount($('moreAfter'), Object.assign({ title: 'Done. More free apps you might like', apps: 3, games: 1 }, ADS));
       say('');
       $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } catch (e) {
