@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CDR to PDF Converter: Open CorelDRAW Files Online, Free</title>
+<meta name="description" content="Open a CorelDRAW .cdr file in your browser and save it as PDF or PNG. Free, no sign up, and your file never leaves your device. Works with CorelDRAW 3 to 2025.">
+<link rel="canonical" href="https://akshaycp.com/tools/cdr-to-pdf/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="CDR to PDF Converter: Open CorelDRAW Files Online, Free">
+<meta property="og:description" content="Open a .cdr file without CorelDRAW and save it as PDF or PNG. Nothing is uploaded.">
+<meta property="og:url" content="https://akshaycp.com/tools/cdr-to-pdf/">
+<meta name="theme-color" content="#f6f3ec">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "CDR to PDF Converter",
+      "url": "https://akshaycp.com/tools/cdr-to-pdf/",
+      "applicationCategory": "DesignApplication",
+      "operatingSystem": "Any",
+      "browserRequirements": "A modern browser with WebAssembly",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "description": "Opens CorelDRAW .cdr files in the browser and saves them as PDF or PNG without uploading them.",
+      "author": { "@type": "Person", "name": "Akshay CP", "url": "https://akshaycp.com/" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "How do I open a CDR file without CorelDRAW?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Drop the .cdr file on this page. It is drawn right in your browser and you can save it as a PDF or PNG. You do not need CorelDRAW or any other program." } },
+        { "@type": "Question", "name": "Is my file uploaded anywhere?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. The converter runs inside your browser, so the file stays on your computer or phone. Nothing is sent to a server." } },
+        { "@type": "Question", "name": "Which CorelDRAW versions work?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Files saved by CorelDRAW 3 up to CorelDRAW 2025, including X3, X4, X5, X6, X7 and X8." } },
+        { "@type": "Question", "name": "Why does the text look slightly different?",
+          "acceptedAnswer": { "@type": "Answer", "text": "A CDR file names its fonts but does not carry them. If a font is not on your device, a close match is used and the page tells you which fonts were swapped." } },
+        { "@type": "Question", "name": "Can I convert CDR to JPG or PNG?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every page has its own PNG button, which saves a sharp image you can open anywhere or turn into a JPG." } },
+        { "@type": "Question", "name": "Is it free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes, with no sign up and no limit on how many files you convert." } }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root {
+  --paper: #f6f3ec; --card: #ffffff; --ink: #1b1d22; --soft: #5c6170; --line: #e2ddd1;
+  --accent: #0a84c6; --accent-ink: #ffffff; --drop: #eef6fb; --bad: #b3261e;
+  --c: #00a3e0; --m: #e5007e; --y: #f5c400; --k: #1b1d22;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #17191e; --card: #22252c; --ink: #eeeae1; --soft: #a3a7b3; --line: #343842;
+    --accent: #3fb0eb; --accent-ink: #0d1014; --drop: #1d2a33; --bad: #f2867e; --k: #eeeae1;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #17191e; --card: #22252c; --ink: #eeeae1; --soft: #a3a7b3; --line: #343842;
+  --accent: #3fb0eb; --accent-ink: #0d1014; --drop: #1d2a33; --bad: #f2867e; --k: #eeeae1;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 "Space Grotesk", system-ui, sans-serif; }
+a { color: var(--accent); }
+.wrap { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+header.top { padding: 18px 0 0; }
+.brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); font-weight: 600; }
+.dots { display: inline-flex; gap: 3px; }
+.dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+.dots i:nth-child(1) { background: var(--c); } .dots i:nth-child(2) { background: var(--m); }
+.dots i:nth-child(3) { background: var(--y); } .dots i:nth-child(4) { background: var(--k); }
+h1 { font-size: clamp(30px, 6vw, 46px); line-height: 1.1; margin: 28px 0 10px; letter-spacing: -0.02em; }
+.lede { color: var(--soft); font-size: 18px; margin: 0 0 22px; max-width: 640px; }
+.drop { display: block; border: 2px dashed var(--accent); background: var(--drop); border-radius: 18px; padding: 34px 20px; text-align: center; cursor: pointer; transition: transform .15s; }
+.drop.over { transform: scale(1.01); border-style: solid; }
+.drop strong { display: block; font-size: 20px; margin-bottom: 4px; }
+.drop span { color: var(--soft); font-size: 15px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 0; border-radius: 12px; background: var(--accent); color: var(--accent-ink); font: 600 16px "Space Grotesk", sans-serif; padding: 12px 20px; cursor: pointer; text-decoration: none; }
+.btn.ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); }
+.btn:disabled { opacity: .55; cursor: progress; }
+.drop .btn { margin-top: 16px; pointer-events: none; color: var(--accent-ink); font-size: 16px; }
+.trust { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 14px 0 0; padding: 0; list-style: none; color: var(--soft); font-size: 14px; }
+.trust li::before { content: "✓ "; color: var(--accent); font-weight: 700; }
+#status { margin: 18px 0 0; min-height: 1.6em; color: var(--soft); }
+#status.bad { color: var(--bad); }
+#result[hidden] { display: none; }
+.bar { position: sticky; top: 0; z-index: 2; background: var(--paper); padding: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); margin-top: 8px; }
+.bar .name { font-weight: 600; margin-right: auto; overflow-wrap: anywhere; }
+.seg { display: inline-flex; border: 1.5px solid var(--line); border-radius: 12px; overflow: hidden; }
+.seg button { border: 0; background: transparent; color: var(--ink); font: 500 14px "Space Grotesk", sans-serif; padding: 9px 12px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+.note { font-size: 14px; color: var(--soft); margin: 10px 0 0; }
+#pages { display: flex; flex-direction: column; gap: 22px; padding: 18px 0 8px; }
+.cdr-page { display: flex; justify-content: center; }
+.cdr-page svg { display: block; width: 100%; height: auto; max-height: 80vh; background: #fff; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,.18), 0 10px 30px rgba(0,0,0,.12); }
+.pagefoot { display: flex; justify-content: space-between; align-items: center; color: var(--soft); font-size: 14px; margin-top: 8px; }
+.pagefoot button { font-size: 14px; padding: 7px 12px; }
+section.info { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 8px; }
+h2 { font-size: 24px; margin: 32px 0 8px; letter-spacing: -0.01em; }
+h3 { font-size: 17px; margin: 22px 0 4px; }
+ol.steps { padding-left: 22px; } ol.steps li { margin: 6px 0; }
+.app { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 18px; margin: 36px 0; }
+.app p { margin: 0; }
+footer { color: var(--soft); font-size: 14px; padding: 28px 0 40px; border-top: 1px solid var(--line); margin-top: 40px; }
+@media (max-width: 520px) { .bar .name { width: 100%; } .drop { padding: 26px 14px; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a class="brand" href="/tools/"><span class="dots"><i></i><i></i><i></i><i></i></span>Free file tools</a></header>
+
+  <main>
+    <h1>CDR to PDF converter</h1>
+    <p class="lede">Open a CorelDRAW file right here and save it as a PDF or PNG. You don't need CorelDRAW, and your file never leaves your device.</p>
+
+    <label class="drop" id="drop">
+      <input type="file" id="pick" accept=".cdr,application/vnd.corel-draw,application/cdr,application/x-cdr,image/x-cdr" hidden>
+      <strong>Drop your .cdr file here</strong>
+      <span>or tap to choose one</span><br>
+      <span class="btn">Choose CDR file</span>
+    </label>
+    <ul class="trust">
+      <li>No upload</li><li>No sign up</li><li>CorelDRAW 3 to 2025</li><li>Free, no limits</li>
+    </ul>
+    <p id="status" role="status" aria-live="polite"></p>
+
+    <div id="result" hidden>
+      <div class="bar">
+        <span class="name" id="fname"></span>
+        <div class="seg" id="modes" hidden>
+          <button type="button" data-mode="page" aria-pressed="false">Page</button>
+          <button type="button" data-mode="drawing" aria-pressed="false">Whole artwork</button>
+        </div>
+        <button class="btn" id="pdf" type="button">Download PDF</button>
+        <button class="btn ghost" id="again" type="button">Open another</button>
+      </div>
+      <p class="note" id="facts"></p>
+      <div id="pages"></div>
+    </div>
+  </main>
+
+  <section class="info">
+    <h2>How to convert CDR to PDF</h2>
+    <ol class="steps">
+      <li>Drop your .cdr file on the box above, or tap it and pick the file.</li>
+      <li>Check the preview. Every page in the file is shown.</li>
+      <li>Tap <b>Download PDF</b> for the whole design, or <b>PNG</b> under a page for a single image.</li>
+    </ol>
+
+    <h2>Your design stays on your device</h2>
+    <p>Most CDR converters upload your file to their server and send back a picture. This one doesn't. The converter is built on libcdr, the same open source reader LibreOffice and Inkscape use, and it runs inside your browser. Your file is never sent anywhere, so client work and unreleased designs stay private.</p>
+
+    <h2>Questions</h2>
+    <h3>How do I open a CDR file without CorelDRAW?</h3>
+    <p>Drop the .cdr file on this page. It is drawn right in your browser and you can save it as a PDF or PNG. You don't need CorelDRAW or any other program.</p>
+    <h3>Which CorelDRAW versions work?</h3>
+    <p>Files saved by CorelDRAW 3 up to CorelDRAW 2025, including X3, X4, X5, X6, X7 and X8. The page tells you which version made your file.</p>
+    <h3>Why does the text look slightly different?</h3>
+    <p>A CDR file names its fonts but doesn't carry them. If a font isn't on your device, a close match is used, and the page tells you which fonts were swapped. Install the original font and open the file again to get it exact.</p>
+    <h3>Why is part of my design outside the page?</h3>
+    <p>Designers often work on the desk beside the page. When most of the artwork sits off the page, the converter shows the whole artwork instead. Use the Page and Whole artwork buttons to switch.</p>
+    <h3>Can I convert CDR to JPG or PNG?</h3>
+    <p>Yes. Every page has its own PNG button, which saves a sharp image you can open anywhere or turn into a JPG.</p>
+    <h3>Does it work on a phone?</h3>
+    <p>Yes, in Chrome or Safari. If you get CDR files on WhatsApp often, the Android app opens them straight from the chat.</p>
+    <h3>Is it free?</h3>
+    <p>Yes, with no sign up and no limit on how many files you convert.</p>
+
+    <div class="app">
+      <p><b>CDR Viewer for Android</b><br>Open CDR files from WhatsApp or email in one tap.</p>
+      <a class="btn" href="https://play.google.com/store/apps/details?id=com.arzDrzapps.cdr_viewer" rel="noopener">Get it on Google Play</a>
+    </div>
+  </section>
+
+  <footer>Made by <a href="/">Akshay CP</a>. CorelDRAW is a trademark of its owner; this tool is not made by or connected to them. Something didn't open right? Email <a href="mailto:akshaycpachu.123@gmail.com?subject=CDR%20to%20PDF">akshaycpachu.123@gmail.com</a>.</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  const ENGINE = 'engine/';
+  const JSPDF = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+  const $ = (id) => document.getElementById(id);
+  const drop = $('drop'), pick = $('pick'), status = $('status'), pagesEl = $('pages');
+  let result = null, mode = 'auto', stem = 'design';
+
+  function script(src) {
+    return new Promise((ok, bad) => {
+      const s = document.createElement('script');
+      s.src = src; s.onload = ok; s.onerror = () => bad(new Error('could not load ' + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  // The engine is a 1 MB download, so it loads on the first sign of interest, not with the page.
+  let engineReady = null;
+  function loadEngine() {
+    if (!engineReady) {
+      const css = document.createElement('link');
+      css.rel = 'stylesheet'; css.href = ENGINE + 'fonts.css';
+      document.head.appendChild(css);
+      engineReady = script(ENGINE + 'cdr_engine.js').then(() => script(ENGINE + 'cdr_view.js')).then(() => CdrView.warm());
+      engineReady.catch(() => { engineReady = null; });
+    }
+    return engineReady;
+  }
+  ['pointerenter', 'focusin', 'touchstart'].forEach((e) => drop.addEventListener(e, loadEngine, { once: true, passive: true }));
+
+  function say(text, bad) { status.textContent = text; status.classList.toggle('bad', !!bad); }
+
+  drop.addEventListener('dragover', (e) => { e.preventDefault(); drop.classList.add('over'); loadEngine(); });
+  drop.addEventListener('dragleave', () => drop.classList.remove('over'));
+  drop.addEventListener('drop', (e) => {
+    e.preventDefault(); drop.classList.remove('over');
+    if (e.dataTransfer.files[0]) open(e.dataTransfer.files[0]);
+  });
+  pick.addEventListener('change', () => { if (pick.files[0]) open(pick.files[0]); pick.value = ''; });
+  $('again').addEventListener('click', () => pick.click());
+
+  function modeFor(facts) {
+    if (mode !== 'auto') return mode;
+    return facts.onPage < 0.9 ? 'drawing' : 'page';
+  }
+
+  function applyMode() {
+    const modes = [];
+    pagesEl.querySelectorAll('.cdr-page').forEach((el, i) => {
+      const m = modeFor(result.pages[i]);
+      CdrView.frame(el, result.pages[i], m);
+      el.querySelector('svg').removeAttribute('width');
+      el.querySelector('svg').removeAttribute('height');
+      modes.push(m);
+    });
+    const shown = modes[0] || 'page';
+    $('modes').querySelectorAll('button').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.mode === shown)));
+  }
+  $('modes').addEventListener('click', (e) => {
+    const b = e.target.closest('button'); if (!b || !result) return;
+    mode = b.dataset.mode; applyMode();
+  });
+
+  async function open(file) {
+    stem = file.name.replace(/\.[^.]+$/, '').trim() || 'design';
+    $('result').hidden = true;
+    say('Getting the reader ready...');
+    try {
+      await loadEngine();
+      say('Drawing ' + file.name + '...');
+      const bytes = new Uint8Array(await file.arrayBuffer());
+      // the engine lays pages out inside a host that has to be on screen to measure text
+      pagesEl.textContent = '';
+      $('result').hidden = false;
+      result = await CdrView.render(bytes, pagesEl);
+      if (!result.ok) {
+        $('result').hidden = true;
+        say(result.reason === 'not-cdr'
+          ? "This doesn't look like a CorelDRAW file. Files ending in .cdr from CorelDRAW 3 to 2025 work."
+          : "This CDR file couldn't be read. It may be damaged, or saved in a way the reader doesn't know yet. Email it to us and we'll look.", true);
+        return;
+      }
+      mode = 'auto';
+      $('fname').textContent = file.name;
+      $('modes').hidden = !result.pages.some((p) => p.drawing && p.onPage < 0.999);
+      applyMode();
+      addPageFeet();
+      const facts = [];
+      facts.push(result.pages.length === 1 ? '1 page' : result.pages.length + ' pages');
+      if (result.version) facts.push('made in ' + result.version);
+      if (result.missingFonts.length) {
+        const names = result.missingFonts.map((f) => f.name);
+        facts.push((names.length === 1 ? '1 font was' : names.length + ' fonts were') + ' swapped for a close match (' + names.slice(0, 4).join(', ') + (names.length > 4 ? ' and more' : '') + ')');
+      }
+      $('facts').textContent = facts.join(' · ');
+      say('');
+      $('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } catch (e) {
+      $('result').hidden = true;
+      say('Something went wrong opening this file. Try again, or use an up to date Chrome, Edge, Firefox or Safari.', true);
+      console.error(e);
+    }
+  }
+
+  function addPageFeet() {
+    const n = result.pages.length;
+    pagesEl.querySelectorAll('.cdr-page').forEach((el, i) => {
+      const box = document.createElement('div');
+      el.before(box);
+      box.appendChild(el);
+      const foot = document.createElement('div');
+      foot.className = 'pagefoot';
+      foot.innerHTML = '<span></span><button type="button" class="btn ghost">PNG</button>';
+      foot.firstChild.textContent = 'Page ' + (i + 1) + ' of ' + n;
+      foot.lastChild.addEventListener('click', () => savePng(i, foot.lastChild));
+      box.appendChild(foot);
+    });
+  }
+
+  // ---------- export ----------
+
+  const FACES = ['CdrSans', 'CdrSerif', 'CdrScript', 'CdrCondensed', 'CdrMono'];
+  const FONT_FILES = {
+    CdrSans: [['Arimo.ttf', 'normal', '100 900'], ['Arimo-Italic.ttf', 'italic', '100 900']],
+    CdrSerif: [['Tinos-Regular.ttf', 'normal', '100 500'], ['Tinos-Bold.ttf', 'normal', '600 900'], ['Tinos-Italic.ttf', 'italic', '100 900']],
+    CdrScript: [['GreatVibes.ttf', 'normal', '100 900']],
+    CdrCondensed: [['Anton.ttf', 'normal', '100 900']],
+    CdrMono: [['Cousine.ttf', 'normal', '100 900']],
+  };
+  const fontData = {};
+  // An svg drawn as an image can't see the page's fonts, so the stand ins go inside it.
+  async function fontCss(families) {
+    let css = '';
+    for (const fam of families) {
+      for (const [file, style, weight] of FONT_FILES[fam] || []) {
+        if (!fontData[file]) {
+          const buf = new Uint8Array(await (await fetch(ENGINE + 'fonts/' + file)).arrayBuffer());
+          let bin = '';
+          for (let i = 0; i < buf.length; i += 0x8000) bin += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
+          fontData[file] = btoa(bin);
+        }
+        css += `@font-face{font-family:${fam};font-style:${style};font-weight:${weight};src:url(data:font/ttf;base64,${fontData[file]})}`;
+      }
+    }
+    return css;
+  }
+
+  // Draws page i onto a canvas whose long side is maxSide pixels. Returns the canvas and its size in points.
+  async function rasterise(i, maxSide) {
+    const svg = pagesEl.querySelectorAll('.cdr-page svg')[i].cloneNode(true);
+    const vb = svg.getAttribute('viewBox').split(/[\s,]+/).map(Number);
+    const ratio = vb[2] / vb[3];
+    let w = ratio >= 1 ? maxSide : Math.round(maxSide * ratio);
+    let h = ratio >= 1 ? Math.round(maxSide / ratio) : maxSide;
+    // phone canvases fail past roughly 16 million pixels
+    const cap = 16e6;
+    if (w * h > cap) { const k = Math.sqrt(cap / (w * h)); w = Math.floor(w * k); h = Math.floor(h * k); }
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    svg.removeAttribute('style');
+    const used = new Set();
+    svg.querySelectorAll('[font-family]').forEach((t) => FACES.forEach((f) => { if (t.getAttribute('font-family').includes(f)) used.add(f); }));
+    if (used.size) {
+      const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+      style.textContent = await fontCss([...used]);
+      svg.insertBefore(style, svg.firstChild);
+    }
+    const url = URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(svg)], { type: 'image/svg+xml' }));
+    try {
+      const img = new Image();
+      await new Promise((ok, bad) => { img.onload = ok; img.onerror = () => bad(new Error('svg image failed')); img.src = url; });
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      return { canvas, wPt: vb[2], hPt: vb[3] };
+    } finally {
+      URL.revokeObjectURL(url);
+    }
+  }
+
+  function download(blob, name) {
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+  }
+
+  async function busy(btn, label, job) {
+    const old = btn.textContent;
+    btn.disabled = true; btn.textContent = label;
+    try { await job(); } catch (e) { console.error(e); say('Saving failed. Try again, or save one page at a time as PNG.', true); }
+    finally { btn.disabled = false; btn.textContent = old; }
+  }
+
+  function savePng(i, btn) {
+    return busy(btn, 'Saving...', async () => {
+      const { canvas } = await rasterise(i, 4000);
+      const png = await new Promise((ok) => canvas.toBlob(ok, 'image/png'));
+      download(png, result.pages.length > 1 ? `${stem} page ${i + 1}.png` : `${stem}.png`);
+    });
+  }
+
+  $('pdf').addEventListener('click', (e) => busy(e.currentTarget, 'Making PDF...', async () => {
+    if (!window.jspdf) await script(JSPDF);
+    let doc = null;
+    for (let i = 0; i < result.pages.length; i++) {
+      const { canvas, wPt, hPt } = await rasterise(i, 3200);
+      const orient = wPt > hPt ? 'l' : 'p';
+      if (!doc) doc = new window.jspdf.jsPDF({ unit: 'pt', format: [wPt, hPt], orientation: orient, compress: true });
+      else doc.addPage([wPt, hPt], orient);
+      // JPEG goes into the PDF as it is; PNG would be decoded and squeezed again, which is slow on phones
+      doc.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, wPt, hPt);
+      canvas.width = canvas.height = 0;
+    }
+    doc.setProperties({ title: stem });
+    download(doc.output('blob'), stem + '.pdf');
+  }));
+})();
+</script>
+</body>
+</html>

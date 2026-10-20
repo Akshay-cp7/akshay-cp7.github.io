@@ -1,0 +1,8 @@
+@font-face { font-family: CdrSans; src: url(fonts/Arimo.ttf); font-weight: 100 900; font-style: normal; }
+@font-face { font-family: CdrSans; src: url(fonts/Arimo-Italic.ttf); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: CdrSerif; src: url(fonts/Tinos-Regular.ttf); font-weight: 100 500; font-style: normal; }
+@font-face { font-family: CdrSerif; src: url(fonts/Tinos-Bold.ttf); font-weight: 600 900; font-style: normal; }
+@font-face { font-family: CdrSerif; src: url(fonts/Tinos-Italic.ttf); font-weight: 100 900; font-style: italic; }
+@font-face { font-family: CdrScript; src: url(fonts/GreatVibes.ttf); }
+@font-face { font-family: CdrCondensed; src: url(fonts/Anton.ttf); }
+@font-face { font-family: CdrMono; src: url(fonts/Cousine.ttf); }
