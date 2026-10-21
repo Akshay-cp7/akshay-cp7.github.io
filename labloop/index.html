@@ -234,7 +234,7 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-21-alltab';
+const BUILD='2026-10-21-alltab2';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -548,7 +548,7 @@ function sendRequest(){
     tx.set(D('loans',code),{itemId,itemName:it.name,qty,borrower:who,borrowerLab:lab,purpose:pur,due,status:'approved',out:today(),selfIssued:true,createdAt:FB.serverTimestamp()});
     tx.update(D('items',itemId),{lent:lentNow+qty,lastBorrow:code});
     tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId,at:today(),text:`Borrowed ${qty} by ${who} (${lab})`,ts:FB.serverTimestamp()});
-  }).then(()=>{closeModal();toast(`Done. ${i.name} is yours till ${fmt(due)}.`);bF='out';location.hash='loan';render()})
+  }).then(()=>{closeModal();toast(`Done. ${i.name} is yours till ${fmt(due)}.`);bF='all';location.hash='loan';render()})
     .catch(e=>{b.disabled=false;e.code==='short'?toast(`Only ${e.free} ${e.unit} free now`):e.code==='oos'?toast('That is out of stock'):e.code==='cond'?toast('That item is not working right now'):e.code==='gone'?toast('That item was removed'):fail(e)});
 }
 
