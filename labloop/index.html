@@ -252,7 +252,7 @@ function listen(){
   else{S.loans=[];S.maint=[];S.log=[];S.damage=[]}
 }
 window.addEventListener('fb-ready',()=>{
-  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastLow=null;lastPending=null;lastReturning=null;listen();render()});
+  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastLow=null;lastPending=null;lastReturning=null;lastSelf=null;listen();render()});
 });
 
 /* stock */
@@ -265,12 +265,13 @@ const stockPill=i=>isOut(i)?'<span class="pill p-bad">Out of stock</span>':isLow
 const condPill=c=>`<span class="pill ${c==='Working'?'p-ok':c==='Retired'?'p-mut':c==='Damaged'?'p-bad':'p-warn'}">${esc(c)}</span>`;
 const pending=()=>S.loans.filter(l=>l.status==='pending');
 const openLoans=()=>S.loans.filter(l=>l.status==='approved'||l.status==='returning');
+const selfReturns=()=>S.loans.filter(l=>l.status==='returned'&&l.selfReturned&&l.returned>=addDays(today(),-7)).sort((a,b)=>a.returned<b.returned?1:-1);
 const returning=()=>S.loans.filter(l=>l.status==='returning');
 const overdue=l=>l.status==='approved'&&l.due<today();
 const openMaint=()=>S.maint.filter(m=>!m.done);
 const newDamage=()=>S.damage.filter(d=>d.status==='new');
 
-let lastLow=null,lastPending=null,lastReturning=null;
+let lastLow=null,lastPending=null,lastReturning=null,lastSelf=null;
 function checkStock(){
   if(!isAdmin)return;
   const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
@@ -285,6 +286,9 @@ function notifyRequests(){
   const rs=returning().map(l=>l.id);
   if(lastReturning)rs.filter(id=>!lastReturning.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} says ${l.itemName} is back`;toast(m);sysNotify('Return to check',m)});
   lastReturning=rs;
+  const sr=selfReturns().map(l=>l.id);
+  if(lastSelf)sr.filter(id=>!lastSelf.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} returned ${l.qty} × ${l.itemName}`;toast(m);sysNotify('Item returned',m)});
+  lastSelf=sr;
 }
 function sysNotify(title,body){try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:document.querySelector('link[rel=icon]').href})}catch(e){}}
 function stockAlert(i){if(!i)return;const m=isOut(i)?`${i.name} has run out`:`${i.name} is running low (${avail(i)} ${i.unit} left)`;setTimeout(()=>toast('⚠ '+m),400);sysNotify('LAMS stock alert',m+' · '+i.lab)}
@@ -358,6 +362,7 @@ function vDash(){
   ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
   ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Borrow requests waiting for you <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
+  ${selfReturns().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returned by students <span class="sub">last 7 days</span></h3><div class="list">${selfReturns().map(l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · returned ${fmt(l.returned)}</small></div><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div>`).join('')}</div></div>`:''}
   ${returning().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returns to check <span class="sub">Confirm once it is back on the shelf</span></h3><div class="list">${returning().map(retRow).join('')}</div></div>`:''}
   ${dm.length?`<div class="card" style="margin-bottom:16px;border-color:#fecaca"><h3>Damage reports</h3><div class="list">${dm.map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>${esc(d.note)}${d.by?' · by '+esc(d.by):''}</small></div><div class="row"><button class="btn sm" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
   <div class="grid g4">
@@ -375,7 +380,16 @@ function vDash(){
   </div>`;
 }
 const retRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · says returned ${fmt(l.returnAskedOn)}</small></div><div class="row"><button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm returned</button><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div></div>`;
-function notReceived(lid){FB.updateDoc(D('loans',lid),{status:'approved',returnAskedOn:''}).then(()=>toast('Kept as borrowed')).catch(fail)}
+function notReceived(lid){
+  if(!confirm('Mark this as still borrowed?'))return;
+  FB.runTransaction(FB.db,async tx=>{
+    const ls=await tx.get(D('loans',lid));if(!ls.exists())throw{code:'done'};const l=ls.data();
+    if(l.status==='returned'){const is=await tx.get(D('items',l.itemId));if(is.exists())tx.update(D('items',l.itemId),{lent:Number(is.data().lent||0)+Number(l.qty)})}
+    else if(l.status!=='returning')throw{code:'done'};
+    tx.update(D('loans',lid),{status:'approved',returned:'',selfReturned:false,returnAskedOn:''});
+    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:`Return by ${l.borrower} not received, still borrowed`,ts:FB.serverTimestamp()});
+  }).then(()=>toast('Kept as borrowed')).catch(e=>e.code==='done'?toast('Already changed'):fail(e));
+}
 const reqRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · till ${fmt(l.due)}${l.purpose?' · '+esc(l.purpose):''}</small></div><div class="row"><button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button></div></div>`;
 const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
 function bannerTitle(o,l){const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);return p.join(' and ')}
@@ -414,8 +428,14 @@ function vBorrow(){
 }
 const reqCard=(c,l)=>l?`<div class="li"><div><b>${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · till ${fmt(l.due)} · <span class="id">${c}</span>${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}</small>${l.status==='approved'?`<button class="btn sm okb" style="margin-top:6px" onclick="iReturned('${c}')">I've returned it</button>`:''}</div>${statusPill(l)}</div>`:`<div class="li"><div><span class="id">${c}</span><small>No request with this code</small></div></div>`;
 function iReturned(c,fromItem){
-  if(!confirm('Did you hand it back to the lab? The admin will check and confirm.'))return;
-  FB.updateDoc(D('loans',c),{status:'returning',returnAskedOn:today()}).then(()=>{toast('Thanks. The admin will confirm it.');if(fromItem&&modalItem)showItem(modalItem);refreshMine();const o=document.getElementById('chkout');if(o&&o.innerHTML)checkCode()}).catch(fail);
+  if(!confirm('Have you handed it back to the lab?'))return;
+  if(busy.has(c))return;busy.add(c);
+  FB.runTransaction(FB.db,async tx=>{
+    const ls=await tx.get(D('loans',c));if(!ls.exists()||ls.data().status!=='approved')throw{code:'done'};
+    const l=ls.data(),is=await tx.get(D('items',l.itemId));
+    tx.update(D('items',l.itemId),{lent:Number(is.data().lent||0)-Number(l.qty),lastReturn:c});
+    tx.update(D('loans',c),{status:'returned',returned:today(),selfReturned:true});
+  }).then(()=>{toast('Returned. Thank you!');if(fromItem&&modalItem)showItem(modalItem);refreshMine();const o=document.getElementById('chkout');if(o&&o.innerHTML)checkCode()}).catch(e=>e.code==='done'?toast('Already returned'):fail(e)).finally(()=>busy.delete(c));
 }
 async function fetchReq(c){try{const s=await FB.getDoc(D('loans',c));return s.exists()?s.data():null}catch(e){return null}}
 async function refreshMine(){const el=document.getElementById('minelist');const cs=mine();if(!el||!cs.length)return;const rs=await Promise.all(cs.map(fetchReq));if(document.getElementById('minelist'))el.innerHTML=cs.map((c,i)=>reqCard(c,rs[i])).join('')}
@@ -462,7 +482,7 @@ function vLoan(){
   return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">Approve requests, and see who has what</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
   <div class="tabs">${f('pending','Requests',pending().length)}${f('returning','Returns to check',returning().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
   <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm</button> <button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
+  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>${l.selfReturned?'<div class="sub" style="font-size:12px">by the student</div>':''}`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returned'&&l.selfReturned?`<button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm</button> <button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
   </tbody></table></div>`;
 }
 const busy=new Set();
