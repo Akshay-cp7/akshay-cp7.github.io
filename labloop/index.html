@@ -229,7 +229,8 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='pending', qrCat='ALL';
+const BUILD='2026-10-21-instant';
+let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='out', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
@@ -376,7 +377,7 @@ function vDash(){
   <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
   ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
-  ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Borrow requests waiting for you <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
+  ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Old requests from before instant borrowing <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
   ${selfReturns().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returned by students <span class="sub">last 7 days</span></h3><div class="list">${selfReturns().map(l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · returned ${fmt(l.returned)}</small></div><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div>`).join('')}</div></div>`:''}
   ${returning().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returns to check <span class="sub">Confirm once it is back on the shelf</span></h3><div class="list">${returning().map(retRow).join('')}</div></div>`:''}
   ${newOOS().length?`<div class="card" style="margin-bottom:16px;border-color:#fde68a"><h3>Out of stock reports</h3><div class="list">${newOOS().map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>Reported by ${esc(d.by)}${d.note?' · '+esc(d.note):''}</small></div><div class="row"><button class="btn sm okb" onclick="setStock('${d.itemId}',true,'${d.id}')">Approve</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
@@ -522,8 +523,8 @@ function vLoan(){
   const pick=l=>loanF==='all'||(loanF==='pending'?l.status==='pending':loanF==='out'?(l.status==='approved'||l.status==='returning'):loanF==='over'?overdue(l):l.status===loanF);
   const rows=S.loans.filter(pick).sort((a,b)=>(b.out||b.due||'')<(a.out||a.due||'')?-1:1);
   const f=(k,n,c)=>`<button class="tab ${loanF===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${c}</em></button>`;
-  return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">Approve requests, and see who has what</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
-  <div class="tabs">${f('pending','Requests',pending().length)}${f('returning','Returns to check',returning().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
+  return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">See who has what, and check returns</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
+  <div class="tabs">${pending().length?f('pending','Old requests',pending().length):''}${f('returning','Returns to check',returning().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
   <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
   ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>${l.selfReturned?'<div class="sub" style="font-size:12px">by the student</div>':''}`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}${l.damage?`<div style="font-size:12px;color:var(--bad);font-weight:600">Damaged: ${esc(l.damage)}</div>`:''}${l.status==='returning'&&l.returnedBy?`<div class="sub" style="font-size:12px">handed back by ${esc(l.returnedBy)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returned'&&l.selfReturned?`<button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm</button> <button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
   </tbody></table></div>`;
@@ -876,6 +877,11 @@ function route(){
 }
 const _render=render;render=function(fromData){const was=ready;_render(fromData);if(!was&&ready)window.dispatchEvent(new Event('lams-ready'))};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
+// Reload tabs left open on an older version, but never while a form is open.
+let newer=false;
+function checkBuild(){fetch(location.pathname+'?b='+Date.now(),{cache:'no-store'}).then(r=>r.text()).then(t=>{const m=t.match(/const BUILD='([^']+)'/);if(m&&m[1]!==BUILD)newer=true;maybeReload()}).catch(()=>{})}
+function maybeReload(){if(newer&&!document.getElementById('modal').classList.contains('on'))location.reload()}
+setInterval(checkBuild,120000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkBuild()});setInterval(maybeReload,5000);
 window.addEventListener('hashchange',route);
 route();
 </script>
