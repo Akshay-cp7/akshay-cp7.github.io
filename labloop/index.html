@@ -252,7 +252,7 @@ function listen(){
   else{S.loans=[];S.maint=[];S.log=[];S.damage=[]}
 }
 window.addEventListener('fb-ready',()=>{
-  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastLow=null;lastPending=null;listen();render()});
+  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastLow=null;lastPending=null;lastReturning=null;listen();render()});
 });
 
 /* stock */
@@ -264,12 +264,13 @@ const isExpiring=i=>i.expiry&&i.expiry<=addDays(today(),30);
 const stockPill=i=>isOut(i)?'<span class="pill p-bad">Out of stock</span>':isLow(i)?'<span class="pill p-warn">Low</span>':'';
 const condPill=c=>`<span class="pill ${c==='Working'?'p-ok':c==='Retired'?'p-mut':c==='Damaged'?'p-bad':'p-warn'}">${esc(c)}</span>`;
 const pending=()=>S.loans.filter(l=>l.status==='pending');
-const openLoans=()=>S.loans.filter(l=>l.status==='approved');
+const openLoans=()=>S.loans.filter(l=>l.status==='approved'||l.status==='returning');
+const returning=()=>S.loans.filter(l=>l.status==='returning');
 const overdue=l=>l.status==='approved'&&l.due<today();
 const openMaint=()=>S.maint.filter(m=>!m.done);
 const newDamage=()=>S.damage.filter(d=>d.status==='new');
 
-let lastLow=null,lastPending=null;
+let lastLow=null,lastPending=null,lastReturning=null;
 function checkStock(){
   if(!isAdmin)return;
   const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
@@ -281,6 +282,9 @@ function notifyRequests(){
   const ids=pending().map(l=>l.id);
   if(lastPending)ids.filter(id=>!lastPending.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) wants ${l.qty} × ${l.itemName}`;toast('New request: '+m);sysNotify('New borrow request',m)});
   lastPending=ids;
+  const rs=returning().map(l=>l.id);
+  if(lastReturning)rs.filter(id=>!lastReturning.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} says ${l.itemName} is back`;toast(m);sysNotify('Return to check',m)});
+  lastReturning=rs;
 }
 function sysNotify(title,body){try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:document.querySelector('link[rel=icon]').href})}catch(e){}}
 function stockAlert(i){if(!i)return;const m=isOut(i)?`${i.name} has run out`:`${i.name} is running low (${avail(i)} ${i.unit} left)`;setTimeout(()=>toast('⚠ '+m),400);sysNotify('LAMS stock alert',m+' · '+i.lab)}
@@ -296,7 +300,7 @@ function startupAlert(){
 
 /* chrome */
 function nav(){
-  const nl=S.items.filter(isLow).length,np=pending().length;
+  const nl=S.items.filter(isLow).length,np=pending().length+returning().length;
   const bd=k=>isAdmin&&k==='inv'&&nl?`<span class="badge">${nl}</span>`:isAdmin&&k==='loan'&&np?`<span class="badge">${np}</span>`:'';
   document.getElementById('nav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
   document.getElementById('mobnav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
@@ -354,6 +358,7 @@ function vDash(){
   ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
   ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Borrow requests waiting for you <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
+  ${returning().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returns to check <span class="sub">Confirm once it is back on the shelf</span></h3><div class="list">${returning().map(retRow).join('')}</div></div>`:''}
   ${dm.length?`<div class="card" style="margin-bottom:16px;border-color:#fecaca"><h3>Damage reports</h3><div class="list">${dm.map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>${esc(d.note)}${d.by?' · by '+esc(d.by):''}</small></div><div class="row"><button class="btn sm" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
   <div class="grid g4">
     ${stat(S.items.length,'Items registered',`${CATS.length} categories`,'')}
@@ -369,6 +374,8 @@ function vDash(){
     <div class="card"><h3>Chemicals expiring within 30 days</h3><div class="list">${exp.length?exp.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${esc(i.location)} · ${esc(i.hazard)}</small></div><span class="pill ${i.expiry<today()?'p-bad':'p-warn'}">${i.expiry<today()?'Expired':'Expires'} ${fmt(i.expiry)}</span></div>`).join(''):'<div class="empty">None</div>'}</div></div>
   </div>`;
 }
+const retRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · says returned ${fmt(l.returnAskedOn)}</small></div><div class="row"><button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm returned</button><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div></div>`;
+function notReceived(lid){FB.updateDoc(D('loans',lid),{status:'approved',returnAskedOn:''}).then(()=>toast('Kept as borrowed')).catch(fail)}
 const reqRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · till ${fmt(l.due)}${l.purpose?' · '+esc(l.purpose):''}</small></div><div class="row"><button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button></div></div>`;
 const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
 function bannerTitle(o,l){const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);return p.join(' and ')}
@@ -399,13 +406,17 @@ function vInv(){
 const MINE='lams_my_requests';
 const mine=()=>{try{return JSON.parse(localStorage.getItem(MINE))||[]}catch(e){return[]}};
 const remember=c=>{try{localStorage.setItem(MINE,JSON.stringify([c,...mine().filter(x=>x!==c)].slice(0,20)))}catch(e){}};
-const statusPill=l=>l.status==='pending'?'<span class="pill p-warn">Waiting for approval</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Approved · overdue</span>':'<span class="pill p-ok">Approved</span>'):l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Returned</span>';
+const statusPill=l=>l.status==='pending'?'<span class="pill p-warn">Waiting for approval</span>':l.status==='returning'?'<span class="pill p-info">Return being checked</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Approved · overdue</span>':'<span class="pill p-ok">Approved</span>'):l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Returned</span>';
 function vBorrow(){
-  return `<div class="top"><div><h1>Borrow</h1><div class="sub">Send a request. The lab admin approves or declines it.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ New request</button></div></div>
+  return `<div class="top"><div><h1>Borrow</h1><div class="sub">Send a request. The lab admin approves or declines it. When you bring it back, tap I've returned it.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ New request</button></div></div>
   <div class="split"><div class="card"><h3>Check a request</h3><div class="row"><input class="search" id="chk" placeholder="Request code, e.g. K7Q2M9XD" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkCode()"><button class="btn" onclick="checkCode()">Check</button></div><div id="chkout" style="margin-top:12px"></div></div>
   <div class="card"><h3>Requests from this phone</h3><div class="list" id="minelist">${mine().length?'<div class="empty">Loading…</div>':'<div class="empty">None yet</div>'}</div></div></div>`;
 }
-const reqCard=(c,l)=>l?`<div class="li"><div><b>${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · till ${fmt(l.due)} · <span class="id">${c}</span>${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}</small></div>${statusPill(l)}</div>`:`<div class="li"><div><span class="id">${c}</span><small>No request with this code</small></div></div>`;
+const reqCard=(c,l)=>l?`<div class="li"><div><b>${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · till ${fmt(l.due)} · <span class="id">${c}</span>${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}</small>${l.status==='approved'?`<button class="btn sm okb" style="margin-top:6px" onclick="iReturned('${c}')">I've returned it</button>`:''}</div>${statusPill(l)}</div>`:`<div class="li"><div><span class="id">${c}</span><small>No request with this code</small></div></div>`;
+function iReturned(c){
+  if(!confirm('Did you hand it back to the lab? The admin will check and confirm.'))return;
+  FB.updateDoc(D('loans',c),{status:'returning',returnAskedOn:today()}).then(()=>{toast('Thanks. The admin will confirm it.');refreshMine();const o=document.getElementById('chkout');if(o&&o.innerHTML)checkCode()}).catch(fail);
+}
 async function fetchReq(c){try{const s=await FB.getDoc(D('loans',c));return s.exists()?s.data():null}catch(e){return null}}
 async function refreshMine(){const el=document.getElementById('minelist');const cs=mine();if(!el||!cs.length)return;const rs=await Promise.all(cs.map(fetchReq));if(document.getElementById('minelist'))el.innerHTML=cs.map((c,i)=>reqCard(c,rs[i])).join('')}
 async function checkCode(){const c=fv('chk').toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length<8){toast('The code has 8 letters and numbers');return}const l=await fetchReq(c);document.getElementById('chkout').innerHTML=`<div class="list">${reqCard(c,l)}</div>`;if(l)remember(c)}
@@ -445,13 +456,13 @@ function sendRequest(){
 
 /* admin borrowing */
 function vLoan(){
-  const pick=l=>loanF==='all'||(loanF==='pending'?l.status==='pending':loanF==='out'?l.status==='approved':loanF==='over'?overdue(l):l.status===loanF);
+  const pick=l=>loanF==='all'||(loanF==='pending'?l.status==='pending':loanF==='out'?(l.status==='approved'||l.status==='returning'):loanF==='over'?overdue(l):l.status===loanF);
   const rows=S.loans.filter(pick).sort((a,b)=>(b.out||b.due||'')<(a.out||a.due||'')?-1:1);
   const f=(k,n,c)=>`<button class="tab ${loanF===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${c}</em></button>`;
   return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">Approve requests, and see who has what</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
-  <div class="tabs">${f('pending','Requests',pending().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
+  <div class="tabs">${f('pending','Requests',pending().length)}${f('returning','Returns to check',returning().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
   <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
+  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm</button> <button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
   </tbody></table></div>`;
 }
 const busy=new Set();
@@ -476,7 +487,7 @@ function saveDecline(lid){FB.updateDoc(D('loans',lid),{status:'declined',reason:
 function returnLoan(lid,fromItem){
   if(busy.has(lid))return;busy.add(lid);let itemId;
   FB.runTransaction(FB.db,async tx=>{
-    const ls=await tx.get(D('loans',lid));if(!ls.exists()||ls.data().status!=='approved')throw{code:'done'};
+    const ls=await tx.get(D('loans',lid));if(!ls.exists()||!['approved','returning'].includes(ls.data().status))throw{code:'done'};
     const l=ls.data();itemId=l.itemId;const is=await tx.get(D('items',l.itemId));
     tx.update(D('loans',lid),{status:'returned',returned:today()});
     if(is.exists())tx.update(D('items',l.itemId),{lent:Math.max(0,Number(is.data().lent||0)-Number(l.qty))});
@@ -531,7 +542,7 @@ function drawLabels(){document.querySelectorAll('[data-qr]').forEach(el=>makeQR(
 function vRep(){
   const byCat=CATS.map(c=>[c.name,S.items.filter(i=>i.cat===c.k).length,c.color]);
   const byCond=CONDS.map(c=>[c,S.items.filter(i=>i.cat==='EQP'&&i.condition===c).length,c==='Working'?'var(--ok)':c==='Damaged'?'var(--bad)':c==='Retired'?'#94a3b8':'var(--warn)']);
-  const real=S.loans.filter(l=>['approved','returned'].includes(l.status));
+  const real=S.loans.filter(l=>['approved','returning','returned'].includes(l.status));
   const labsB={};real.forEach(l=>labsB[l.borrowerLab]=(labsB[l.borrowerLab]||0)+1);
   const byLab=Object.entries(labsB).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,v,'var(--brand)']);
   const itB={};real.forEach(l=>itB[l.itemName]=(itB[l.itemName]||0)+1);
@@ -626,7 +637,7 @@ function delItem(id){if(!confirm('Delete this item? Its history stays in the log
 function showItem(id,silent){
   const i=item(id);if(!i){if(ready)toast('Item not found');return}
   modalItem=id;
-  const ls=S.loans.filter(l=>l.itemId===id&&l.status==='approved'),ms=openMaint().filter(m=>m.itemId===id);
+  const ls=S.loans.filter(l=>l.itemId===id&&(l.status==='approved'||l.status==='returning')),ms=openMaint().filter(m=>m.itemId===id);
   const hist=S.log.filter(l=>l.itemId===id).sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0)).slice(0,12);
   const a=Math.max(0,avail(i));
   const actions=isAdmin?`
