@@ -253,7 +253,7 @@ function listen(){
     unsubs.push(FB.onSnapshot(FB.collection(FB.db,'loans'),s=>{S.loans=s.docs.map(d=>({id:d.id,...d.data()}));render(true)},e=>console.warn('loans',e.code)))}
 }
 window.addEventListener('fb-ready',()=>{
-  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastDamage=null;lastLow=null;lastPending=null;lastReturning=null;lastSelf=null;listen();render()});
+  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastBorrow=null;lastDamage=null;lastLow=null;lastPending=null;lastReturning=null;lastSelf=null;listen();render()});
 });
 
 /* stock */
@@ -276,7 +276,7 @@ const openMaint=()=>S.maint.filter(m=>!m.done);
 const newDamage=()=>S.damage.filter(d=>d.status==='new'&&d.kind!=='stock');
 const newOOS=()=>S.damage.filter(d=>d.status==='new'&&d.kind==='stock');
 
-let lastLow=null,lastPending=null,lastReturning=null,lastSelf=null;
+let lastBorrow=null,lastLow=null,lastPending=null,lastReturning=null,lastSelf=null;
 function checkStock(){
   if(!isAdmin)return;
   const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
@@ -288,6 +288,9 @@ function notifyRequests(){
   const ids=pending().map(l=>l.id);
   if(lastPending)ids.filter(id=>!lastPending.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) wants ${l.qty} × ${l.itemName}`;toast('New request: '+m);sysNotify('New borrow request',m)});
   lastPending=ids;
+  const nb=S.loans.filter(l=>l.selfIssued&&l.status==='approved').map(l=>l.id);
+  if(lastBorrow)nb.filter(id=>!lastBorrow.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) took ${l.qty} × ${l.itemName}, due ${fmt(l.due)}`;toast(m);sysNotify('Item borrowed',m)});
+  lastBorrow=nb;
   const rs=returning().map(l=>l.id);
   if(lastReturning)rs.filter(id=>!lastReturning.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.returnedBy||l.borrower} handed back ${l.itemName}`;toast(m);sysNotify('Return to check',m)});
   lastReturning=rs;
@@ -355,8 +358,8 @@ function logout(){
 /* public home */
 function vHome(){
   const eq=S.items.filter(i=>i.cat==='EQP');
-  return `<div class="hero"><h1>Laboratory of Applied Materials</h1><p>See what the lab has, where it is and whether it is free. Scan the QR label on any item, or ask to borrow something below.</p>
-  <div class="row"><button class="btn" style="background:#fff;color:var(--brand)" onclick="reqForm()">Request to borrow</button><button class="btn ghost" onclick="location.hash='loan'">Return or report damage</button></div></div>
+  return `<div class="hero"><h1>Laboratory of Applied Materials</h1><p>See what the lab has, where it is and whether it is free. Scan the QR label on any item, or borrow something below.</p>
+  <div class="row"><button class="btn" style="background:#fff;color:var(--brand)" onclick="reqForm()">Borrow an item</button><button class="btn ghost" onclick="location.hash='loan'">Return or report damage</button></div></div>
   <div class="grid g4">
     ${stat(S.items.length,'Items in the lab','','')}
     ${stat(eq.filter(i=>i.condition==='Working'&&avail(i)>0).length,'Instruments free now','','color:var(--ok)')}
@@ -421,7 +424,7 @@ function vInv(){
   const q=invQ.toLowerCase();
   const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q))).sort((a,b)=>a.id<b.id?-1:1);
   const showExp=invCat==='CHM';
-  return `<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to ask to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Request to borrow</button>`}</div></div>
+  return `<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Borrow an item</button>`}</div></div>
   <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
@@ -434,11 +437,11 @@ const statusPill=l=>l.status==='pending'?'<span class="pill p-warn">Waiting for 
 const outRow=l=>`<div class="li"><div><b class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}${l.status==='returning'&&l.returnedBy?' · handed back by '+esc(l.returnedBy):''}</small>${l.status==='approved'?`<div class="row" style="margin-top:6px"><button class="btn sm okb" onclick="returnForm('${l.id}')">Mark returned</button><button class="btn sm danger" onclick="loanDamageForm('${l.id}')">Report damage</button></div>`:''}</div>${statusPill(l)}</div>`;
 let bF='all';
 function vBorrow(){
-  const groups=[['all','All',()=>true],['pending','Requested',l=>l.status==='pending'],['out','Borrowed',l=>l.status==='approved'],['over','Overdue',l=>overdue(l)],['returning','Return waiting',l=>l.status==='returning'],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined']];
+  const groups=[['all','All',l=>l.status!=='pending'],['out','Borrowed',l=>l.status==='approved'],['over','Overdue',l=>overdue(l)],['returning','Return waiting',l=>l.status==='returning'],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined']];
   const g=groups.find(x=>x[0]===bF)||groups[0],q=invQ.toLowerCase();
   const order={pending:0,returning:1,approved:2,declined:3,returned:4};
-  const rows=S.loans.filter(g[2]).filter(l=>!q||[l.itemName,l.borrower,l.borrowerLab].join(' ').toLowerCase().includes(q)).sort((a,b)=>(order[a.status]-order[b.status])||((b.out||b.due||'')>(a.out||a.due||'')?1:-1));
-  return `<div class="top"><div><h1>Borrow</h1><div class="sub">Ask for an item, hand it back, or report damage. The lab admin approves each one.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ New request</button></div></div>
+  const rows=S.loans.filter(g[2]).filter(l=>l.status!=='pending').filter(l=>!q||[l.itemName,l.borrower,l.borrowerLab].join(' ').toLowerCase().includes(q)).sort((a,b)=>(order[a.status]-order[b.status])||((b.out||b.due||'')>(a.out||a.due||'')?1:-1));
+  return `<div class="top"><div><h1>Borrow</h1><div class="sub">Borrow an item, hand it back, or report damage.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ Borrow</button></div></div>
   <div class="tabs">${groups.map(([k,n,f])=>`<button class="tab ${bF===k?'on':''}" onclick="bF='${k}';render()">${n}<em>${S.loans.filter(f).length}</em></button>`).join('')}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search item, name or lab" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="card"><div class="list">${rows.length?rows.map(pubRow).join(''):'<div class="empty">Nothing here</div>'}</div></div>`;
@@ -476,7 +479,7 @@ function reqForm(id){
   if(!its.length){toast('Nothing is free to borrow right now');return}
   if(id&&!its.some(i=>i.id===id)){toast(item(id)?.outOfStock?'That is out of stock':'That item cannot be borrowed right now');return}
   if(id&&!its.some(i=>i.id===id)){toast(item(id)?.outOfStock?'That is out of stock':'That item cannot be borrowed right now');return}
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Request to borrow</h2><div class="sub">The lab admin will approve or decline it.</div>
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Borrow an item</h2><div class="sub">Fill this in and take it. Please return it by the date you pick.</div>
   <div class="form">
     <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${esc(freeTxt(i))})</option>`).join('')}</select></label>
     <label>Your name <span class="req">*</span><input id="l_who" maxlength="80" required placeholder="Full name" oninput="this.classList.remove('bad')"></label>
@@ -485,7 +488,7 @@ function reqForm(id){
     <label>Return by<input id="l_due" type="date" min="${today()}" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" maxlength="200" placeholder="Experiment, project, class"></label>
   </div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Send request</button></div>`);
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Borrow</button></div>`);
 }
 function needNameLab(who,lab){
   const w=document.getElementById('l_who'),l=document.getElementById('l_lab');
@@ -501,10 +504,17 @@ function sendRequest(){
   if(!needNameLab(who,lab))return;
   if(i.cat==='EQP'&&qty>avail(i)){toast(`Only ${avail(i)} ${i.unit} free`);return}
   if(i.outOfStock){toast('That is out of stock');return}
-  const code=newCode(),b=document.getElementById('l_go');b.disabled=true;
-  FB.setDoc(D('loans',code),{itemId,itemName:i.name,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due:fv('l_due')||addDays(today(),7),status:'pending',createdAt:FB.serverTimestamp()}).then(()=>{
-    closeModal();toast('Request sent. It shows under Waiting for approval.');location.hash='loan';
-  }).catch(e=>{b.disabled=false;fail(e)});
+  const code=newCode(),b=document.getElementById('l_go'),due=fv('l_due')||addDays(today(),7),pur=fv('l_pur');b.disabled=true;
+  FB.runTransaction(FB.db,async tx=>{
+    const is=await tx.get(D('items',itemId));if(!is.exists())throw{code:'gone'};
+    const it=is.data(),lentNow=Number(it.lent||0);
+    if(it.condition!=='Working')throw{code:'cond'};if(it.outOfStock)throw{code:'oos'};
+    if(it.cat==='EQP'&&lentNow+qty>Number(it.qty))throw{code:'short',free:Number(it.qty)-lentNow,unit:it.unit};
+    tx.set(D('loans',code),{itemId,itemName:it.name,qty,borrower:who,borrowerLab:lab,purpose:pur,due,status:'approved',out:today(),selfIssued:true,createdAt:FB.serverTimestamp()});
+    tx.update(D('items',itemId),{lent:lentNow+qty,lastBorrow:code});
+    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId,at:today(),text:`Borrowed ${qty} by ${who} (${lab})`,ts:FB.serverTimestamp()});
+  }).then(()=>{closeModal();toast(`Done. ${i.name} is yours till ${fmt(due)}.`);bF='out';location.hash='loan';render()})
+    .catch(e=>{b.disabled=false;e.code==='short'?toast(`Only ${e.free} ${e.unit} free now`):e.code==='oos'?toast('That is out of stock'):e.code==='cond'?toast('That item is not working right now'):e.code==='gone'?toast('That item was removed'):fail(e)});
 }
 
 /* admin borrowing */
@@ -700,7 +710,7 @@ function showItem(id,silent){
     <button class="btn" onclick="damageForm('${id}')">Report damage</button>
     <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
     <button class="btn" onclick="itemForm('${id}')">Edit</button>`:`
-    ${canLend(i)?`<button class="btn pri" onclick="reqForm('${id}')">Request to borrow</button>`:''}
+    ${canLend(i)?`<button class="btn pri" onclick="reqForm('${id}')">Borrow</button>`:''}
     ${i.cat!=='EQP'&&!i.outOfStock?(S.stockAsked?.[id]?'<span class="pill p-warn" style="align-self:center">Out of stock reported</span>':`<button class="btn danger" onclick="oosForm('${id}')">Report out of stock</button>`):''}
     <button class="btn" onclick="pubDamageForm('${id}')">Report a problem</button>`;
   openModal(`<button class="x" onclick="closeModal()">×</button><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span><h2 style="margin-top:6px">${esc(i.name)}</h2><div class="id">${i.id}</div>
