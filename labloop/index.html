@@ -180,6 +180,8 @@ tbody tr:hover{background:#fafbff}
 .scanwrap .line{position:absolute;left:18%;right:18%;height:2px;background:#38bdf8;top:20%;animation:sl 2s ease-in-out infinite alternate}
 @keyframes sl{to{top:80%}}
 .mhead .mlog{display:flex;gap:6px}
+.req{color:var(--bad)}
+.form .bad{border-color:var(--bad)!important;background:#fff5f5!important}
 .adminpill{display:inline-flex;align-items:center;gap:6px;background:var(--okSoft);color:var(--ok);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
 </style>
 <div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div><span class="mlog" id="mlog"></span></div>
@@ -413,18 +415,26 @@ function reqForm(id){
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Request to borrow</h2><div class="sub">The lab admin will approve or decline it.</div>
   <div class="form">
     <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${avail(i)} ${esc(i.unit)} free)</option>`).join('')}</select></label>
-    <label>Your name<input id="l_who" maxlength="80" placeholder="Name"></label>
-    <label>Your lab<select id="l_lab"><option value="">Choose</option>${opt(LABS,'')}</select></label>
+    <label>Your name <span class="req">*</span><input id="l_who" maxlength="80" required placeholder="Full name" oninput="this.classList.remove('bad')"></label>
+    <label>Your lab <span class="req">*</span><select id="l_lab" required onchange="this.classList.remove('bad')"><option value="">Choose</option>${opt(LABS,'')}</select></label>
     <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
     <label>Return by<input id="l_due" type="date" min="${today()}" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" maxlength="200" placeholder="Experiment, project, class"></label>
   </div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Send request</button></div>`);
 }
+function needNameLab(who,lab){
+  const w=document.getElementById('l_who'),l=document.getElementById('l_lab');
+  const okW=who.replace(/[^\p{L}]/gu,'').length>=2,okL=!!lab;
+  w.classList.toggle('bad',!okW);l.classList.toggle('bad',!okL);
+  if(!okW){toast('Name is required');w.focus();return false}
+  if(!okL){toast('Choose the lab');l.focus();return false}
+  return true;
+}
 function newCode(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=crypto.getRandomValues(new Uint32Array(8));r.forEach(x=>s+=a[x%a.length]);return s}
 function sendRequest(){
   const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
-  if(!who||!lab){toast('Fill in your name and lab');return}
+  if(!needNameLab(who,lab))return;
   if(qty>avail(i)){toast(`Only ${avail(i)} ${i.unit} free`);return}
   const code=newCode(),b=document.getElementById('l_go');b.disabled=true;
   FB.setDoc(D('loans',code),{itemId,itemName:i.name,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due:fv('l_due')||addDays(today(),7),status:'pending',createdAt:FB.serverTimestamp()}).then(()=>{
@@ -478,8 +488,8 @@ function loanForm(id){
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Issue an item</h2><div class="sub">For someone at the counter. No approval step.</div>
   <div class="form">
     <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)} (${avail(i)} ${esc(i.unit)} free)</option>`).join('')}</select></label>
-    <label>Borrowed by<input id="l_who" placeholder="Name of student or staff"></label>
-    <label>Borrowing lab<select id="l_lab"><option value="">Choose</option>${opt(LABS,'')}</select></label>
+    <label>Borrowed by <span class="req">*</span><input id="l_who" required placeholder="Name of student or staff" oninput="this.classList.remove('bad')"></label>
+    <label>Borrowing lab <span class="req">*</span><select id="l_lab" required onchange="this.classList.remove('bad')"><option value="">Choose</option>${opt(LABS,'')}</select></label>
     <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
     <label>Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" placeholder="Practical, project, workshop"></label>
@@ -488,7 +498,7 @@ function loanForm(id){
 }
 function saveLoan(){
   const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
-  if(!who||!lab){toast('Fill in who borrowed it and their lab');return}
+  if(!needNameLab(who,lab))return;
   if(qty>avail(i)){toast(`Only ${avail(i)} available`);return}
   const b=FB.writeBatch(FB.db);
   b.set(FB.doc(FB.collection(FB.db,'loans')),{itemId,itemName:i.name,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:fv('l_due')||addDays(today(),7),status:'approved',createdAt:FB.serverTimestamp()});
