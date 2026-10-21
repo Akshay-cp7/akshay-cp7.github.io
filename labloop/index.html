@@ -125,6 +125,20 @@ tbody tr:hover{background:#fafbff}
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--ink);color:#fff;padding:10px 18px;border-radius:10px;font-weight:600;transition:.25s;z-index:60}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .mobnav{display:none}
+.badge{margin-left:auto;background:var(--bad);color:#fff;font-size:11px;font-weight:800;border-radius:999px;padding:1px 7px;line-height:1.5}
+.mobnav .badge{position:absolute;top:0;right:2px;margin:0;font-size:10px;padding:0 5px}
+.mobnav a{position:relative}
+.alert{border-radius:var(--r);padding:14px 16px;margin-bottom:18px;border:1px solid;display:flex;gap:14px;align-items:flex-start;flex-wrap:wrap}
+.alert.red{background:var(--badSoft);border-color:#fecaca;color:#7f1d1d}
+.alert.amber{background:var(--warnSoft);border-color:#fde68a;color:#78350f}
+.alert .ai{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;flex-shrink:0}
+.alert.red .ai{background:var(--bad)}.alert.amber .ai{background:var(--warn)}
+.alert .ab{flex:1;min-width:200px}
+.alert .ab b{font-size:14.5px;display:block}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chip{background:#fff;border:1px solid rgba(0,0,0,.08);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:600;cursor:pointer;color:var(--ink)}
+.chip em{font-style:normal;font-weight:800;margin-left:4px}
+.chip.out em{color:var(--bad)}.chip.low em{color:var(--warn)}
 @media (max-width:1000px){.cats{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:1fr 1fr}}
 @media (max-width:760px){
   .side{display:none}
@@ -185,7 +199,7 @@ const VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing'],['mnt
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
 let S, view='dash', invCat='ALL', invQ='', loanF='out';
-const KEY='lams_register_demo_v2';
+const KEY='lams_register_demo_v3';
 const today=()=>new Date().toISOString().slice(0,10);
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
 const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
@@ -205,7 +219,7 @@ function seed(){
     ['EQP','Regulated DC Power Supply','NMRL','Room 204',10,'nos',0,'Working','PS-3005','2022-02-14'],
     ['CON','Breadboard','NMRL','Store Shelf B',40,'nos',15,'Working','',''],
     ['CON','Jumper Wires (pack of 40)','NMRL','Store Shelf B',6,'packs',10,'Working','',''],
-    ['CON','Filter Paper Whatman No. 1','SOL','Cabinet 3',3,'boxes',5,'Working','',''],
+    ['CON','Filter Paper Whatman No. 1','SOL','Cabinet 3',0,'boxes',5,'Working','',''],
     ['CON','Test Tubes 15 ml','SOL','Cabinet 1',180,'nos',100,'Working','',''],
     ['CON','Resistor Kit','NMRL','Store Shelf A',12,'kits',5,'Working','',''],
     ['CHM','Sodium Hydroxide pellets','SOL','Chemical Store',2.5,'kg',1,'Working','','2025-04-10'],
@@ -242,12 +256,35 @@ function seed(){
   return{inst:{name:'Laboratory of Applied Materials',sub:'MSE Department, NIT Calicut'},items:it,loans,maint,log,seq:100};
 }
 function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!S||!S.items)S=seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}checkStock()}
+let lastLow=null;
+function checkStock(){
+  const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
+  if(lastLow)Object.keys(now).forEach(id=>{if(lastLow[id]!==now[id])stockAlert(item(id))});
+  lastLow=now;
+}
+function sysNotify(title,body){try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:document.querySelector('link[rel=icon]').href})}catch(e){}}
+function stockAlert(i){
+  const m=isOut(i)?`${i.name} has run out`:`${i.name} is running low (${avail(i)} ${i.unit} left)`;
+  setTimeout(()=>toast('⚠ '+m),400);sysNotify('LAMS stock alert',m+' · '+i.lab+', '+(i.location||''));
+}
+function enableAlerts(){
+  if(!('Notification' in window)){toast('This browser does not support notifications');return}
+  Notification.requestPermission().then(p=>{if(p==='granted'){toast('Alerts turned on');sysNotify('LAMS alerts on','You will be told when a consumable runs low.')}else toast('Notifications were blocked in the browser');render()});
+}
+function startupAlert(){
+  try{if(sessionStorage.getItem('lams_alerted'))return;sessionStorage.setItem('lams_alerted','1')}catch(e){}
+  const low=S.items.filter(isLow),out=low.filter(isOut);
+  if(low.length)sysNotify('LAMS stock alert',(out.length?`${out.length} out of stock, `:'')+`${low.length-out.length} running low`);
+}
 function resetDemo(){if(!confirm('Reset to the sample data? Anything you added will be removed.'))return;S=seed();save();render();toast('Sample data restored')}
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
 function addLog(itemId,text){S.log.push({itemId,at:today(),text})}
 
-const isLow=i=>i.min>0&&Number(i.qty)<=Number(i.min);
+const avail=i=>Number(i.qty)-lent(i.id);
+const isOut=i=>i.cat!=='EQP'&&avail(i)<=0;
+const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&avail(i)<=Number(i.min)));
+const stockPill=i=>isOut(i)?'<span class="pill p-bad">Out of stock</span>':isLow(i)?'<span class="pill p-warn">Low</span>':'';
 const isExpiring=i=>i.expiry&&i.expiry<=addDays(today(),30);
 const openLoans=()=>S.loans.filter(l=>!l.returned);
 const overdue=l=>!l.returned&&l.due<today();
@@ -256,9 +293,10 @@ const condPill=c=>`<span class="pill ${c==='Working'?'p-ok':c==='Retired'?'p-mut
 const lent=id=>openLoans().filter(l=>l.itemId===id).reduce((a,l)=>a+Number(l.qty),0);
 
 function nav(){
-  const h=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}</a>`).join('');
+  const nl=S.items.filter(isLow).length,bd=k=>k==='inv'&&nl?`<span class="badge">${nl}</span>`:'';
+  const h=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
   document.getElementById('nav').innerHTML=h;
-  document.getElementById('mobnav').innerHTML=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}</a>`).join('');
+  document.getElementById('mobnav').innerHTML=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
   document.getElementById('instName').textContent=S.inst.name;
   document.getElementById('instSub').textContent=S.inst.sub;
 }
@@ -268,6 +306,7 @@ function vDash(){
   const low=S.items.filter(isLow),od=S.loans.filter(overdue),dueM=openMaint().filter(m=>m.due<=addDays(today(),14)).sort((a,b)=>a.due<b.due?-1:1),exp=S.items.filter(isExpiring);
   return `<div class="top"><div><h1>Good to see you</h1><div class="sub">${esc(S.inst.name)} · ${fmt(today())}</div></div>
   <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
+  ${stockBanner(low)}
   <div class="grid g4">
     ${stat(S.items.length,'Items registered',`${CATS.length} categories`,'')}
     ${stat(openLoans().length,'Currently borrowed',od.length?`${od.length} overdue`:'None overdue',od.length?'color:var(--bad)':'color:var(--ok)')}
@@ -278,21 +317,35 @@ function vDash(){
   <div class="grid g2">
     <div class="card"><h3>Overdue returns <a href="#loan" class="sub">View all</a></h3><div class="list">${od.length?od.map(l=>{const i=item(l.itemId);return`<div class="li"><div><b>${esc(i?i.name:l.itemId)}</b><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}</small></div><button class="btn sm" onclick="returnLoan('${l.id}')">Mark returned</button></div>`}).join(''):'<div class="empty">Nothing overdue</div>'}</div></div>
     <div class="card"><h3>Maintenance in the next 14 days <a href="#mnt" class="sub">View all</a></h3><div class="list">${dueM.length?dueM.map(m=>{const i=item(m.itemId);const late=m.due<today();return`<div class="li"><div><b>${esc(i?i.name:m.itemId)}</b><small>${esc(m.type)} · ${late?'<span style="color:var(--bad)">was due '+fmt(m.due)+'</span>':'due '+fmt(m.due)}</small></div><button class="btn sm" onclick="doneForm('${m.id}')">Complete</button></div>`}).join(''):'<div class="empty">Nothing due</div>'}</div></div>
-    <div class="card"><h3>Low stock</h3><div class="list">${low.length?low.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${cat(i.cat).name} · ${esc(i.lab)}</small></div><span class="pill p-warn">${i.qty} ${esc(i.unit)} left</span></div>`).join(''):'<div class="empty">All stock above reorder level</div>'}</div></div>
+    <div class="card"><h3>Low stock</h3><div class="list">${low.length?low.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${cat(i.cat).name} · ${esc(i.lab)}</small></div>${isOut(i)?'<span class="pill p-bad">Out of stock</span>':`<span class="pill p-warn">${avail(i)} ${esc(i.unit)} left</span>`}</div>`).join(''):'<div class="empty">All stock above reorder level</div>'}</div></div>
     <div class="card"><h3>Chemicals expiring within 30 days</h3><div class="list">${exp.length?exp.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${esc(i.location)} · ${esc(i.hazard)}</small></div><span class="pill ${i.expiry<today()?'p-bad':'p-warn'}">${i.expiry<today()?'Expired':'Expires'} ${fmt(i.expiry)}</span></div>`).join(''):'<div class="empty">None</div>'}</div></div>
   </div>`;
+}
+function bannerTitle(o,l){
+  const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);
+  if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);
+  return p.join(' and ');
+}
+function stockBanner(low){
+  const canAsk='Notification' in window&&Notification.permission==='default';
+  if(!low.length)return canAsk?`<div class="row" style="justify-content:flex-end;margin:-8px 0 12px"><button class="btn sm" onclick="enableAlerts()">🔔 Turn on stock alerts</button></div>`:'';
+  const out=low.filter(isOut);
+  return `<div class="alert ${out.length?'red':'amber'}"><div class="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+  <div class="ab"><b>${bannerTitle(out.length,low.length-out.length)}</b>Time to reorder. Tap an item to restock it.
+  <div class="chips">${low.sort((a,b)=>isOut(b)-isOut(a)).map(i=>`<span class="chip ${isOut(i)?'out':'low'}" onclick="showItem('${i.id}')">${esc(i.name)}<em>${isOut(i)?'out':avail(i)+' '+esc(i.unit)}</em></span>`).join('')}</div></div>
+  <div class="row"><button class="btn sm" onclick="exportCSV('low')">Reorder list</button>${canAsk?'<button class="btn sm" onclick="enableAlerts()">🔔 Turn on alerts</button>':''}</div></div>`;
 }
 const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
 
 function vInv(){
   const q=invQ.toLowerCase();
-  const rows=S.items.filter(i=>(invCat==='ALL'||i.cat===invCat)&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q)));
+  const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q)));
   const showExp=invCat==='CHM';
   return `<div class="top"><div><h1>Inventory</h1><div class="sub">Every item has an ID and a QR label</div></div><div class="row"><button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
-  <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}</div>
+  <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button></div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>Quantity</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(i=>{const out=lent(i.id);return`<tr><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}${isLow(i)?' <span class="pill p-warn">Low</span>':''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">No items match</td></tr>`}
+  ${rows.length?rows.map(i=>{const out=lent(i.id);return`<tr><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">No items match</td></tr>`}
   </tbody></table></div>`;
 }
 
@@ -357,7 +410,7 @@ const opt=(arr,sel)=>arr.map(a=>{const[v,n]=Array.isArray(a)?a:[a,a];return`<opt
 const fv=id=>document.getElementById(id).value.trim();
 
 function itemForm(id){
-  const i=id?item(id):{cat:invCat!=='ALL'?invCat:'EQP',name:'',lab:LABS[0],location:'',qty:1,unit:'nos',min:0,condition:'Working',serial:'',purchased:'',expiry:'',hazard:'',notes:''};
+  const i=id?item(id):{cat:CATS.some(c=>c.k===invCat)?invCat:'CON',name:'',lab:LABS[0],location:'',qty:1,unit:'nos',min:0,condition:'Working',serial:'',purchased:'',expiry:'',hazard:'',notes:''};
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>${id?'Edit '+esc(i.name):'Add an item'}</h2><div class="sub">${id?i.id:'An ID and QR label are created automatically'}</div>
   <div class="form">
     <label>Category<select id="f_cat" onchange="document.getElementById('chm').style.display=this.value==='CHM'?'contents':'none'">${opt(CATS.map(c=>[c.k,c.name]),i.cat)}</select></label>
@@ -396,7 +449,7 @@ function showItem(id){
   openModal(`<button class="x" onclick="closeModal()">×</button><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span><h2 style="margin-top:6px">${esc(i.name)}</h2><div class="id">${i.id}</div>
   <div class="detail"><dl class="kv">
     <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
-    <dt>Quantity</dt><dd>${i.qty} ${esc(i.unit)}${lent(id)?` (${lent(id)} borrowed)`:''} ${isLow(i)?'<span class="pill p-warn">Low</span>':''}</dd>
+    <dt>Quantity</dt><dd>${i.qty} ${esc(i.unit)}${lent(id)?` (${lent(id)} borrowed)`:''} ${stockPill(i)}${i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
     <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
     ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
     ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
@@ -407,6 +460,7 @@ function showItem(id){
   <div class="row" style="margin-bottom:16px">
     <button class="btn pri" onclick="loanForm('${id}')">Issue / borrow</button>
     ${ls.length?`<button class="btn okb" onclick="returnLoan('${ls[0].id}',1)">Mark returned</button>`:''}
+    ${i.cat!=='EQP'?`<button class="btn" onclick="useForm('${id}')">Record usage</button><button class="btn" onclick="restockForm('${id}')">Restock</button>`:''}
     <button class="btn" onclick="damageForm('${id}')">Report damage</button>
     <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
     <button class="btn" onclick="itemForm('${id}')">Edit</button>
@@ -437,6 +491,23 @@ function saveLoan(){
 }
 function returnLoan(lid,fromItem){const l=S.loans.find(x=>x.id===lid);l.returned=today();addLog(l.itemId,`Returned by ${l.borrower}`);save();render();toast('Marked returned');if(fromItem)showItem(l.itemId)}
 
+function useForm(id){
+  const i=item(id);
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${avail(i)} ${esc(i.unit)} available</div>
+  <div class="form"><label>Quantity used (${esc(i.unit)})<input id="u_qty" type="number" step="any" min="0" value="1"></label><label>Used by<input id="u_by" placeholder="Name"></label>
+  <label>Lab<select id="u_lab">${opt(LABS,i.lab)}</select></label><label>Purpose<input id="u_pur" placeholder="Experiment, project"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveUse('${id}')">Save</button></div>`);
+}
+function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
+  i.qty=+(Number(i.qty)-q).toFixed(3);addLog(id,`Used ${q} ${i.unit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}`);save();render();showItem(id)}
+function restockForm(id){
+  const i=item(id);
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Restock</h2><div class="sub">${esc(i.name)} · ${i.qty} ${esc(i.unit)} in stock</div>
+  <div class="form"><label>Quantity received (${esc(i.unit)})<input id="r_qty" type="number" step="any" min="0" value="${Math.max(1,(i.min||0)*2-i.qty)}"></label><label>Supplier or bill number<input id="r_ref"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveRestock('${id}')">Add to stock</button></div>`);
+}
+function saveRestock(id){const i=item(id),q=Number(fv('r_qty'));if(!(q>0)){toast('Enter the quantity received');return}
+  i.qty=+(Number(i.qty)+q).toFixed(3);addLog(id,`Restocked ${q} ${i.unit}${fv('r_ref')?' · '+fv('r_ref'):''}`);save();render();showItem(id);toast('Stock updated')}
 function damageForm(id){
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Report damage</h2><div class="sub">${esc(item(id).name)} · ${id}</div>
   <div class="form"><label>New condition<select id="d_cond">${opt(CONDS.slice(1),'Needs repair')}</select></label><label>Reported by<input id="d_by"></label><label class="full">What happened<textarea id="d_note" rows="3"></textarea></label>
@@ -465,6 +536,7 @@ function saveDone(mid){const m=S.maint.find(x=>x.id===mid);const by=fv('c_by');i
 function exportCSV(kind){
   let rows;
   if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.expiry,i.hazard,lent(i.id)]));
+  if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
   if(kind==='loans')rows=[['Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status']].concat(S.loans.map(l=>[l.itemId,item(l.itemId)?.name||'',l.qty,l.borrower,l.borrowerLab,l.purpose,l.out,l.due,l.returned,l.returned?'Returned':overdue(l)?'Overdue':'Out']));
   if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
   const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
@@ -478,7 +550,7 @@ function route(){
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 window.addEventListener('hashchange',route);
-load();save();route();
+load();save();route();startupAlert();
 </script>
 </body>
 </html>
