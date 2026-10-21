@@ -25,7 +25,7 @@ a{color:var(--brand);text-decoration:none}
 .demo{background:#0f172a;color:#cbd5e1;font-size:12.5px;padding:8px 16px;text-align:center}
 .demo b{color:#fff}
 .demo button{background:none;border:1px solid #334155;color:#e2e8f0;border-radius:6px;padding:2px 8px;margin-left:8px;cursor:pointer;font-size:12px}
-.app{display:flex;min-height:calc(100vh - 36px)}
+.app{display:flex;min-height:100vh}
 .side{width:256px;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;flex-shrink:0;display:flex;flex-direction:column}
 .logo{display:flex;align-items:flex-start;gap:10px;line-height:1.25;padding:4px 8px 22px;font-weight:800;font-size:19px;letter-spacing:-.3px}
 .logo i{flex-shrink:0;margin-top:2px;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--brand),var(--brand2));display:grid;place-items:center}
@@ -150,7 +150,6 @@ tbody tr:hover{background:#fafbff}
 </style>
 </head>
 <body>
-<div class="demo"><b>Demo version.</b> Everything you add is saved only in this browser, on this device. <button onclick="resetDemo()">Reset sample data</button></div>
 <div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div></div>
 <div class="app">
   <aside class="side">
@@ -319,7 +318,6 @@ function vMnt(){
 let qrCat='ALL';
 function vQR(){
   return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Scanning opens that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
-  <div class="notice info noprint">In this demo a scanned label opens the item only on the device where the data was entered. With a shared database, any staff phone could scan it.</div>
   <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
   <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div><div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
 }
