@@ -349,7 +349,7 @@ function vDash(){
   const low=S.items.filter(isLow),od=S.loans.filter(overdue),dueM=openMaint().filter(m=>m.due<=addDays(today(),14)).sort((a,b)=>a.due<b.due?-1:1),exp=S.items.filter(isExpiring),pr=pending(),dm=newDamage();
   return `<div class="top"><div><h1>Good to see you</h1><div class="sub">Laboratory of Applied Materials · ${fmt(today())}</div></div>
   <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
-  ${!S.items.length?`<div class="notice info">The register is empty. Add items one by one, or <a href="javascript:loadSample()"><b>load sample data</b></a> to try it out.</div>`:''}
+  ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
   ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Borrow requests waiting for you <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
   ${dm.length?`<div class="card" style="margin-bottom:16px;border-color:#fecaca"><h3>Damage reports</h3><div class="list">${dm.map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>${esc(d.note)}${d.by?' · by '+esc(d.by):''}</small></div><div class="row"><button class="btn sm" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
