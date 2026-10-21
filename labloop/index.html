@@ -172,7 +172,7 @@ const CATS=[
   {k:'STA',name:'Stationery',color:'var(--c4)'},
   {k:'OTH',name:'Others',color:'var(--c5)'}
 ];
-const LABS=['Physics Lab','Electronics Lab','Chemistry Lab','Biology Lab','Computer Lab','Materials Lab'];
+const LABS=['LAMS','SOL','DBRL','NMRL','NSRL','Computational Lab','AMRL','UG Lab','PG Lab','MNERL','ANEL','Microscopy Centre'];
 const CONDS=['Working','Needs repair','Under maintenance','Damaged','Retired'];
 const ICONS={
   dash:'<path d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"/>',
@@ -186,7 +186,7 @@ const VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing'],['mnt
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
 let S, view='dash', invCat='ALL', invQ='', loanF='out';
-const KEY='lams_register_demo_v1';
+const KEY='lams_register_demo_v2';
 const today=()=>new Date().toISOString().slice(0,10);
 const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
 const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
@@ -197,37 +197,37 @@ const item=id=>S.items.find(i=>i.id===id);
 function seed(){
   const t=today();
   const items=[
-    ['EQP','Digital Multimeter','Physics Lab','Room 102',8,'nos',0,'Working','DM-8821','2023-06-12'],
-    ['EQP','Cathode Ray Oscilloscope 20 MHz','Electronics Lab','Room 204',4,'nos',0,'Working','CRO-2040','2021-08-03'],
-    ['EQP','Spectrometer with Prism','Physics Lab','Optics Room',3,'nos',0,'Needs repair','SP-1190','2018-01-20'],
-    ['EQP','Function Generator','Electronics Lab','Room 204',5,'nos',0,'Working','FG-5512','2022-02-14'],
-    ['EQP','Analytical Balance 0.1 mg','Chemistry Lab','Weighing Room',2,'nos',0,'Working','AB-220','2020-11-02'],
-    ['EQP','Travelling Microscope','Physics Lab','Room 101',4,'nos',0,'Under maintenance','TM-330','2019-07-15'],
-    ['EQP','Regulated DC Power Supply','Electronics Lab','Room 204',10,'nos',0,'Working','PS-3005','2022-02-14'],
-    ['CON','Breadboard','Electronics Lab','Store Shelf B',40,'nos',15,'Working','',''],
-    ['CON','Jumper Wires (pack of 40)','Electronics Lab','Store Shelf B',6,'packs',10,'Working','',''],
-    ['CON','Filter Paper Whatman No. 1','Chemistry Lab','Cabinet 3',3,'boxes',5,'Working','',''],
-    ['CON','Test Tubes 15 ml','Chemistry Lab','Cabinet 1',180,'nos',100,'Working','',''],
-    ['CON','Resistor Kit','Electronics Lab','Store Shelf A',12,'kits',5,'Working','',''],
-    ['CHM','Sodium Hydroxide pellets','Chemistry Lab','Chemical Store',2.5,'kg',1,'Working','','2025-04-10'],
-    ['CHM','Hydrochloric Acid 35%','Chemistry Lab','Acid Cabinet',1.5,'L',2,'Working','','2025-06-01'],
-    ['CHM','Silver Nitrate','Chemistry Lab','Locked Cabinet',100,'g',50,'Working','','2024-12-01'],
-    ['CHM','Ethanol 99%','Biology Lab','Flammables Cabinet',4,'L',2,'Working','','2025-08-20'],
-    ['STA','Record Notebooks','Physics Lab','Office',35,'nos',20,'Working','',''],
-    ['STA','Graph Sheets','Physics Lab','Office',120,'sheets',200,'Working','',''],
-    ['STA','Stock Register','Chemistry Lab','Office',2,'nos',1,'Working','',''],
-    ['OTH','First Aid Box','Chemistry Lab','Entrance',2,'nos',1,'Working','',''],
-    ['OTH','Fire Extinguisher CO2','Physics Lab','Corridor',3,'nos',0,'Working','FE-77','2022-09-01'],
-    ['OTH','Lab Coats','Biology Lab','Locker',18,'nos',10,'Working','','']
+    ['EQP','Digital Multimeter','LAMS','Room 102',8,'nos',0,'Working','DM-8821','2023-06-12'],
+    ['EQP','Cathode Ray Oscilloscope 20 MHz','NMRL','Room 204',4,'nos',0,'Working','CRO-2040','2021-08-03'],
+    ['EQP','Spectrometer with Prism','LAMS','Optics Room',3,'nos',0,'Needs repair','SP-1190','2018-01-20'],
+    ['EQP','Function Generator','NMRL','Room 204',5,'nos',0,'Working','FG-5512','2022-02-14'],
+    ['EQP','Analytical Balance 0.1 mg','SOL','Weighing Room',2,'nos',0,'Working','AB-220','2020-11-02'],
+    ['EQP','Travelling Microscope','LAMS','Room 101',4,'nos',0,'Under maintenance','TM-330','2019-07-15'],
+    ['EQP','Regulated DC Power Supply','NMRL','Room 204',10,'nos',0,'Working','PS-3005','2022-02-14'],
+    ['CON','Breadboard','NMRL','Store Shelf B',40,'nos',15,'Working','',''],
+    ['CON','Jumper Wires (pack of 40)','NMRL','Store Shelf B',6,'packs',10,'Working','',''],
+    ['CON','Filter Paper Whatman No. 1','SOL','Cabinet 3',3,'boxes',5,'Working','',''],
+    ['CON','Test Tubes 15 ml','SOL','Cabinet 1',180,'nos',100,'Working','',''],
+    ['CON','Resistor Kit','NMRL','Store Shelf A',12,'kits',5,'Working','',''],
+    ['CHM','Sodium Hydroxide pellets','SOL','Chemical Store',2.5,'kg',1,'Working','','2025-04-10'],
+    ['CHM','Hydrochloric Acid 35%','SOL','Acid Cabinet',1.5,'L',2,'Working','','2025-06-01'],
+    ['CHM','Silver Nitrate','SOL','Locked Cabinet',100,'g',50,'Working','','2024-12-01'],
+    ['CHM','Ethanol 99%','DBRL','Flammables Cabinet',4,'L',2,'Working','','2025-08-20'],
+    ['STA','Record Notebooks','LAMS','Office',35,'nos',20,'Working','',''],
+    ['STA','Graph Sheets','LAMS','Office',120,'sheets',200,'Working','',''],
+    ['STA','Stock Register','SOL','Office',2,'nos',1,'Working','',''],
+    ['OTH','First Aid Box','SOL','Entrance',2,'nos',1,'Working','',''],
+    ['OTH','Fire Extinguisher CO2','LAMS','Corridor',3,'nos',0,'Working','FE-77','2022-09-01'],
+    ['OTH','Lab Coats','DBRL','Locker',18,'nos',10,'Working','','']
   ];
   const cnt={};
   const it=items.map(r=>{cnt[r[0]]=(cnt[r[0]]||0)+1;return{id:`${r[0]}-${String(cnt[r[0]]).padStart(3,'0')}`,cat:r[0],name:r[1],lab:r[2],location:r[3],qty:r[4],unit:r[5],min:r[6],condition:r[7],serial:r[8],purchased:r[9],notes:'',expiry:r[0]==='CHM'?addDays(t,[200,25,-10,400][cnt.CHM-1]):'',hazard:r[0]==='CHM'?['Corrosive','Corrosive','Oxidiser, toxic','Flammable'][cnt.CHM-1]:''}});
   const loans=[
-    {id:'L1',itemId:'EQP-002',qty:1,borrower:'Anjali Menon',borrowerLab:'Physics Lab',purpose:'Lissajous figures practical',out:addDays(t,-9),due:addDays(t,-2),returned:''},
-    {id:'L2',itemId:'EQP-001',qty:2,borrower:'Rahul K',borrowerLab:'Electronics Lab',purpose:'Project work',out:addDays(t,-3),due:addDays(t,4),returned:''},
-    {id:'L3',itemId:'CON-008',qty:10,borrower:'Dr. Suresh Nair',borrowerLab:'Computer Lab',purpose:'IoT workshop',out:addDays(t,-2),due:addDays(t,5),returned:''},
-    {id:'L4',itemId:'EQP-004',qty:1,borrower:'Fathima Rinsha',borrowerLab:'Physics Lab',purpose:'Resonance experiment',out:addDays(t,-14),due:addDays(t,-7),returned:addDays(t,-8)},
-    {id:'L5',itemId:'EQP-005',qty:1,borrower:'Arun Das',borrowerLab:'Biology Lab',purpose:'Sample weighing',out:addDays(t,-6),due:addDays(t,-1),returned:''}
+    {id:'L1',itemId:'EQP-002',qty:1,borrower:'Anjali Menon',borrowerLab:'LAMS',purpose:'Lissajous figures practical',out:addDays(t,-9),due:addDays(t,-2),returned:''},
+    {id:'L2',itemId:'EQP-001',qty:2,borrower:'Rahul K',borrowerLab:'NMRL',purpose:'Project work',out:addDays(t,-3),due:addDays(t,4),returned:''},
+    {id:'L3',itemId:'CON-008',qty:10,borrower:'Dr. Suresh Nair',borrowerLab:'Computational Lab',purpose:'IoT workshop',out:addDays(t,-2),due:addDays(t,5),returned:''},
+    {id:'L4',itemId:'EQP-004',qty:1,borrower:'Fathima Rinsha',borrowerLab:'LAMS',purpose:'Resonance experiment',out:addDays(t,-14),due:addDays(t,-7),returned:addDays(t,-8)},
+    {id:'L5',itemId:'EQP-005',qty:1,borrower:'Arun Das',borrowerLab:'DBRL',purpose:'Sample weighing',out:addDays(t,-6),due:addDays(t,-1),returned:''}
   ];
   const maint=[
     {id:'M1',itemId:'EQP-005',type:'Calibration',due:addDays(t,6),done:'',by:'',notes:'Annual calibration by vendor'},
@@ -423,7 +423,7 @@ function loanForm(id){
   <div class="form">
     <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)} (${i.qty-lent(i.id)} ${esc(i.unit)} available)</option>`).join('')}</select></label>
     <label>Borrowed by<input id="l_who" placeholder="Name of student or staff"></label>
-    <label>Borrowing lab or department<input id="l_lab" list="labs" placeholder="e.g. Electronics Lab"><datalist id="labs">${LABS.map(l=>`<option value="${l}">`).join('')}</datalist></label>
+    <label>Borrowing lab or department<input id="l_lab" list="labs" placeholder="e.g. NMRL"><datalist id="labs">${LABS.map(l=>`<option value="${l}">`).join('')}</datalist></label>
     <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
     <label>Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" placeholder="Practical, project, workshop"></label>
