@@ -319,7 +319,7 @@ function render(fromData){
 /* admin login */
 function loginForm(){
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Admin login</h2><div class="sub">Only the lab admin needs to log in.</div>
-  <div class="form"><label class="full">Username<input id="a_user" autocomplete="username" placeholder="lams_admin"></label><label class="full">Password<input id="a_pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></label></div>
+  <div class="form"><label class="full">Username<input id="a_user" autocomplete="username"></label><label class="full">Password<input id="a_pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="a_go" onclick="doLogin()">Log in</button></div>`);
   setTimeout(()=>document.getElementById('a_user').focus(),50);
 }
