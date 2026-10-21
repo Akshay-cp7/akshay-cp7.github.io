@@ -229,12 +229,13 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-21-instant';
+const BUILD='2026-10-21-records';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='out', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
 const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
+const when=t=>{const d=t?.toDate?t.toDate():t?.seconds?new Date(t.seconds*1000):null;return d?d.toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'numeric',minute:'2-digit'}):''};
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cat=k=>CATS.find(c=>c.k===k)||CATS[4];
 const item=id=>S.items.find(i=>i.id===id);
@@ -273,6 +274,7 @@ const openLoans=()=>S.loans.filter(l=>l.status==='approved'||l.status==='returni
 const selfReturns=()=>S.loans.filter(l=>l.status==='returned'&&l.selfReturned&&l.returned>=addDays(today(),-7)).sort((a,b)=>a.returned<b.returned?1:-1);
 const returning=()=>S.loans.filter(l=>l.status==='returning');
 const overdue=l=>l.status==='approved'&&l.due<today();
+const needsRepair=()=>S.items.filter(i=>['Needs repair','Damaged','Under maintenance'].includes(i.condition));
 const openMaint=()=>S.maint.filter(m=>!m.done);
 const newDamage=()=>S.damage.filter(d=>d.status==='new'&&d.kind!=='stock');
 const newOOS=()=>S.damage.filter(d=>d.status==='new'&&d.kind==='stock');
@@ -315,7 +317,7 @@ function startupAlert(){
 
 /* chrome */
 function nav(){
-  const nl=S.items.filter(isLow).length+newOOS().length,np=pending().length+returning().length;
+  const nl=S.items.filter(isLow).length+newOOS().length+newDamage().length+needsRepair().length,np=pending().length+returning().length;
   const bd=k=>isAdmin&&k==='inv'&&nl?`<span class="badge">${nl}</span>`:isAdmin&&k==='loan'&&np?`<span class="badge">${np}</span>`:'';
   document.getElementById('nav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
   document.getElementById('mobnav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
@@ -341,7 +343,7 @@ function loginForm(){
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Admin login</h2><div class="sub">Only the lab admin needs to log in.</div>
   <div class="form"><label class="full">Username<input id="a_user" autocomplete="username"></label><label class="full">Password<input id="a_pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="a_go" onclick="doLogin()">Log in</button></div>`);
-  setTimeout(()=>document.getElementById('a_user').focus(),50);
+  setTimeout(()=>document.getElementById('a_user')?.focus(),50);
 }
 function doLogin(){
   let u=fv('a_user').toLowerCase().replace(/\.com$/,'');if(!u.includes('@'))u+=ADMIN_DOMAIN;
@@ -377,11 +379,7 @@ function vDash(){
   <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
   ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
-  ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Old requests from before instant borrowing <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
-  ${selfReturns().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returned by students <span class="sub">last 7 days</span></h3><div class="list">${selfReturns().map(l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · returned ${fmt(l.returned)}</small></div><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div>`).join('')}</div></div>`:''}
-  ${returning().length?`<div class="card" style="margin-bottom:16px;border-color:#a7f3d0"><h3>Returns to check <span class="sub">Confirm once it is back on the shelf</span></h3><div class="list">${returning().map(retRow).join('')}</div></div>`:''}
-  ${newOOS().length?`<div class="card" style="margin-bottom:16px;border-color:#fde68a"><h3>Out of stock reports</h3><div class="list">${newOOS().map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>Reported by ${esc(d.by)}${d.note?' · '+esc(d.note):''}</small></div><div class="row"><button class="btn sm okb" onclick="setStock('${d.itemId}',true,'${d.id}')">Approve</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
-  ${dm.length?`<div class="card" style="margin-bottom:16px;border-color:#fecaca"><h3>Damage reports</h3><div class="list">${dm.map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>${esc(d.note)}${d.by?' · reported by '+esc(d.by):''}${d.borrower?'<br>Borrowed by '+esc(d.borrower):''}</small></div><div class="row"><button class="btn sm" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
+  ${needsYou()}
   <div class="grid g4">
     ${stat(S.items.length,'Items registered',`${CATS.length} categories`,'')}
     ${stat(openLoans().length,'Currently borrowed',od.length?`${od.length} overdue`:'None overdue',od.length?'color:var(--bad)':'color:var(--ok)')}
@@ -407,8 +405,31 @@ function notReceived(lid){
     tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:`Return by ${l.borrower} not received, still borrowed`,ts:FB.serverTimestamp()});
   }).then(()=>toast('Kept as borrowed')).catch(e=>e.code==='done'?toast('Already changed'):fail(e));
 }
+function needsYou(){
+  const a=[];const n=(c,t)=>c?`${c} ${t}${c>1?'s':''}`:'';
+  const b=[n(returning().length,'return to approve'),n(pending().length,'old request')].filter(Boolean),iv=[n(newDamage().length,'damage report'),n(newOOS().length,'out of stock report'),n(needsRepair().length,'item waiting for repair')].filter(Boolean);
+  if(b.length)a.push(`<a class="btn" href="#loan" onclick="loanF='out'">${ico('loan')}Borrowing: ${b.join(', ')}</a>`);
+  if(iv.length)a.push(`<a class="btn" href="#inv">${ico('inv')}Inventory: ${iv.join(', ')}</a>`);
+  return a.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Needs you</h3><div class="row">${a.join('')}</div></div>`:'';
+}
 const reqRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · till ${fmt(l.due)}${l.purpose?' · '+esc(l.purpose):''}</small></div><div class="row"><button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button></div></div>`;
 const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
+function invAttention(){
+  const oos=newOOS(),dm=newDamage(),rep=needsRepair(),out=S.items.filter(isOut);
+  if(!oos.length&&!dm.length&&!rep.length&&!out.length)return'';
+  const row=(t,sm,btns)=>`<div class="li"><div>${t}<small>${sm}</small></div><div class="row">${btns}</div></div>`;
+  return `<div class="card" style="margin-bottom:18px;border-color:#fde68a"><h3>Needs your attention</h3><div class="list">
+  ${oos.map(d=>row(`<b>${esc(d.by)}</b> says <b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b> is out of stock`,`${when(d.createdAt)}${d.note?' · '+esc(d.note):''}`,`<button class="btn sm okb" onclick="setStock('${d.itemId}',true,'${d.id}')">Approve</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button>`)).join('')}
+  ${dm.map(d=>row(`<b>${esc(d.by||'Someone')}</b> reported damage on <b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b>`,`${when(d.createdAt)} · ${esc(d.note)}${d.borrower?' · borrowed by '+esc(d.borrower):''}`,`<button class="btn sm okb" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button>`)).join('')}
+  ${rep.map(i=>row(`<b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b> ${i.condition==='Needs repair'?'needs repair':'is '+esc(i.condition.toLowerCase())}`,[i.lab,i.location].filter(Boolean).map(esc).join(' · '),`<button class="btn sm okb" onclick="markRepaired('${i.id}')">Mark repaired</button>`)).join('')}
+  ${out.filter(i=>!oos.some(d=>d.itemId===i.id)).map(i=>row(`<b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b> is out of stock`,[i.lab,i.location].filter(Boolean).map(esc).join(' · '),`<button class="btn sm" onclick="restockForm('${i.id}')">Restock</button><button class="btn sm okb" onclick="setStock('${i.id}',false)">Back in stock</button>`)).join('')}
+  </div></div>`;
+}
+function markRepaired(id){
+  const b=FB.writeBatch(FB.db);b.update(D('items',id),{condition:'Working'});
+  openMaint().filter(m=>m.itemId===id&&m.type==='Repair').forEach(m=>b.update(D('maint',m.id),{done:today(),by:'Marked repaired'}));
+  addLog(b,id,'Repaired, back to working');b.commit().then(()=>toast('Marked repaired')).catch(fail);
+}
 function bannerTitle(o,l){const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);return p.join(' and ')}
 function stockBanner(low){
   const canAsk='Notification' in window&&Notification.permission==='default';
@@ -425,7 +446,7 @@ function vInv(){
   const q=invQ.toLowerCase();
   const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q))).sort((a,b)=>a.id<b.id?-1:1);
   const showExp=invCat==='CHM';
-  return `<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Borrow an item</button>`}</div></div>
+  return `${isAdmin?invAttention():''}<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Borrow an item</button>`}</div></div>
   <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
@@ -454,13 +475,13 @@ function returnForm(lid){
   <div class="form"><label class="full">Who is handing it back? <span class="req">*</span><input id="rt_by" maxlength="80" placeholder="Your name" value="" oninput="this.classList.remove('bad')"></label></div>
   <p class="sub">The admin checks it and approves the return.</p>
   <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn okb" id="rt_go" onclick="sendReturn('${lid}')">Send to admin</button></div>`);
-  setTimeout(()=>document.getElementById('rt_by').focus(),50);
+  setTimeout(()=>document.getElementById('rt_by')?.focus(),50);
 }
 function sendReturn(lid){
   const el=document.getElementById('rt_by'),by=el.value.trim();
   if(by.replace(/[^\p{L}]/gu,'').length<2){el.classList.add('bad');toast('Name is required');return}
   document.getElementById('rt_go').disabled=true;
-  FB.updateDoc(D('loans',lid),{status:'returning',returnAskedOn:today(),returnedBy:by}).then(()=>{closeModal();toast('Sent. The admin will approve the return.')}).catch(e=>{document.getElementById('rt_go').disabled=false;fail(e)});
+  FB.updateDoc(D('loans',lid),{status:'returning',returnAskedOn:today(),returnedBy:by,returnAskedAt:FB.serverTimestamp()}).then(()=>{closeModal();toast('Sent. The admin will approve the return.')}).catch(e=>{document.getElementById('rt_go').disabled=false;fail(e)});
 }
 function loanDamageForm(lid){
   const l=S.loans.find(x=>x.id===lid);modalItem=null;
@@ -520,15 +541,29 @@ function sendRequest(){
 
 /* admin borrowing */
 function vLoan(){
-  const pick=l=>loanF==='all'||(loanF==='pending'?l.status==='pending':loanF==='out'?(l.status==='approved'||l.status==='returning'):loanF==='over'?overdue(l):l.status===loanF);
-  const rows=S.loans.filter(pick).sort((a,b)=>(b.out||b.due||'')<(a.out||a.due||'')?-1:1);
-  const f=(k,n,c)=>`<button class="tab ${loanF===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${c}</em></button>`;
-  return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">See who has what, and check returns</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
-  <div class="tabs">${pending().length?f('pending','Old requests',pending().length):''}${f('returning','Returns to check',returning().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
-  <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>${l.selfReturned?'<div class="sub" style="font-size:12px">by the student</div>':''}`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}${l.damage?`<div style="font-size:12px;color:var(--bad);font-weight:600">Damaged: ${esc(l.damage)}</div>`:''}${l.status==='returning'&&l.returnedBy?`<div class="sub" style="font-size:12px">handed back by ${esc(l.returnedBy)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returned'&&l.selfReturned?`<button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Confirm</button> <button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
-  </tbody></table></div>`;
+  const groups=[['out','Borrowed now',l=>l.status==='approved'||l.status==='returning'],['over','Overdue',l=>overdue(l)],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined'],['all','All',()=>true]];
+  if(pending().length)groups.unshift(['pending','Old requests',l=>l.status==='pending']);
+  const g=groups.find(x=>x[0]===loanF)||groups.find(x=>x[0]==='out'),q=invQ.toLowerCase();
+  const ts=l=>l.createdAt?.seconds||Date.parse(l.out||l.due||0)/1000||0;
+  const rows=S.loans.filter(g[2]).filter(l=>!q||[l.itemName,l.borrower,l.borrowerLab,l.returnedBy].join(' ').toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));
+  const ret=returning();
+  return `<div class="top"><div><h1>Borrowing</h1><div class="sub">Who took what and when, and returns to approve</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
+  ${ret.length?`<div class="alert amber" style="align-items:stretch"><div class="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M7 7h11l-3-3M17 17H6l3 3"/></svg></div><div class="ab"><b>${ret.length} return${ret.length>1?'s':''} waiting for your approval</b>Approve once the item is back on the shelf.<div class="list" style="margin-top:8px;background:#fff;border-radius:10px;padding:0 12px">${ret.map(l=>`<div class="li"><div><strong>${esc(l.returnedBy||l.borrower)}</strong> handed back <strong>${l.qty} × ${esc(l.itemName)}</strong><small>${when(l.returnAskedAt)||fmt(l.returnAskedOn)} · borrowed by ${esc(l.borrower)} (${esc(l.borrowerLab)}) on ${when(l.createdAt)||fmt(l.out)}</small></div><div class="row"><button class="btn sm okb" onclick="returnLoan('${l.id}')">Approve return</button><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button></div></div>`).join('')}</div></div></div>`:''}
+  <div class="tabs">${groups.map(([k,n,f])=>`<button class="tab ${g[0]===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${S.loans.filter(f).length}</em></button>`).join('')}</div>
+  <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search item, name or lab" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
+  <div class="card"><div class="list">${rows.length?rows.map(recRow).join(''):'<div class="empty">No records here</div>'}</div></div>`;
 }
+const recRow=l=>{
+  const lines=[`Borrowed ${when(l.createdAt)||fmt(l.out)} · due back ${fmt(l.due)}${l.purpose?' · for '+esc(l.purpose):''}`];
+  if(l.status==='returned')lines.push(`<span style="color:var(--ok)">Returned ${when(l.returnedAt)||fmt(l.returned)}${l.returnedBy&&l.returnedBy!==l.borrower?' · handed back by '+esc(l.returnedBy):''}${l.selfReturned?' · by the student':''}</span>`);
+  if(l.status==='returning')lines.push(`<span style="color:var(--warn)">${esc(l.returnedBy||l.borrower)} says it was handed back ${when(l.returnAskedAt)||fmt(l.returnAskedOn)}</span>`);
+  if(overdue(l))lines.push(`<span style="color:var(--bad)">Overdue by ${Math.round((Date.parse(today())-Date.parse(l.due))/864e5)} day${Math.round((Date.parse(today())-Date.parse(l.due))/864e5)>1?'s':''}</span>`);
+  if(l.status==='declined')lines.push(`<span style="color:var(--bad)">Declined${l.reason?': '+esc(l.reason):''}</span>`);
+  if(l.damage)lines.push(`<span style="color:var(--bad);font-weight:600">Damaged: ${esc(l.damage)}</span>`);
+  const act=l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Approve return</button><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm" onclick="returnLoan('${l.id}')">Mark returned</button>`:l.status==='returned'&&l.selfReturned?`<button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:'';
+  const pill=l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-info">Borrowed</span>'):l.status==='returning'?'<span class="pill p-warn">Return waiting</span>':l.status==='returned'?'<span class="pill p-ok">Returned</span>':l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Old request</span>';
+  return `<div class="li" style="align-items:flex-start"><div><b>${esc(l.borrower)}</b> <span class="sub">(${esc(l.borrowerLab)})</span> borrowed <b class="nm" onclick="showItem('${l.itemId}')">${l.qty} × ${esc(l.itemName)}</b>${lines.map(x=>`<small>${x}</small>`).join('')}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${pill}<div class="row">${act}</div></div></div>`;
+};
 const busy=new Set();
 function approve(lid){
   if(busy.has(lid))return;busy.add(lid);
@@ -553,7 +588,7 @@ function returnLoan(lid,fromItem){
   FB.runTransaction(FB.db,async tx=>{
     const ls=await tx.get(D('loans',lid));if(!ls.exists()||!['approved','returning'].includes(ls.data().status))throw{code:'done'};
     const l=ls.data();itemId=l.itemId;const is=await tx.get(D('items',l.itemId));
-    tx.update(D('loans',lid),{status:'returned',returned:today()});
+    tx.update(D('loans',lid),{status:'returned',returned:today(),returnedAt:FB.serverTimestamp()});
     if(is.exists())tx.update(D('items',l.itemId),{lent:Math.max(0,Number(is.data().lent||0)-Number(l.qty))});
     tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:l.returnedBy&&l.returnedBy!==l.borrower?`Returned by ${l.returnedBy} (borrowed by ${l.borrower})`:`Returned by ${l.borrower}`,ts:FB.serverTimestamp()});
   }).then(()=>{toast('Marked returned');if(fromItem)showItem(itemId)}).catch(e=>e.code==='done'?toast('Already returned'):fail(e)).finally(()=>busy.delete(lid));
@@ -685,7 +720,7 @@ function itemForm(id){
     <label class="full">Notes<textarea id="f_notes" rows="2">${esc(i.notes||'')}</textarea></label>
   </div>
   <div class="row" style="justify-content:space-between">${id?`<button class="btn danger" onclick="delItem('${id}')">Delete</button>`:'<span></span>'}<div class="row"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveItem('${id||''}')">Save</button></div></div>`);
-  setTimeout(()=>document.getElementById('f_name').focus(),50);
+  setTimeout(()=>document.getElementById('f_name')?.focus(),50);
 }
 function saveItem(id){
   const name=fv('f_name');if(!name){toast('Give the item a name');return}
@@ -706,7 +741,6 @@ function showItem(id,silent){
   const a=Math.max(0,avail(i));
   const actions=isAdmin?`
     <button class="btn pri" onclick="loanForm('${id}')">Issue</button>
-    ${ls.length?`<button class="btn okb" onclick="returnLoan('${ls[0].id}',1)">Mark returned</button>`:''}
     ${i.cat!=='EQP'?`<button class="btn" onclick="useForm('${id}')">Record usage</button><button class="btn" onclick="restockForm('${id}')">Restock</button>${i.outOfStock?`<button class="btn okb" onclick="setStock('${id}',false)">Back in stock</button>`:`<button class="btn danger" onclick="setStock('${id}',true)">Mark out of stock</button>`}`:''}
     <button class="btn" onclick="damageForm('${id}')">Report damage</button>
     <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
@@ -724,7 +758,7 @@ function showItem(id,silent){
     ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
   </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
   ${!isAdmin&&ls.length?`<div class="card" style="padding:4px 14px;margin-bottom:14px;box-shadow:none"><div class="list">${ls.map(outRow).join('')}</div></div>`:''}
-  ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}</div>`:''}
+  ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}. <a href="#loan" onclick="closeModal()">Returns are handled in Borrowing</a></div>`:''}
   ${isAdmin&&ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
   <div class="row" style="margin-bottom:16px">${actions}</div>
   ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
@@ -817,7 +851,7 @@ function exportCSV(kind){
   let rows;
   if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.expiry,i.hazard,i.lent||0]));
   if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
-  if(kind==='loans')rows=[['Code','Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status','Decline reason','Handed back by','Damage']].concat(S.loans.map(l=>[l.id,l.itemId,l.itemName,l.qty,l.borrower,l.borrowerLab,l.purpose,l.out,l.due,l.returned,overdue(l)?'overdue':l.status,l.reason,l.returnedBy,l.damage]));
+  if(kind==='loans')rows=[['Code','Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status','Decline reason','Handed back by','Damage']].concat(S.loans.map(l=>[l.id,l.itemId,l.itemName,l.qty,l.borrower,l.borrowerLab,l.purpose,when(l.createdAt)||l.out,l.due,when(l.returnedAt)||l.returned,overdue(l)?'overdue':l.status,l.reason,l.returnedBy,l.damage]));
   if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
   const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=`lams_${kind}_${today()}.csv`;a.click();toast('CSV downloaded')
