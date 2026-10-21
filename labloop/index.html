@@ -234,8 +234,8 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-21-redflags';
-let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='out', qrCat='ALL';
+const BUILD='2026-10-21-alltab';
+let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
 const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
@@ -413,7 +413,7 @@ function notReceived(lid){
 function needsYou(){
   const a=[];const n=(c,t)=>c?`${c} ${t}${c>1?'s':''}`:'';
   const b=[n(returning().length,'return to approve'),n(pending().length,'old request')].filter(Boolean),iv=[n(newDamage().length,'damage report'),n(newOOS().length,'out of stock report'),n(needsRepair().length,'item waiting for repair')].filter(Boolean);
-  if(b.length)a.push(`<a class="btn" href="#loan" onclick="loanF='out'">${ico('loan')}Borrowing: ${b.join(', ')}</a>`);
+  if(b.length)a.push(`<a class="btn" href="#loan" onclick="loanF='all'">${ico('loan')}Borrowing: ${b.join(', ')}</a>`);
   if(iv.length)a.push(`<a class="btn" href="#inv">${ico('inv')}Inventory: ${iv.join(', ')}</a>`);
   return a.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Needs you</h3><div class="row">${a.join('')}</div></div>`:'';
 }
@@ -554,9 +554,9 @@ function sendRequest(){
 
 /* admin borrowing */
 function vLoan(){
-  const groups=[['out','Borrowed now',l=>l.status==='approved'||l.status==='returning'],['over','Overdue',l=>overdue(l)],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined'],['all','All',()=>true]];
+  const groups=[['all','All',()=>true],['out','Borrowed now',l=>l.status==='approved'||l.status==='returning'],['over','Overdue',l=>overdue(l)],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined']];
   if(pending().length)groups.unshift(['pending','Old requests',l=>l.status==='pending']);
-  const g=groups.find(x=>x[0]===loanF)||groups.find(x=>x[0]==='out'),q=invQ.toLowerCase();
+  const g=groups.find(x=>x[0]===loanF)||groups[0],q=invQ.toLowerCase();
   const ts=l=>l.createdAt?.seconds||Date.parse(l.out||l.due||0)/1000||0;
   const rows=S.loans.filter(g[2]).filter(l=>!q||[l.itemName,l.borrower,l.borrowerLab,l.returnedBy].join(' ').toLowerCase().includes(q)).sort((a,b)=>ts(b)-ts(a));
   const ret=returning();
