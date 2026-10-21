@@ -413,9 +413,9 @@ function vBorrow(){
   <div class="card"><h3>Requests from this phone</h3><div class="list" id="minelist">${mine().length?'<div class="empty">Loading…</div>':'<div class="empty">None yet</div>'}</div></div></div>`;
 }
 const reqCard=(c,l)=>l?`<div class="li"><div><b>${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · till ${fmt(l.due)} · <span class="id">${c}</span>${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}</small>${l.status==='approved'?`<button class="btn sm okb" style="margin-top:6px" onclick="iReturned('${c}')">I've returned it</button>`:''}</div>${statusPill(l)}</div>`:`<div class="li"><div><span class="id">${c}</span><small>No request with this code</small></div></div>`;
-function iReturned(c){
+function iReturned(c,fromItem){
   if(!confirm('Did you hand it back to the lab? The admin will check and confirm.'))return;
-  FB.updateDoc(D('loans',c),{status:'returning',returnAskedOn:today()}).then(()=>{toast('Thanks. The admin will confirm it.');refreshMine();const o=document.getElementById('chkout');if(o&&o.innerHTML)checkCode()}).catch(fail);
+  FB.updateDoc(D('loans',c),{status:'returning',returnAskedOn:today()}).then(()=>{toast('Thanks. The admin will confirm it.');if(fromItem&&modalItem)showItem(modalItem);refreshMine();const o=document.getElementById('chkout');if(o&&o.innerHTML)checkCode()}).catch(fail);
 }
 async function fetchReq(c){try{const s=await FB.getDoc(D('loans',c));return s.exists()?s.data():null}catch(e){return null}}
 async function refreshMine(){const el=document.getElementById('minelist');const cs=mine();if(!el||!cs.length)return;const rs=await Promise.all(cs.map(fetchReq));if(document.getElementById('minelist'))el.innerHTML=cs.map((c,i)=>reqCard(c,rs[i])).join('')}
@@ -648,7 +648,7 @@ function showItem(id,silent){
     <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
     <button class="btn" onclick="itemForm('${id}')">Edit</button>`:`
     ${i.condition==='Working'&&a>0?`<button class="btn pri" onclick="reqForm('${id}')">Request to borrow</button>`:''}
-    <button class="btn" onclick="pubDamageForm('${id}')">Report a problem</button>`;
+    <span id="myret"></span><button class="btn" onclick="pubDamageForm('${id}')">Report a problem</button>`;
   openModal(`<button class="x" onclick="closeModal()">×</button><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span><h2 style="margin-top:6px">${esc(i.name)}</h2><div class="id">${i.id}</div>
   <div class="detail"><dl class="kv">
     <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
@@ -663,6 +663,11 @@ function showItem(id,silent){
   <div class="row" style="margin-bottom:16px">${actions}</div>
   ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
   makeQR(document.getElementById('dq'),id,240);
+  if(!isAdmin&&mine().length)Promise.all(mine().map(c=>fetchReq(c).then(l=>l&&{c,...l}))).then(rs=>{
+    const el=document.getElementById('myret');if(!el||modalItem!==id)return;
+    const mineHere=rs.filter(l=>l&&l.itemId===id&&['approved','returning'].includes(l.status));
+    el.outerHTML=mineHere.map(l=>l.status==='approved'?`<button class="btn okb" onclick="iReturned('${l.c}',1)">I've returned it (${l.qty})</button>`:`<span class="pill p-info" style="align-self:center">Return being checked</span>`).join('')||'';
+  });
 }
 
 function useForm(id){
