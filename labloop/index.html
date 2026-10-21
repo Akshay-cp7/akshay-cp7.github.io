@@ -200,10 +200,10 @@ tbody tr:hover{background:#fafbff}
 
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {getFirestore,collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {getFirestore,collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where,waitForPendingWrites} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 const app=initializeApp({apiKey:'AIzaSyBlIrK76Q9t6lN_8AOXm8wKtiJzOwwb9gE',authDomain:'lams-lab-register.firebaseapp.com',projectId:'lams-lab-register',storageBucket:'lams-lab-register.firebasestorage.app',messagingSenderId:'974719142292',appId:'1:974719142292:web:283f96a6c84f18fc1b2781'});
-window.FB={db:getFirestore(app),auth:getAuth(app),collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where,onAuthStateChanged,signInWithEmailAndPassword,signOut};
+window.FB={db:getFirestore(app),auth:getAuth(app),collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where,waitForPendingWrites,onAuthStateChanged,signInWithEmailAndPassword,signOut};
 window.dispatchEvent(new Event('fb-ready'));
 </script>
 <script>
@@ -344,7 +344,13 @@ function doLogin(){
   const b=document.getElementById('a_go');b.disabled=true;b.textContent='Logging in…';
   FB.signInWithEmailAndPassword(FB.auth,u,document.getElementById('a_pass').value).then(()=>{closeModal();toast('Logged in as admin');view='dash';location.hash='dash'}).catch(e=>{b.disabled=false;b.textContent='Log in';toast(['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-email'].includes(e.code)?'Wrong username or password':'Could not log in: '+e.code)});
 }
-function logout(){FB.signOut(FB.auth).then(()=>{toast('Logged out');location.hash='dash'})}
+function logout(){
+  toast('Saving…');
+  // Finish every admin save first, or Firebase would retry it as a logged-out visitor and drop it.
+  Promise.race([FB.waitForPendingWrites(FB.db),new Promise((_,no)=>setTimeout(()=>no('slow'),15000))])
+    .then(()=>FB.signOut(FB.auth)).then(()=>{toast('Logged out');location.hash='dash'})
+    .catch(()=>toast('Still saving. Check the internet, then log out again.'));
+}
 
 /* public home */
 function vHome(){
@@ -468,6 +474,7 @@ function sendLoanDamage(lid){
 function reqForm(id){
   const its=S.items.filter(canLend);
   if(!its.length){toast('Nothing is free to borrow right now');return}
+  if(id&&!its.some(i=>i.id===id)){toast(item(id)?.outOfStock?'That is out of stock':'That item cannot be borrowed right now');return}
   if(id&&!its.some(i=>i.id===id)){toast(item(id)?.outOfStock?'That is out of stock':'That item cannot be borrowed right now');return}
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Request to borrow</h2><div class="sub">The lab admin will approve or decline it.</div>
   <div class="form">
@@ -640,7 +647,7 @@ function gotScan(t){
 }
 
 /* modals */
-function openModal(h){if(!h.includes('id="sv"'))stopScan();document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.add('on')}
+function openModal(h){modalItem=null;if(!h.includes('id="sv"'))stopScan();document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.add('on')}
 function closeModal(){stopScan();modalItem=null;document.getElementById('modal').classList.remove('on');if(location.hash.startsWith('#item='))history.replaceState(null,'','#'+view)}
 const opt=(arr,sel)=>arr.map(a=>{const[v,n]=Array.isArray(a)?a:[a,a];return`<option value="${esc(v)}" ${v===sel?'selected':''}>${esc(n)}</option>`}).join('');
 const fv=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
@@ -710,6 +717,7 @@ function showItem(id,silent){
   ${isAdmin&&ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
   <div class="row" style="margin-bottom:16px">${actions}</div>
   ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
+  modalItem=id;
   makeQR(document.getElementById('dq'),id,240);
 }
 
