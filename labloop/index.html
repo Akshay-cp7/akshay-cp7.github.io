@@ -22,9 +22,6 @@
 body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5}
 button,input,select,textarea{font:inherit;color:inherit}
 a{color:var(--brand);text-decoration:none}
-.demo{background:#0f172a;color:#cbd5e1;font-size:12.5px;padding:8px 16px;text-align:center}
-.demo b{color:#fff}
-.demo button{background:none;border:1px solid #334155;color:#e2e8f0;border-radius:6px;padding:2px 8px;margin-left:8px;cursor:pointer;font-size:12px}
 .app{display:flex;min-height:100vh}
 .side{width:256px;background:var(--panel);border-right:1px solid var(--line);padding:20px 14px;position:sticky;top:0;height:100vh;flex-shrink:0;display:flex;flex-direction:column}
 .logo{display:flex;align-items:flex-start;gap:10px;line-height:1.25;padding:4px 8px 22px;font-weight:800;font-size:19px;letter-spacing:-.3px}
@@ -164,20 +161,51 @@ tbody tr:hover{background:#fafbff}
 </style>
 </head>
 <body>
-<div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div></div>
+<style>
+.who{margin-top:10px}
+.who .btn{width:100%;justify-content:center}
+.mhead .mlog{margin-left:auto;flex-shrink:0}
+.loading{padding:80px 20px;text-align:center;color:var(--muted);font-weight:600}
+.codebox{font-family:ui-monospace,Menlo,monospace;font-size:28px;font-weight:800;letter-spacing:4px;text-align:center;background:var(--brandSoft);color:var(--brand);border-radius:12px;padding:14px;margin:14px 0}
+.hero{background:linear-gradient(135deg,#1d4ed8,#0ea5e9);color:#fff;border-radius:18px;padding:24px;margin-bottom:18px}
+.hero h1{color:#fff}
+.hero p{opacity:.9;margin:6px 0 14px;max-width:560px}
+.hero .btn{border:0}
+.hero .btn.ghost{background:rgba(255,255,255,.18);color:#fff}
+.scanbtn{display:flex;align-items:center;gap:8px;width:100%;justify-content:center;margin:6px 0 14px;background:var(--ink);color:#fff;border:0;border-radius:10px;padding:10px;font-weight:700;cursor:pointer}
+.scanbtn svg{width:18px;height:18px}
+.scanwrap{position:relative;border-radius:14px;overflow:hidden;background:#000;aspect-ratio:1;margin:14px 0}
+.scanwrap video{width:100%;height:100%;object-fit:cover}
+.scanwrap .frame{position:absolute;inset:18%;border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 999px rgba(0,0,0,.35)}
+.scanwrap .line{position:absolute;left:18%;right:18%;height:2px;background:#38bdf8;top:20%;animation:sl 2s ease-in-out infinite alternate}
+@keyframes sl{to{top:80%}}
+.mhead .mlog{display:flex;gap:6px}
+.adminpill{display:inline-flex;align-items:center;gap:6px;background:var(--okSoft);color:var(--ok);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
+</style>
+<div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div><span class="mlog" id="mlog"></span></div>
 <div class="app">
   <aside class="side">
     <div class="logo"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div>LAMS Lab Register<small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div></div>
+    <button class="scanbtn" onclick="scanQR()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan a QR label</button>
     <nav class="nav" id="nav"></nav>
-    <div class="inst"><b id="instName"></b><span id="instSub"></span></div>
+    <div class="inst"><b>Laboratory of Applied Materials</b><span>MSE Department, NIT Calicut</span><div class="who" id="who"></div></div>
   </aside>
-  <main id="main"></main>
+  <main id="main"><div class="loading">Loading the register…</div></main>
 </div>
 <nav class="mobnav" id="mobnav"></nav>
 <div class="modal" id="modal" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mbox"></div></div>
 <div class="toast" id="toast"></div>
 
+<script type="module">
+import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
+import {getFirestore,collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
+const app=initializeApp({apiKey:'AIzaSyBlIrK76Q9t6lN_8AOXm8wKtiJzOwwb9gE',authDomain:'lams-lab-register.firebaseapp.com',projectId:'lams-lab-register',storageBucket:'lams-lab-register.firebasestorage.app',messagingSenderId:'974719142292',appId:'1:974719142292:web:283f96a6c84f18fc1b2781'});
+window.FB={db:getFirestore(app),auth:getAuth(app),collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,onAuthStateChanged,signInWithEmailAndPassword,signOut};
+window.dispatchEvent(new Event('fb-ready'));
+</script>
 <script>
+const ADMIN_DOMAIN='@lams-lab-register.firebaseapp.com';
 const CATS=[
   {k:'EQP',name:'Equipments',color:'var(--c1)'},
   {k:'CON',name:'Consumables',color:'var(--c2)'},
@@ -195,21 +223,505 @@ const ICONS={
   qr:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/>',
   rep:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
 };
-const VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing'],['mnt','Maintenance'],['qr','QR Labels'],['rep','Reports']];
+const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing'],['mnt','Maintenance'],['qr','QR Labels'],['rep','Reports']];
+const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-let S, view='dash', invCat='ALL', invQ='', loanF='out';
-const KEY='lams_register_demo_v3';
-const today=()=>new Date().toISOString().slice(0,10);
-const addDays=(d,n)=>{const x=new Date(d);x.setDate(x.getDate()+n);return x.toISOString().slice(0,10)};
+let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='pending', qrCat='ALL';
+let unsubs=[];
+const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
+const addDays=(d,n)=>{const x=new Date(d+'T00:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
 const fmt=d=>d?new Date(d+'T00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}):'';
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const cat=k=>CATS.find(c=>c.k===k);
+const cat=k=>CATS.find(c=>c.k===k)||CATS[4];
 const item=id=>S.items.find(i=>i.id===id);
+const views=()=>isAdmin?ADMIN_VIEWS:PUBLIC_VIEWS;
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)}
+const fail=e=>{console.error(e);toast(e&&e.code==='permission-denied'?'Not allowed. Are you logged in as admin?':'Could not save. Check the internet and try again.')};
 
-function seed(){
-  const t=today();
-  const items=[
+/* Firebase */
+const D=(c,id)=>FB.doc(FB.db,c,id);
+function addLog(b,itemId,text){const r=FB.doc(FB.collection(FB.db,'log'));b.set(r,{itemId,at:today(),text,ts:FB.serverTimestamp()})}
+function listen(){
+  unsubs.forEach(u=>u());unsubs=[];
+  const sub=(c,after)=>unsubs.push(FB.onSnapshot(FB.collection(FB.db,c),s=>{S[c]=s.docs.map(d=>({id:d.id,...d.data()}));if(after)after();ready=true;render(true)},e=>console.warn(c,e.code)));
+  sub('items',checkStock);
+  if(isAdmin){sub('loans',notifyRequests);sub('maint');sub('log');sub('damage')}
+  else{S.loans=[];S.maint=[];S.log=[];S.damage=[]}
+}
+window.addEventListener('fb-ready',()=>{
+  FB.onAuthStateChanged(FB.auth,u=>{isAdmin=!!u;lastLow=null;lastPending=null;listen();render()});
+});
+
+/* stock */
+const lent=id=>Number(item(id)?.lent||0);
+const avail=i=>Number(i.qty)-Number(i.lent||0);
+const isOut=i=>i.cat!=='EQP'&&avail(i)<=0;
+const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&avail(i)<=Number(i.min)));
+const isExpiring=i=>i.expiry&&i.expiry<=addDays(today(),30);
+const stockPill=i=>isOut(i)?'<span class="pill p-bad">Out of stock</span>':isLow(i)?'<span class="pill p-warn">Low</span>':'';
+const condPill=c=>`<span class="pill ${c==='Working'?'p-ok':c==='Retired'?'p-mut':c==='Damaged'?'p-bad':'p-warn'}">${esc(c)}</span>`;
+const pending=()=>S.loans.filter(l=>l.status==='pending');
+const openLoans=()=>S.loans.filter(l=>l.status==='approved');
+const overdue=l=>l.status==='approved'&&l.due<today();
+const openMaint=()=>S.maint.filter(m=>!m.done);
+const newDamage=()=>S.damage.filter(d=>d.status==='new');
+
+let lastLow=null,lastPending=null;
+function checkStock(){
+  if(!isAdmin)return;
+  const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
+  if(lastLow)Object.keys(now).forEach(id=>{if(lastLow[id]!==now[id])stockAlert(item(id))});
+  else startupAlert();
+  lastLow=now;
+}
+function notifyRequests(){
+  const ids=pending().map(l=>l.id);
+  if(lastPending)ids.filter(id=>!lastPending.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) wants ${l.qty} × ${l.itemName}`;toast('New request: '+m);sysNotify('New borrow request',m)});
+  lastPending=ids;
+}
+function sysNotify(title,body){try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:document.querySelector('link[rel=icon]').href})}catch(e){}}
+function stockAlert(i){if(!i)return;const m=isOut(i)?`${i.name} has run out`:`${i.name} is running low (${avail(i)} ${i.unit} left)`;setTimeout(()=>toast('⚠ '+m),400);sysNotify('LAMS stock alert',m+' · '+i.lab)}
+function enableAlerts(){
+  if(!('Notification' in window)){toast('This browser does not support notifications');return}
+  Notification.requestPermission().then(p=>{if(p==='granted'){toast('Alerts turned on');sysNotify('LAMS alerts on','You will be told about low stock and new requests.')}else toast('Notifications were blocked in the browser');render()});
+}
+function startupAlert(){
+  try{if(sessionStorage.getItem('lams_alerted'))return;sessionStorage.setItem('lams_alerted','1')}catch(e){}
+  const low=S.items.filter(isLow),out=low.filter(isOut);
+  if(low.length)sysNotify('LAMS stock alert',(out.length?`${out.length} out of stock, `:'')+`${low.length-out.length} running low`);
+}
+
+/* chrome */
+function nav(){
+  const nl=S.items.filter(isLow).length,np=pending().length;
+  const bd=k=>isAdmin&&k==='inv'&&nl?`<span class="badge">${nl}</span>`:isAdmin&&k==='loan'&&np?`<span class="badge">${np}</span>`:'';
+  document.getElementById('nav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
+  document.getElementById('mobnav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
+  const w=isAdmin?`<div style="margin-bottom:8px"><span class="adminpill">● Admin</span></div><button class="btn sm" onclick="logout()">Log out</button>`:`<button class="btn sm" onclick="loginForm()">Admin login</button>`;
+  document.getElementById('who').innerHTML=w;
+  document.getElementById('mlog').innerHTML=`<button class="btn sm pri" onclick="scanQR()">Scan</button>`+(isAdmin?`<button class="btn sm" onclick="logout()">Log out</button>`:`<button class="btn sm" onclick="loginForm()">Admin</button>`);
+}
+let modalItem=null;
+function render(fromData){
+  nav();
+  if(!views().some(v=>v[0]===view))view='dash';
+  if(!ready){return}
+  const m=document.getElementById('main');
+  const keep=fromData&&document.getElementById('modal').classList.contains('on');
+  m.innerHTML=({dash:isAdmin?vDash:vHome,inv:vInv,loan:isAdmin?vLoan:vBorrow,mnt:vMnt,qr:vQR,rep:vRep}[view])();
+  if(view==='qr')drawLabels();
+  if(view==='loan'&&!isAdmin)refreshMine();
+  if(keep&&modalItem)showItem(modalItem,true);
+  if(!fromData)window.scrollTo(0,0);
+}
+
+/* admin login */
+function loginForm(){
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Admin login</h2><div class="sub">Only the lab admin needs to log in.</div>
+  <div class="form"><label class="full">Username<input id="a_user" autocomplete="username" placeholder="lams_admin"></label><label class="full">Password<input id="a_pass" type="password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="a_go" onclick="doLogin()">Log in</button></div>`);
+  setTimeout(()=>document.getElementById('a_user').focus(),50);
+}
+function doLogin(){
+  let u=fv('a_user').toLowerCase().replace(/\.com$/,'');if(!u.includes('@'))u+=ADMIN_DOMAIN;
+  const b=document.getElementById('a_go');b.disabled=true;b.textContent='Logging in…';
+  FB.signInWithEmailAndPassword(FB.auth,u,document.getElementById('a_pass').value).then(()=>{closeModal();toast('Logged in as admin');view='dash';location.hash='dash'}).catch(e=>{b.disabled=false;b.textContent='Log in';toast(['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-email'].includes(e.code)?'Wrong username or password':'Could not log in: '+e.code)});
+}
+function logout(){FB.signOut(FB.auth).then(()=>{toast('Logged out');location.hash='dash'})}
+
+/* public home */
+function vHome(){
+  const eq=S.items.filter(i=>i.cat==='EQP');
+  return `<div class="hero"><h1>Laboratory of Applied Materials</h1><p>See what the lab has, where it is and whether it is free. Scan the QR label on any item, or ask to borrow something below.</p>
+  <div class="row"><button class="btn" style="background:#fff;color:var(--brand)" onclick="reqForm()">Request to borrow</button><button class="btn ghost" onclick="location.hash='loan'">Check my request</button></div></div>
+  <div class="grid g4">
+    ${stat(S.items.length,'Items in the lab','','')}
+    ${stat(eq.filter(i=>i.condition==='Working'&&avail(i)>0).length,'Instruments free now','','color:var(--ok)')}
+    ${stat(eq.filter(i=>avail(i)<=0).length,'Instruments in use','','')}
+    ${stat(eq.filter(i=>!['Working','Retired'].includes(i.condition)).length,'Under repair or service','','')}
+  </div>
+  <div class="cats">${CATS.map(c=>`<div class="cat" onclick="invCat='${c.k}';location.hash='inv'"><div class="dot" style="background:${c.color}">${c.name[0]}</div><b>${S.items.filter(i=>i.cat===c.k).length}</b><span>${c.name}</span></div>`).join('')}</div>`;
+}
+
+/* admin dashboard */
+function vDash(){
+  const low=S.items.filter(isLow),od=S.loans.filter(overdue),dueM=openMaint().filter(m=>m.due<=addDays(today(),14)).sort((a,b)=>a.due<b.due?-1:1),exp=S.items.filter(isExpiring),pr=pending(),dm=newDamage();
+  return `<div class="top"><div><h1>Good to see you</h1><div class="sub">Laboratory of Applied Materials · ${fmt(today())}</div></div>
+  <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
+  ${!S.items.length?`<div class="notice info">The register is empty. Add items one by one, or <a href="javascript:loadSample()"><b>load sample data</b></a> to try it out.</div>`:''}
+  ${stockBanner(low)}
+  ${pr.length?`<div class="card" style="margin-bottom:16px;border-color:#bfdbfe"><h3>Borrow requests waiting for you <a href="#loan" class="sub" onclick="loanF='pending'">Open register</a></h3><div class="list">${pr.map(reqRow).join('')}</div></div>`:''}
+  ${dm.length?`<div class="card" style="margin-bottom:16px;border-color:#fecaca"><h3>Damage reports</h3><div class="list">${dm.map(d=>`<div class="li"><div><b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b><small>${esc(d.note)}${d.by?' · by '+esc(d.by):''}</small></div><div class="row"><button class="btn sm" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join('')}</div></div>`:''}
+  <div class="grid g4">
+    ${stat(S.items.length,'Items registered',`${CATS.length} categories`,'')}
+    ${stat(openLoans().length,'Currently borrowed',od.length?`${od.length} overdue`:'None overdue',od.length?'color:var(--bad)':'color:var(--ok)')}
+    ${stat(openMaint().length,'Open maintenance tasks',`${openMaint().filter(m=>m.due<today()).length} past due`,openMaint().some(m=>m.due<today())?'color:var(--bad)':'')}
+    ${stat(low.length,'Low stock items',exp.length?`${exp.length} chemical${exp.length>1?'s':''} expiring`:'',low.length?'color:var(--warn)':'')}
+  </div>
+  <div class="cats">${CATS.map(c=>`<div class="cat" onclick="invCat='${c.k}';location.hash='inv'"><div class="dot" style="background:${c.color}">${c.name[0]}</div><b>${S.items.filter(i=>i.cat===c.k).length}</b><span>${c.name}</span></div>`).join('')}</div>
+  <div class="grid g2">
+    <div class="card"><h3>Overdue returns <a href="#loan" class="sub" onclick="loanF='over'">View all</a></h3><div class="list">${od.length?od.map(l=>`<div class="li"><div><b>${esc(l.itemName)}</b><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}</small></div><button class="btn sm" onclick="returnLoan('${l.id}')">Mark returned</button></div>`).join(''):'<div class="empty">Nothing overdue</div>'}</div></div>
+    <div class="card"><h3>Maintenance in the next 14 days <a href="#mnt" class="sub">View all</a></h3><div class="list">${dueM.length?dueM.map(m=>{const i=item(m.itemId);const late=m.due<today();return`<div class="li"><div><b>${esc(i?i.name:m.itemId)}</b><small>${esc(m.type)} · ${late?'<span style="color:var(--bad)">was due '+fmt(m.due)+'</span>':'due '+fmt(m.due)}</small></div><button class="btn sm" onclick="doneForm('${m.id}')">Complete</button></div>`}).join(''):'<div class="empty">Nothing due</div>'}</div></div>
+    <div class="card"><h3>Low stock</h3><div class="list">${low.length?low.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${cat(i.cat).name} · ${esc(i.lab)}</small></div>${isOut(i)?'<span class="pill p-bad">Out of stock</span>':`<span class="pill p-warn">${avail(i)} ${esc(i.unit)} left</span>`}</div>`).join(''):'<div class="empty">All stock above reorder level</div>'}</div></div>
+    <div class="card"><h3>Chemicals expiring within 30 days</h3><div class="list">${exp.length?exp.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${esc(i.location)} · ${esc(i.hazard)}</small></div><span class="pill ${i.expiry<today()?'p-bad':'p-warn'}">${i.expiry<today()?'Expired':'Expires'} ${fmt(i.expiry)}</span></div>`).join(''):'<div class="empty">None</div>'}</div></div>
+  </div>`;
+}
+const reqRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · till ${fmt(l.due)}${l.purpose?' · '+esc(l.purpose):''}</small></div><div class="row"><button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button></div></div>`;
+const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
+function bannerTitle(o,l){const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);return p.join(' and ')}
+function stockBanner(low){
+  const canAsk='Notification' in window&&Notification.permission==='default';
+  if(!low.length)return canAsk?`<div class="row" style="justify-content:flex-end;margin:-8px 0 12px"><button class="btn sm" onclick="enableAlerts()">🔔 Turn on alerts</button></div>`:'';
+  const out=low.filter(isOut);
+  return `<div class="alert ${out.length?'red':'amber'}"><div class="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
+  <div class="ab"><b>${bannerTitle(out.length,low.length-out.length)}</b>Time to reorder. Tap an item to restock it.
+  <div class="chips">${low.slice().sort((a,b)=>isOut(b)-isOut(a)).map(i=>`<span class="chip ${isOut(i)?'out':'low'}" onclick="showItem('${i.id}')">${esc(i.name)}<em>${isOut(i)?'out':avail(i)+' '+esc(i.unit)}</em></span>`).join('')}</div></div>
+  <div class="row"><button class="btn sm" onclick="exportCSV('low')">Reorder list</button>${canAsk?'<button class="btn sm" onclick="enableAlerts()">🔔 Turn on alerts</button>':''}</div></div>`;
+}
+
+/* inventory */
+function vInv(){
+  const q=invQ.toLowerCase();
+  const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q))).sort((a,b)=>a.id<b.id?-1:1);
+  const showExp=invCat==='CHM';
+  return `<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to ask to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Request to borrow</button>`}</div></div>
+  <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
+  <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
+  <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
+  ${rows.length?rows.map(i=>{const out=Number(i.lent||0);return`<tr><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
+  </tbody></table></div>`;
+}
+
+/* public borrowing */
+const MINE='lams_my_requests';
+const mine=()=>{try{return JSON.parse(localStorage.getItem(MINE))||[]}catch(e){return[]}};
+const remember=c=>{try{localStorage.setItem(MINE,JSON.stringify([c,...mine().filter(x=>x!==c)].slice(0,20)))}catch(e){}};
+const statusPill=l=>l.status==='pending'?'<span class="pill p-warn">Waiting for approval</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Approved · overdue</span>':'<span class="pill p-ok">Approved</span>'):l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Returned</span>';
+function vBorrow(){
+  return `<div class="top"><div><h1>Borrow</h1><div class="sub">Send a request. The lab admin approves or declines it.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ New request</button></div></div>
+  <div class="split"><div class="card"><h3>Check a request</h3><div class="row"><input class="search" id="chk" placeholder="Request code, e.g. K7Q2M9XD" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')checkCode()"><button class="btn" onclick="checkCode()">Check</button></div><div id="chkout" style="margin-top:12px"></div></div>
+  <div class="card"><h3>Requests from this phone</h3><div class="list" id="minelist">${mine().length?'<div class="empty">Loading…</div>':'<div class="empty">None yet</div>'}</div></div></div>`;
+}
+const reqCard=(c,l)=>l?`<div class="li"><div><b>${esc(l.itemName)}</b> <span class="sub">× ${l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · till ${fmt(l.due)} · <span class="id">${c}</span>${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}</small></div>${statusPill(l)}</div>`:`<div class="li"><div><span class="id">${c}</span><small>No request with this code</small></div></div>`;
+async function fetchReq(c){try{const s=await FB.getDoc(D('loans',c));return s.exists()?s.data():null}catch(e){return null}}
+async function refreshMine(){const el=document.getElementById('minelist');const cs=mine();if(!el||!cs.length)return;const rs=await Promise.all(cs.map(fetchReq));if(document.getElementById('minelist'))el.innerHTML=cs.map((c,i)=>reqCard(c,rs[i])).join('')}
+async function checkCode(){const c=fv('chk').toUpperCase().replace(/[^A-Z0-9]/g,'');if(c.length<8){toast('The code has 8 letters and numbers');return}const l=await fetchReq(c);document.getElementById('chkout').innerHTML=`<div class="list">${reqCard(c,l)}</div>`;if(l)remember(c)}
+function reqForm(id){
+  const its=S.items.filter(i=>i.condition==='Working'&&avail(i)>0);
+  if(!its.length){toast('Nothing is free to borrow right now');return}
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Request to borrow</h2><div class="sub">The lab admin will approve or decline it.</div>
+  <div class="form">
+    <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${avail(i)} ${esc(i.unit)} free)</option>`).join('')}</select></label>
+    <label>Your name<input id="l_who" maxlength="80" placeholder="Name"></label>
+    <label>Your lab<select id="l_lab"><option value="">Choose</option>${opt(LABS,'')}</select></label>
+    <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
+    <label>Return by<input id="l_due" type="date" min="${today()}" value="${addDays(today(),7)}"></label>
+    <label class="full">Purpose<input id="l_pur" maxlength="200" placeholder="Experiment, project, class"></label>
+  </div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Send request</button></div>`);
+}
+function newCode(){const a='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';let s='';const r=crypto.getRandomValues(new Uint32Array(8));r.forEach(x=>s+=a[x%a.length]);return s}
+function sendRequest(){
+  const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
+  if(!who||!lab){toast('Fill in your name and lab');return}
+  if(qty>avail(i)){toast(`Only ${avail(i)} ${i.unit} free`);return}
+  const code=newCode(),b=document.getElementById('l_go');b.disabled=true;
+  FB.setDoc(D('loans',code),{itemId,itemName:i.name,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due:fv('l_due')||addDays(today(),7),status:'pending',createdAt:FB.serverTimestamp()}).then(()=>{
+    remember(code);
+    openModal(`<button class="x" onclick="closeModal()">×</button><h2>Request sent</h2><div class="sub">${qty} × ${esc(i.name)}</div><div class="codebox">${code}</div><p>Keep this code. Check it on the Borrow page, or show it to the lab admin. This phone remembers it too.</p><div class="row" style="justify-content:flex-end;margin-top:14px"><button class="btn pri" onclick="closeModal();location.hash='loan';render()">OK</button></div>`);
+  }).catch(e=>{b.disabled=false;fail(e)});
+}
+
+/* admin borrowing */
+function vLoan(){
+  const pick=l=>loanF==='all'||(loanF==='pending'?l.status==='pending':loanF==='out'?l.status==='approved':loanF==='over'?overdue(l):l.status===loanF);
+  const rows=S.loans.filter(pick).sort((a,b)=>(b.out||b.due||'')<(a.out||a.due||'')?-1:1);
+  const f=(k,n,c)=>`<button class="tab ${loanF===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${c}</em></button>`;
+  return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">Approve requests, and see who has what</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
+  <div class="tabs">${f('pending','Requests',pending().length)}${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('returned','Returned',S.loans.filter(l=>l.status==='returned').length)}${f('declined','Declined',S.loans.filter(l=>l.status==='declined').length)}${f('all','All',S.loans.length)}</div>
+  <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
+  ${rows.length?rows.map(l=>`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(l.itemName)}</span><div class="id">${l.status==='pending'?l.id:l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.status==='returned'?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>`:l.status==='approved'&&!overdue(l)?'<span class="pill p-info">With borrower</span>':statusPill(l)}${l.status==='declined'&&l.reason?`<div class="sub" style="font-size:12px">${esc(l.reason)}</div>`:''}</td><td style="text-align:right;white-space:nowrap">${l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button> <button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='approved'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`:''}</td></tr>`).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
+  </tbody></table></div>`;
+}
+const busy=new Set();
+function approve(lid){
+  if(busy.has(lid))return;busy.add(lid);
+  FB.runTransaction(FB.db,async tx=>{
+    const ls=await tx.get(D('loans',lid));if(!ls.exists()||ls.data().status!=='pending')throw{code:'done'};
+    const l=ls.data(),is=await tx.get(D('items',l.itemId));if(!is.exists())throw{code:'gone'};
+    const i=is.data(),free=Number(i.qty)-Number(i.lent||0);if(l.qty>free)throw{code:'short',free,unit:i.unit};
+    tx.update(D('loans',lid),{status:'approved',out:today()});
+    tx.update(D('items',l.itemId),{lent:Number(i.lent||0)+Number(l.qty)});
+    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:`Request ${lid} approved: ${l.qty} to ${l.borrower} (${l.borrowerLab})`,ts:FB.serverTimestamp()});
+  }).then(()=>toast('Approved')).catch(e=>e.code==='done'?toast('Already handled'):e.code==='gone'?toast('That item no longer exists'):e.code==='short'?toast(`Only ${e.free} ${e.unit} free now`):fail(e)).finally(()=>busy.delete(lid));
+}
+function declineForm(lid){
+  const l=S.loans.find(x=>x.id===lid);
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Decline request</h2><div class="sub">${esc(l.borrower)} · ${l.qty} × ${esc(l.itemName)}</div>
+  <div class="form"><label class="full">Reason (the borrower sees this)<input id="d_reason" maxlength="200" placeholder="e.g. Needed for a class that week"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" style="background:var(--bad);border-color:var(--bad)" onclick="saveDecline('${lid}')">Decline</button></div>`);
+}
+function saveDecline(lid){FB.updateDoc(D('loans',lid),{status:'declined',reason:fv('d_reason'),decidedOn:today()}).then(()=>{closeModal();toast('Declined')}).catch(fail)}
+function returnLoan(lid,fromItem){
+  if(busy.has(lid))return;busy.add(lid);let itemId;
+  FB.runTransaction(FB.db,async tx=>{
+    const ls=await tx.get(D('loans',lid));if(!ls.exists()||ls.data().status!=='approved')throw{code:'done'};
+    const l=ls.data();itemId=l.itemId;const is=await tx.get(D('items',l.itemId));
+    tx.update(D('loans',lid),{status:'returned',returned:today()});
+    if(is.exists())tx.update(D('items',l.itemId),{lent:Math.max(0,Number(is.data().lent||0)-Number(l.qty))});
+    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:`Returned by ${l.borrower}`,ts:FB.serverTimestamp()});
+  }).then(()=>{toast('Marked returned');if(fromItem)showItem(itemId)}).catch(e=>e.code==='done'?toast('Already returned'):fail(e)).finally(()=>busy.delete(lid));
+}
+function loanForm(id){
+  const its=S.items.filter(i=>i.condition!=='Retired'&&avail(i)>0);
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Issue an item</h2><div class="sub">For someone at the counter. No approval step.</div>
+  <div class="form">
+    <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)} (${avail(i)} ${esc(i.unit)} free)</option>`).join('')}</select></label>
+    <label>Borrowed by<input id="l_who" placeholder="Name of student or staff"></label>
+    <label>Borrowing lab<select id="l_lab"><option value="">Choose</option>${opt(LABS,'')}</select></label>
+    <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
+    <label>Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
+    <label class="full">Purpose<input id="l_pur" placeholder="Practical, project, workshop"></label>
+  </div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveLoan()">Issue</button></div>`);
+}
+function saveLoan(){
+  const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
+  if(!who||!lab){toast('Fill in who borrowed it and their lab');return}
+  if(qty>avail(i)){toast(`Only ${avail(i)} available`);return}
+  const b=FB.writeBatch(FB.db);
+  b.set(FB.doc(FB.collection(FB.db,'loans')),{itemId,itemName:i.name,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:fv('l_due')||addDays(today(),7),status:'approved',createdAt:FB.serverTimestamp()});
+  b.update(D('items',itemId),{lent:FB.increment(qty)});
+  addLog(b,itemId,`Issued ${qty} to ${who} (${lab})`);
+  b.commit().then(()=>{closeModal();toast('Issued')}).catch(fail);
+}
+
+/* maintenance */
+function vMnt(){
+  const open=openMaint().sort((a,b)=>a.due<b.due?-1:1),done=S.maint.filter(m=>m.done).sort((a,b)=>a.done<b.done?1:-1);
+  const tr=m=>{const i=item(m.itemId);return`<tr><td><span class="nm" onclick="showItem('${m.itemId}')">${esc(i?i.name:'Deleted item')}</span><div class="id">${m.itemId}</div></td><td><span class="pill p-mut">${esc(m.type)}</span></td><td>${m.done?fmt(m.done):`<span class="pill ${m.due<today()?'p-bad':m.due<=addDays(today(),7)?'p-warn':'p-info'}">${fmt(m.due)}</span>`}</td><td>${esc(m.done?m.by:m.notes)}</td><td style="text-align:right">${m.done?'':`<button class="btn sm okb" onclick="doneForm('${m.id}')">Complete</button>`}</td></tr>`};
+  return `<div class="top"><div><h1>Maintenance and calibration</h1><div class="sub">Schedule service, record who did it</div></div><div class="row"><button class="btn" onclick="exportCSV('maint')">Export CSV</button><button class="btn pri" onclick="maintForm()">+ Schedule task</button></div></div>
+  <div class="card" style="margin-bottom:16px;padding:0"><div style="padding:16px 18px 6px"><h3>Open tasks</h3></div><div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Item</th><th>Type</th><th>Due</th><th>Notes</th><th></th></tr></thead><tbody>${open.length?open.map(tr).join(''):'<tr><td colspan="5" class="empty">No open tasks</td></tr>'}</tbody></table></div></div>
+  <div class="card" style="padding:0"><div style="padding:16px 18px 6px"><h3>Completed</h3></div><div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Item</th><th>Type</th><th>Completed</th><th>Done by</th><th></th></tr></thead><tbody>${done.length?done.map(tr).join(''):'<tr><td colspan="5" class="empty">Nothing yet</td></tr>'}</tbody></table></div></div>
+  <p class="sub" style="margin-top:14px">A reminder is not a calibration certificate. Keep the provider's certificate with the record.</p>`;
+}
+
+/* QR */
+function vQR(){
+  return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Anyone who scans it sees that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
+  <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
+  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort((a,b)=>a.id<b.id?-1:1).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div><div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
+}
+const itemURL=id=>location.origin+location.pathname+'#item='+id;
+function makeQR(el,id,size){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:itemURL(id),width:size,height:size,correctLevel:QRCode.CorrectLevel.M});else el.textContent=id}
+function drawLabels(){document.querySelectorAll('[data-qr]').forEach(el=>makeQR(el,el.dataset.qr,220))}
+
+/* reports */
+function vRep(){
+  const byCat=CATS.map(c=>[c.name,S.items.filter(i=>i.cat===c.k).length,c.color]);
+  const byCond=CONDS.map(c=>[c,S.items.filter(i=>i.cat==='EQP'&&i.condition===c).length,c==='Working'?'var(--ok)':c==='Damaged'?'var(--bad)':c==='Retired'?'#94a3b8':'var(--warn)']);
+  const real=S.loans.filter(l=>['approved','returned'].includes(l.status));
+  const labsB={};real.forEach(l=>labsB[l.borrowerLab]=(labsB[l.borrowerLab]||0)+1);
+  const byLab=Object.entries(labsB).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,v,'var(--brand)']);
+  const itB={};real.forEach(l=>itB[l.itemName]=(itB[l.itemName]||0)+1);
+  const top=Object.entries(itB).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>[k,v,'var(--c2)']);
+  const back=S.loans.filter(l=>l.status==='returned'),onTime=back.filter(l=>l.returned<=l.due).length;
+  return `<div class="top"><div><h1>Reports</h1><div class="sub">A snapshot for the head of department</div></div><div class="row"><button class="btn" onclick="exportCSV('items')">Inventory CSV</button><button class="btn" onclick="exportCSV('loans')">Borrowing CSV</button><button class="btn" onclick="exportCSV('maint')">Maintenance CSV</button><button class="btn pri" onclick="window.print()">Print report</button></div></div>
+  <div class="grid g4" style="margin-bottom:16px">
+    ${stat(S.items.length,'Items on register','','')}
+    ${stat(S.items.filter(i=>i.cat==='EQP'&&i.condition!=='Working').length,'Equipment not working','','')}
+    ${stat(back.length?Math.round(onTime/back.length*100)+'%':'n/a','Returned on time',`${back.length} returns`,'')}
+    ${stat(S.maint.filter(m=>m.done).length+' / '+S.maint.length,'Maintenance tasks done','','')}
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>Items by category</h3>${bars(byCat)}</div>
+    <div class="card"><h3>Equipment condition</h3>${bars(byCond)}</div>
+    <div class="card"><h3>Borrowing by lab</h3>${byLab.length?bars(byLab):'<div class="empty">No borrowing yet</div>'}</div>
+    <div class="card"><h3>Most borrowed items</h3>${top.length?bars(top):'<div class="empty">No borrowing yet</div>'}</div>
+  </div>`;
+}
+function bars(d){const mx=Math.max(1,...d.map(x=>x[1]));return`<div class="bars">${d.map(([l,v,c])=>`<div class="b"><div class="bl"><span>${esc(l)}</span><span>${v}</span></div><div class="bt"><div class="bf" style="width:${v/mx*100}%;background:${c}"></div></div></div>`).join('')}</div>`}
+
+/* QR scanner */
+let scanStream=null,scanTimer=null;
+function stopScan(){clearInterval(scanTimer);scanTimer=null;if(scanStream){scanStream.getTracks().forEach(t=>t.stop());scanStream=null}}
+function loadJsQR(){return window.jsQR?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js';s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function scanQR(){
+  modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Scan a QR label</h2><div class="sub">Point the camera at the sticker on any item.</div><div class="scanwrap"><video id="sv" playsinline muted></video><div class="frame"></div><div class="line"></div></div><div class="row"><input class="search" id="scode" placeholder="Or type the item ID, e.g. EQP-001" style="text-transform:uppercase" onkeydown="if(event.key==='Enter')gotScan(this.value)"><button class="btn" onclick="gotScan(fv('scode'))">Open</button></div>`);
+  if(!navigator.mediaDevices?.getUserMedia){toast('This browser cannot use the camera. Type the ID instead.');return}
+  try{scanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}})}catch(e){toast('Camera blocked. Allow it, or type the ID.');return}
+  const v=document.getElementById('sv');if(!v){stopScan();return}v.srcObject=scanStream;await v.play().catch(()=>{});
+  let det=null;try{if('BarcodeDetector' in window&&(await BarcodeDetector.getSupportedFormats()).includes('qr_code'))det=new BarcodeDetector({formats:['qr_code']})}catch(e){}
+  if(!det)await loadJsQR().catch(()=>{});
+  const c=document.createElement('canvas'),x=c.getContext('2d',{willReadFrequently:true});
+  scanTimer=setInterval(async()=>{
+    if(!v.videoWidth)return;
+    try{
+      if(det){const r=await det.detect(v);if(r[0])gotScan(r[0].rawValue)}
+      else if(window.jsQR){const w=480,h=Math.round(v.videoHeight*w/v.videoWidth);c.width=w;c.height=h;x.drawImage(v,0,0,w,h);const r=jsQR(x.getImageData(0,0,w,h).data,w,h);if(r)gotScan(r.data)}
+    }catch(e){}
+  },250);
+}
+function gotScan(t){
+  const m=String(t||'').toUpperCase().match(/(EQP|CON|CHM|STA|OTH)-\d{3,}/);
+  if(!m){if(t)toast('That is not a LAMS label');return}
+  stopScan();if(navigator.vibrate)navigator.vibrate(60);
+  if(!item(m[0])){closeModal();toast(m[0]+' is not in the register');return}
+  showItem(m[0]);
+}
+
+/* modals */
+function openModal(h){if(!h.includes('id="sv"'))stopScan();document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.add('on')}
+function closeModal(){stopScan();modalItem=null;document.getElementById('modal').classList.remove('on');if(location.hash.startsWith('#item='))history.replaceState(null,'','#'+view)}
+const opt=(arr,sel)=>arr.map(a=>{const[v,n]=Array.isArray(a)?a:[a,a];return`<option value="${esc(v)}" ${v===sel?'selected':''}>${esc(n)}</option>`}).join('');
+const fv=id=>{const e=document.getElementById(id);return e?e.value.trim():''};
+
+function itemForm(id){
+  const i=id?item(id):{cat:CATS.some(c=>c.k===invCat)?invCat:'EQP',name:'',lab:LABS[0],location:'',qty:1,unit:'nos',min:0,condition:'Working',serial:'',purchased:'',expiry:'',hazard:'',notes:''};
+  modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>${id?'Edit '+esc(i.name):'Add an item'}</h2><div class="sub">${id?i.id:'An ID and QR label are created automatically'}</div>
+  <div class="form">
+    <label>Category<select id="f_cat" ${id?'disabled':''} onchange="document.getElementById('chm').style.display=this.value==='CHM'?'contents':'none'">${opt(CATS.map(c=>[c.k,c.name]),i.cat)}</select></label>
+    <label>Name<input id="f_name" value="${esc(i.name)}" placeholder="e.g. Vernier Calipers"></label>
+    <label>Lab<select id="f_lab">${opt(LABS,i.lab)}</select></label>
+    <label>Room or shelf<input id="f_loc" value="${esc(i.location)}" placeholder="Room 102"></label>
+    <label>Quantity<input id="f_qty" type="number" step="any" min="0" value="${i.qty}"></label>
+    <label>Unit<input id="f_unit" value="${esc(i.unit)}" placeholder="nos, kg, L, boxes"></label>
+    <label>Reorder when at or below<input id="f_min" type="number" step="any" min="0" value="${i.min||0}"><span class="hint">0 means no low stock alert</span></label>
+    <label>Condition<select id="f_cond">${opt(CONDS,i.condition)}</select></label>
+    <label>Serial number<input id="f_serial" value="${esc(i.serial)}"></label>
+    <label>Purchase date<input id="f_pur" type="date" value="${i.purchased||''}"></label>
+    <div id="chm" style="display:${i.cat==='CHM'?'contents':'none'}">
+      <label>Expiry date<input id="f_exp" type="date" value="${i.expiry||''}"></label>
+      <label>Hazard<input id="f_haz" value="${esc(i.hazard||'')}" placeholder="Corrosive, flammable"></label>
+    </div>
+    <label class="full">Notes<textarea id="f_notes" rows="2">${esc(i.notes||'')}</textarea></label>
+  </div>
+  <div class="row" style="justify-content:space-between">${id?`<button class="btn danger" onclick="delItem('${id}')">Delete</button>`:'<span></span>'}<div class="row"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveItem('${id||''}')">Save</button></div></div>`);
+  setTimeout(()=>document.getElementById('f_name').focus(),50);
+}
+function saveItem(id){
+  const name=fv('f_name');if(!name){toast('Give the item a name');return}
+  const c=id?item(id).cat:fv('f_cat');
+  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),purchased:fv('f_pur'),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
+  const b=FB.writeBatch(FB.db);let nid=id;
+  if(id){const i=item(id);b.update(D('items',id),d);addLog(b,id,'Record edited'+(i.condition!==d.condition?` (condition: ${d.condition})`:''))}
+  else{const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1;nid=`${c}-${String(n).padStart(3,'0')}`;b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
+  b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
+}
+function delItem(id){if(!confirm('Delete this item? Its history stays in the log.'))return;FB.deleteDoc(D('items',id)).then(()=>{closeModal();toast('Deleted')}).catch(fail)}
+
+function showItem(id,silent){
+  const i=item(id);if(!i){if(ready)toast('Item not found');return}
+  modalItem=id;
+  const ls=S.loans.filter(l=>l.itemId===id&&l.status==='approved'),ms=openMaint().filter(m=>m.itemId===id);
+  const hist=S.log.filter(l=>l.itemId===id).sort((a,b)=>(b.ts?.seconds||0)-(a.ts?.seconds||0)).slice(0,12);
+  const a=Math.max(0,avail(i));
+  const actions=isAdmin?`
+    <button class="btn pri" onclick="loanForm('${id}')">Issue</button>
+    ${ls.length?`<button class="btn okb" onclick="returnLoan('${ls[0].id}',1)">Mark returned</button>`:''}
+    ${i.cat!=='EQP'?`<button class="btn" onclick="useForm('${id}')">Record usage</button><button class="btn" onclick="restockForm('${id}')">Restock</button>`:''}
+    <button class="btn" onclick="damageForm('${id}')">Report damage</button>
+    <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
+    <button class="btn" onclick="itemForm('${id}')">Edit</button>`:`
+    ${i.condition==='Working'&&a>0?`<button class="btn pri" onclick="reqForm('${id}')">Request to borrow</button>`:''}
+    <button class="btn" onclick="pubDamageForm('${id}')">Report a problem</button>`;
+  openModal(`<button class="x" onclick="closeModal()">×</button><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span><h2 style="margin-top:6px">${esc(i.name)}</h2><div class="id">${i.id}</div>
+  <div class="detail"><dl class="kv">
+    <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
+    <dt>${isAdmin?'Quantity':'Available'}</dt><dd>${isAdmin?`${i.qty} ${esc(i.unit)}${i.lent?` (${i.lent} borrowed)`:''}`:`${a} of ${i.qty} ${esc(i.unit)}`} ${stockPill(i)}${isAdmin&&i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
+    <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
+    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
+    ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
+    ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
+  </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
+  ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}</div>`:''}
+  ${isAdmin&&ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
+  <div class="row" style="margin-bottom:16px">${actions}</div>
+  ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
+  makeQR(document.getElementById('dq'),id,240);
+}
+
+function useForm(id){
+  const i=item(id);modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${avail(i)} ${esc(i.unit)} available</div>
+  <div class="form"><label>Quantity used (${esc(i.unit)})<input id="u_qty" type="number" step="any" min="0" value="1"></label><label>Used by<input id="u_by" placeholder="Name"></label>
+  <label>Lab<select id="u_lab">${opt(LABS,i.lab)}</select></label><label>Purpose<input id="u_pur" placeholder="Experiment, project"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveUse('${id}')">Save</button></div>`);
+}
+function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
+  const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:FB.increment(-q)});addLog(b,id,`Used ${q} ${i.unit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}`);
+  b.commit().then(()=>showItem(id)).catch(fail)}
+function restockForm(id){
+  const i=item(id);modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Restock</h2><div class="sub">${esc(i.name)} · ${i.qty} ${esc(i.unit)} in stock</div>
+  <div class="form"><label>Quantity received (${esc(i.unit)})<input id="r_qty" type="number" step="any" min="0" value="${Math.max(1,(i.min||0)*2-i.qty)}"></label><label>Supplier or bill number<input id="r_ref"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveRestock('${id}')">Add to stock</button></div>`);
+}
+function saveRestock(id){const i=item(id),q=Number(fv('r_qty'));if(!(q>0)){toast('Enter the quantity received');return}
+  const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:FB.increment(q)});addLog(b,id,`Restocked ${q} ${i.unit}${fv('r_ref')?' · '+fv('r_ref'):''}`);
+  b.commit().then(()=>{showItem(id);toast('Stock updated')}).catch(fail)}
+
+function pubDamageForm(id){
+  const i=item(id);modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Report a problem</h2><div class="sub">${esc(i.name)} · ${id}</div>
+  <div class="form"><label class="full">What is wrong<textarea id="p_note" rows="3" maxlength="500" placeholder="e.g. Display flickers, probe cable cut"></textarea></label><label class="full">Your name (optional)<input id="p_by" maxlength="80"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="sendDamage('${id}')">Send to admin</button></div>`);
+}
+function sendDamage(id){const n=fv('p_note');if(!n){toast('Say what is wrong');return}
+  FB.addDoc(FB.collection(FB.db,'damage'),{itemId:id,itemName:item(id).name,by:fv('p_by'),note:n,status:'new',createdAt:FB.serverTimestamp()}).then(()=>{closeModal();toast('Sent to the lab admin. Thank you.')}).catch(fail)}
+function dismissDamage(did){FB.updateDoc(D('damage',did),{status:'dismissed'}).then(()=>toast('Dismissed')).catch(fail)}
+function damageForm(id,did){
+  const rep=did?S.damage.find(d=>d.id===did):null;modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Report damage</h2><div class="sub">${esc(item(id).name)} · ${id}</div>
+  <div class="form"><label>New condition<select id="d_cond">${opt(CONDS.slice(1),'Needs repair')}</select></label><label>Reported by<input id="d_by" value="${esc(rep?.by||'')}"></label><label class="full">What happened<textarea id="d_note" rows="3">${esc(rep?.note||'')}</textarea></label>
+  <label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="d_sched" checked style="width:auto">Also schedule a repair in 7 days</label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveDamage('${id}','${did||''}')">Save</button></div>`);
+}
+function saveDamage(id,did){const c=fv('d_cond'),by=fv('d_by'),n=fv('d_note'),b=FB.writeBatch(FB.db);
+  b.update(D('items',id),{condition:c});addLog(b,id,`Damage reported${by?' by '+by:''}: ${n||c}`);
+  if(document.getElementById('d_sched').checked)b.set(FB.doc(FB.collection(FB.db,'maint')),{itemId:id,type:'Repair',due:addDays(today(),7),done:'',by:'',notes:n});
+  if(did)b.update(D('damage',did),{status:'confirmed'});
+  b.commit().then(()=>{showItem(id);toast('Saved')}).catch(fail)}
+
+function maintForm(id){
+  modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Schedule maintenance</h2>
+  <div class="form"><label class="full">Item<select id="m_item">${S.items.filter(i=>['EQP','OTH'].includes(i.cat)).map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)}</option>`).join('')}</select></label>
+  <label>Type<select id="m_type">${opt(['Maintenance','Calibration','Repair','Inspection'],'Maintenance')}</select></label><label>Due date<input id="m_due" type="date" value="${addDays(today(),14)}"></label>
+  <label class="full">Notes<input id="m_notes" placeholder="What needs doing"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveMaint()">Schedule</button></div>`);
+}
+function saveMaint(){const itemId=fv('m_item'),b=FB.writeBatch(FB.db);b.set(FB.doc(FB.collection(FB.db,'maint')),{itemId,type:fv('m_type'),due:fv('m_due')||today(),done:'',by:'',notes:fv('m_notes')});addLog(b,itemId,`${fv('m_type')} scheduled for ${fmt(fv('m_due'))}`);b.commit().then(()=>{closeModal();toast('Scheduled')}).catch(fail)}
+function doneForm(mid){
+  const m=S.maint.find(x=>x.id===mid);
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Complete ${esc(m.type.toLowerCase())}</h2><div class="sub">${esc(item(m.itemId)?.name||'')}</div>
+  <div class="form"><label>Done on<input id="c_date" type="date" value="${today()}"></label><label>Done by<input id="c_by" placeholder="Staff name or service company"></label>
+  <label>Condition after<select id="c_cond">${opt(CONDS,'Working')}</select></label><label>Certificate or job number<input id="c_ref"></label></div>
+  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveDone('${mid}')">Mark complete</button></div>`);
+}
+function saveDone(mid){const m=S.maint.find(x=>x.id===mid),by=fv('c_by');if(!by){toast('Who did it?');return}
+  const who=by+(fv('c_ref')?' · ref '+fv('c_ref'):''),b=FB.writeBatch(FB.db);
+  b.update(D('maint',mid),{done:fv('c_date')||today(),by:who});if(item(m.itemId))b.update(D('items',m.itemId),{condition:fv('c_cond')});addLog(b,m.itemId,`${m.type} completed by ${who}`);
+  b.commit().then(()=>{closeModal();toast('Completed')}).catch(fail)}
+
+function exportCSV(kind){
+  let rows;
+  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.expiry,i.hazard,i.lent||0]));
+  if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
+  if(kind==='loans')rows=[['Code','Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status','Decline reason']].concat(S.loans.map(l=>[l.id,l.itemId,l.itemName,l.qty,l.borrower,l.borrowerLab,l.purpose,l.out,l.due,l.returned,overdue(l)?'overdue':l.status,l.reason]));
+  if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=`lams_${kind}_${today()}.csv`;a.click();toast('CSV downloaded')
+}
+
+/* sample data, admin only, only into an empty register */
+function loadSample(){
+  if(S.items.length||!confirm('Fill the empty register with about 20 sample items, loans and tasks?'))return;
+  const t=today(),b=FB.writeBatch(FB.db);
+  const rows=[
     ['EQP','Digital Multimeter','LAMS','Room 102',8,'nos',0,'Working','DM-8821','2023-06-12'],
     ['EQP','Cathode Ray Oscilloscope 20 MHz','NMRL','Room 204',4,'nos',0,'Working','CRO-2040','2021-08-03'],
     ['EQP','Spectrometer with Prism','LAMS','Optics Room',3,'nos',0,'Needs repair','SP-1190','2018-01-20'],
@@ -233,324 +745,34 @@ function seed(){
     ['OTH','Fire Extinguisher CO2','LAMS','Corridor',3,'nos',0,'Working','FE-77','2022-09-01'],
     ['OTH','Lab Coats','DBRL','Locker',18,'nos',10,'Working','','']
   ];
-  const cnt={};
-  const it=items.map(r=>{cnt[r[0]]=(cnt[r[0]]||0)+1;return{id:`${r[0]}-${String(cnt[r[0]]).padStart(3,'0')}`,cat:r[0],name:r[1],lab:r[2],location:r[3],qty:r[4],unit:r[5],min:r[6],condition:r[7],serial:r[8],purchased:r[9],notes:'',expiry:r[0]==='CHM'?addDays(t,[200,25,-10,400][cnt.CHM-1]):'',hazard:r[0]==='CHM'?['Corrosive','Corrosive','Oxidiser, toxic','Flammable'][cnt.CHM-1]:''}});
-  const loans=[
-    {id:'L1',itemId:'EQP-002',qty:1,borrower:'Anjali Menon',borrowerLab:'LAMS',purpose:'Lissajous figures practical',out:addDays(t,-9),due:addDays(t,-2),returned:''},
-    {id:'L2',itemId:'EQP-001',qty:2,borrower:'Rahul K',borrowerLab:'NMRL',purpose:'Project work',out:addDays(t,-3),due:addDays(t,4),returned:''},
-    {id:'L3',itemId:'CON-008',qty:10,borrower:'Dr. Suresh Nair',borrowerLab:'Computational Lab',purpose:'IoT workshop',out:addDays(t,-2),due:addDays(t,5),returned:''},
-    {id:'L4',itemId:'EQP-004',qty:1,borrower:'Fathima Rinsha',borrowerLab:'LAMS',purpose:'Resonance experiment',out:addDays(t,-14),due:addDays(t,-7),returned:addDays(t,-8)},
-    {id:'L5',itemId:'EQP-005',qty:1,borrower:'Arun Das',borrowerLab:'DBRL',purpose:'Sample weighing',out:addDays(t,-6),due:addDays(t,-1),returned:''}
-  ];
-  const maint=[
-    {id:'M1',itemId:'EQP-005',type:'Calibration',due:addDays(t,6),done:'',by:'',notes:'Annual calibration by vendor'},
-    {id:'M2',itemId:'EQP-003',type:'Repair',due:addDays(t,-4),done:'',by:'',notes:'Prism table screw loose'},
-    {id:'M3',itemId:'EQP-006',type:'Maintenance',due:addDays(t,2),done:'',by:'',notes:'Clean and lubricate rack'},
-    {id:'M4',itemId:'OTH-002',type:'Inspection',due:addDays(t,24),done:'',by:'',notes:'Pressure check'},
-    {id:'M5',itemId:'EQP-002',type:'Calibration',due:addDays(t,-40),done:addDays(t,-38),by:'Techno Services, Kozhikode',notes:'Probe compensation verified'}
-  ];
-  const log=[];
-  it.forEach(i=>log.push({itemId:i.id,at:addDays(t,-30),text:'Imported from Excel register'}));
-  loans.forEach(l=>{log.push({itemId:l.itemId,at:l.out,text:`Issued ${l.qty} to ${l.borrower} (${l.borrowerLab})`});if(l.returned)log.push({itemId:l.itemId,at:l.returned,text:`Returned by ${l.borrower}`})});
-  log.push({itemId:'EQP-002',at:addDays(t,-38),text:'Calibration completed by Techno Services, Kozhikode'});
-  return{inst:{name:'Laboratory of Applied Materials',sub:'MSE Department, NIT Calicut'},items:it,loans,maint,log,seq:100};
-}
-function load(){try{S=JSON.parse(localStorage.getItem(KEY))}catch(e){}if(!S||!S.items)S=seed()}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}checkStock()}
-let lastLow=null;
-function checkStock(){
-  const now={};S.items.filter(isLow).forEach(i=>now[i.id]=isOut(i)?'out':'low');
-  if(lastLow)Object.keys(now).forEach(id=>{if(lastLow[id]!==now[id])stockAlert(item(id))});
-  lastLow=now;
-}
-function sysNotify(title,body){try{if('Notification' in window&&Notification.permission==='granted')new Notification(title,{body,icon:document.querySelector('link[rel=icon]').href})}catch(e){}}
-function stockAlert(i){
-  const m=isOut(i)?`${i.name} has run out`:`${i.name} is running low (${avail(i)} ${i.unit} left)`;
-  setTimeout(()=>toast('⚠ '+m),400);sysNotify('LAMS stock alert',m+' · '+i.lab+', '+(i.location||''));
-}
-function enableAlerts(){
-  if(!('Notification' in window)){toast('This browser does not support notifications');return}
-  Notification.requestPermission().then(p=>{if(p==='granted'){toast('Alerts turned on');sysNotify('LAMS alerts on','You will be told when a consumable runs low.')}else toast('Notifications were blocked in the browser');render()});
-}
-function startupAlert(){
-  try{if(sessionStorage.getItem('lams_alerted'))return;sessionStorage.setItem('lams_alerted','1')}catch(e){}
-  const low=S.items.filter(isLow),out=low.filter(isOut);
-  if(low.length)sysNotify('LAMS stock alert',(out.length?`${out.length} out of stock, `:'')+`${low.length-out.length} running low`);
-}
-function resetDemo(){if(!confirm('Reset to the sample data? Anything you added will be removed.'))return;S=seed();save();render();toast('Sample data restored')}
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2200)}
-function addLog(itemId,text){S.log.push({itemId,at:today(),text})}
-
-const avail=i=>Number(i.qty)-lent(i.id);
-const isOut=i=>i.cat!=='EQP'&&avail(i)<=0;
-const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&avail(i)<=Number(i.min)));
-const stockPill=i=>isOut(i)?'<span class="pill p-bad">Out of stock</span>':isLow(i)?'<span class="pill p-warn">Low</span>':'';
-const isExpiring=i=>i.expiry&&i.expiry<=addDays(today(),30);
-const openLoans=()=>S.loans.filter(l=>!l.returned);
-const overdue=l=>!l.returned&&l.due<today();
-const openMaint=()=>S.maint.filter(m=>!m.done);
-const condPill=c=>`<span class="pill ${c==='Working'?'p-ok':c==='Retired'?'p-mut':c==='Damaged'?'p-bad':'p-warn'}">${esc(c)}</span>`;
-const lent=id=>openLoans().filter(l=>l.itemId===id).reduce((a,l)=>a+Number(l.qty),0);
-
-function nav(){
-  const nl=S.items.filter(isLow).length,bd=k=>k==='inv'&&nl?`<span class="badge">${nl}</span>`:'';
-  const h=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
-  document.getElementById('nav').innerHTML=h;
-  document.getElementById('mobnav').innerHTML=VIEWS.map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
-  document.getElementById('instName').textContent=S.inst.name;
-  document.getElementById('instSub').textContent=S.inst.sub;
-}
-function render(){nav();const m=document.getElementById('main');m.innerHTML=({dash:vDash,inv:vInv,loan:vLoan,mnt:vMnt,qr:vQR,rep:vRep}[view]||vDash)();if(view==='qr')drawLabels();window.scrollTo(0,0)}
-
-function vDash(){
-  const low=S.items.filter(isLow),od=S.loans.filter(overdue),dueM=openMaint().filter(m=>m.due<=addDays(today(),14)).sort((a,b)=>a.due<b.due?-1:1),exp=S.items.filter(isExpiring);
-  return `<div class="top"><div><h1>Good to see you</h1><div class="sub">${esc(S.inst.name)} · ${fmt(today())}</div></div>
-  <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
-  ${stockBanner(low)}
-  <div class="grid g4">
-    ${stat(S.items.length,'Items registered',`${CATS.length} categories`,'')}
-    ${stat(openLoans().length,'Currently borrowed',od.length?`${od.length} overdue`:'None overdue',od.length?'color:var(--bad)':'color:var(--ok)')}
-    ${stat(openMaint().length,'Open maintenance tasks',`${openMaint().filter(m=>m.due<today()).length} past due`,openMaint().some(m=>m.due<today())?'color:var(--bad)':'')}
-    ${stat(low.length,'Low stock items',exp.length?`${exp.length} chemical${exp.length>1?'s':''} expiring`:'',low.length?'color:var(--warn)':'')}
-  </div>
-  <div class="cats">${CATS.map(c=>{const n=S.items.filter(i=>i.cat===c.k).length;return`<div class="cat" onclick="invCat='${c.k}';location.hash='inv'"><div class="dot" style="background:${c.color}">${c.name[0]}</div><b>${n}</b><span>${c.name}</span></div>`}).join('')}</div>
-  <div class="grid g2">
-    <div class="card"><h3>Overdue returns <a href="#loan" class="sub">View all</a></h3><div class="list">${od.length?od.map(l=>{const i=item(l.itemId);return`<div class="li"><div><b>${esc(i?i.name:l.itemId)}</b><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}</small></div><button class="btn sm" onclick="returnLoan('${l.id}')">Mark returned</button></div>`}).join(''):'<div class="empty">Nothing overdue</div>'}</div></div>
-    <div class="card"><h3>Maintenance in the next 14 days <a href="#mnt" class="sub">View all</a></h3><div class="list">${dueM.length?dueM.map(m=>{const i=item(m.itemId);const late=m.due<today();return`<div class="li"><div><b>${esc(i?i.name:m.itemId)}</b><small>${esc(m.type)} · ${late?'<span style="color:var(--bad)">was due '+fmt(m.due)+'</span>':'due '+fmt(m.due)}</small></div><button class="btn sm" onclick="doneForm('${m.id}')">Complete</button></div>`}).join(''):'<div class="empty">Nothing due</div>'}</div></div>
-    <div class="card"><h3>Low stock</h3><div class="list">${low.length?low.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${cat(i.cat).name} · ${esc(i.lab)}</small></div>${isOut(i)?'<span class="pill p-bad">Out of stock</span>':`<span class="pill p-warn">${avail(i)} ${esc(i.unit)} left</span>`}</div>`).join(''):'<div class="empty">All stock above reorder level</div>'}</div></div>
-    <div class="card"><h3>Chemicals expiring within 30 days</h3><div class="list">${exp.length?exp.map(i=>`<div class="li"><div><b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b><small>${esc(i.location)} · ${esc(i.hazard)}</small></div><span class="pill ${i.expiry<today()?'p-bad':'p-warn'}">${i.expiry<today()?'Expired':'Expires'} ${fmt(i.expiry)}</span></div>`).join(''):'<div class="empty">None</div>'}</div></div>
-  </div>`;
-}
-function bannerTitle(o,l){
-  const p=[];if(o)p.push(`${o} item${o>1?'s have':' has'} run out`);
-  if(l)p.push(o?`${l} ${l>1?'are':'is'} running low`:`${l} item${l>1?'s are':' is'} running low`);
-  return p.join(' and ');
-}
-function stockBanner(low){
-  const canAsk='Notification' in window&&Notification.permission==='default';
-  if(!low.length)return canAsk?`<div class="row" style="justify-content:flex-end;margin:-8px 0 12px"><button class="btn sm" onclick="enableAlerts()">🔔 Turn on stock alerts</button></div>`:'';
-  const out=low.filter(isOut);
-  return `<div class="alert ${out.length?'red':'amber'}"><div class="ai"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></div>
-  <div class="ab"><b>${bannerTitle(out.length,low.length-out.length)}</b>Time to reorder. Tap an item to restock it.
-  <div class="chips">${low.sort((a,b)=>isOut(b)-isOut(a)).map(i=>`<span class="chip ${isOut(i)?'out':'low'}" onclick="showItem('${i.id}')">${esc(i.name)}<em>${isOut(i)?'out':avail(i)+' '+esc(i.unit)}</em></span>`).join('')}</div></div>
-  <div class="row"><button class="btn sm" onclick="exportCSV('low')">Reorder list</button>${canAsk?'<button class="btn sm" onclick="enableAlerts()">🔔 Turn on alerts</button>':''}</div></div>`;
-}
-const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
-
-function vInv(){
-  const q=invQ.toLowerCase();
-  const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q)));
-  const showExp=invCat==='CHM';
-  return `<div class="top"><div><h1>Inventory</h1><div class="sub">Every item has an ID and a QR label</div></div><div class="row"><button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
-  <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button></div>
-  <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
-  <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>Quantity</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(i=>{const out=lent(i.id);return`<tr><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">No items match</td></tr>`}
-  </tbody></table></div>`;
-}
-
-function vLoan(){
-  const rows=S.loans.filter(l=>loanF==='all'||(loanF==='out'?!l.returned:loanF==='over'?overdue(l):!!l.returned)).sort((a,b)=>a.out<b.out?1:-1);
-  const f=(k,n,c)=>`<button class="tab ${loanF===k?'on':''}" onclick="loanF='${k}';render()">${n}<em>${c}</em></button>`;
-  return `<div class="top"><div><h1>Borrowing register</h1><div class="sub">Who took what, for which lab, and when it comes back</div></div><div class="row"><button class="btn" onclick="exportCSV('loans')">Export CSV</button><button class="btn pri" onclick="loanForm()">+ Issue item</button></div></div>
-  <div class="tabs">${f('out','Borrowed now',openLoans().length)}${f('over','Overdue',S.loans.filter(overdue).length)}${f('back','Returned',S.loans.filter(l=>l.returned).length)}${f('all','All',S.loans.length)}</div>
-  <div class="tablewrap"><table><thead><tr><th>Item</th><th>Qty</th><th>Borrowed by</th><th>Borrowing lab</th><th>Issued</th><th>Due back</th><th>Status</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(l=>{const i=item(l.itemId);return`<tr><td><span class="nm" onclick="showItem('${l.itemId}')">${esc(i?i.name:'Deleted item')}</span><div class="id">${l.itemId}</div></td><td>${l.qty}</td><td><b>${esc(l.borrower)}</b>${l.purpose?`<div class="sub" style="font-size:12px">${esc(l.purpose)}</div>`:''}</td><td>${esc(l.borrowerLab)}</td><td>${fmt(l.out)}</td><td>${fmt(l.due)}</td><td>${l.returned?`<span class="pill p-ok">Returned ${fmt(l.returned)}</span>`:overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-info">With borrower</span>'}</td><td style="text-align:right">${l.returned?'':`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Returned</button>`}</td></tr>`}).join(''):`<tr><td colspan="8" class="empty">No records here</td></tr>`}
-  </tbody></table></div>`;
-}
-
-function vMnt(){
-  const open=openMaint().sort((a,b)=>a.due<b.due?-1:1),done=S.maint.filter(m=>m.done).sort((a,b)=>a.done<b.done?1:-1);
-  const tr=m=>{const i=item(m.itemId);return`<tr><td><span class="nm" onclick="showItem('${m.itemId}')">${esc(i?i.name:'Deleted item')}</span><div class="id">${m.itemId}</div></td><td><span class="pill p-mut">${esc(m.type)}</span></td><td>${m.done?fmt(m.done):`<span class="pill ${m.due<today()?'p-bad':m.due<=addDays(today(),7)?'p-warn':'p-info'}">${fmt(m.due)}</span>`}</td><td>${esc(m.done?m.by:m.notes)}</td><td style="text-align:right">${m.done?'':`<button class="btn sm okb" onclick="doneForm('${m.id}')">Complete</button>`}</td></tr>`};
-  return `<div class="top"><div><h1>Maintenance and calibration</h1><div class="sub">Schedule service, record who did it</div></div><div class="row"><button class="btn" onclick="exportCSV('maint')">Export CSV</button><button class="btn pri" onclick="maintForm()">+ Schedule task</button></div></div>
-  <div class="card" style="margin-bottom:16px;padding:0"><div style="padding:16px 18px 6px"><h3>Open tasks</h3></div><div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Item</th><th>Type</th><th>Due</th><th>Notes</th><th></th></tr></thead><tbody>${open.length?open.map(tr).join(''):'<tr><td colspan="5" class="empty">No open tasks</td></tr>'}</tbody></table></div></div>
-  <div class="card" style="padding:0"><div style="padding:16px 18px 6px"><h3>Completed</h3></div><div class="tablewrap" style="border:0;border-radius:0"><table><thead><tr><th>Item</th><th>Type</th><th>Completed</th><th>Done by</th><th></th></tr></thead><tbody>${done.length?done.map(tr).join(''):'<tr><td colspan="5" class="empty">Nothing yet</td></tr>'}</tbody></table></div></div>
-  <p class="sub" style="margin-top:14px">A reminder is not a calibration certificate. Keep the provider's certificate with the record.</p>`;
-}
-
-let qrCat='ALL';
-function vQR(){
-  return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Scanning opens that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
-  <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
-  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div><div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
-}
-const itemURL=id=>location.origin+location.pathname+'#item='+id;
-function makeQR(el,id,size){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:itemURL(id),width:size,height:size,correctLevel:QRCode.CorrectLevel.M});else el.textContent=id}
-function drawLabels(){document.querySelectorAll('[data-qr]').forEach(el=>makeQR(el,el.dataset.qr,220))}
-
-function vRep(){
-  const byCat=CATS.map(c=>[c.name,S.items.filter(i=>i.cat===c.k).length,c.color]);
-  const byCond=CONDS.map(c=>[c,S.items.filter(i=>i.cat==='EQP'&&i.condition===c).length,c==='Working'?'var(--ok)':c==='Damaged'?'var(--bad)':c==='Retired'?'#94a3b8':'var(--warn)']);
-  const labsB={};S.loans.forEach(l=>labsB[l.borrowerLab]=(labsB[l.borrowerLab]||0)+1);
-  const byLab=Object.entries(labsB).sort((a,b)=>b[1]-a[1]).map(([k,v])=>[k,v,'var(--brand)']);
-  const itB={};S.loans.forEach(l=>itB[l.itemId]=(itB[l.itemId]||0)+1);
-  const top=Object.entries(itB).sort((a,b)=>b[1]-a[1]).slice(0,5).map(([k,v])=>[item(k)?item(k).name:k,v,'var(--c2)']);
-  const back=S.loans.filter(l=>l.returned),onTime=back.filter(l=>l.returned<=l.due).length;
-  const mDone=S.maint.filter(m=>m.done).length;
-  return `<div class="top"><div><h1>Reports</h1><div class="sub">A snapshot for the head of department</div></div><div class="row"><button class="btn" onclick="exportCSV('items')">Inventory CSV</button><button class="btn" onclick="exportCSV('loans')">Borrowing CSV</button><button class="btn" onclick="exportCSV('maint')">Maintenance CSV</button><button class="btn pri" onclick="window.print()">Print report</button></div></div>
-  <div class="grid g4" style="margin-bottom:16px">
-    ${stat(S.items.length,'Items on register','','')}
-    ${stat(S.items.filter(i=>i.cat==='EQP'&&i.condition!=='Working').length,'Equipment not working','','')}
-    ${stat(back.length?Math.round(onTime/back.length*100)+'%':'n/a','Returned on time',`${back.length} returns`,'')}
-    ${stat(mDone+' / '+S.maint.length,'Maintenance tasks done','','')}
-  </div>
-  <div class="grid g2">
-    <div class="card"><h3>Items by category</h3>${bars(byCat)}</div>
-    <div class="card"><h3>Equipment condition</h3>${bars(byCond)}</div>
-    <div class="card"><h3>Borrowing by lab</h3>${byLab.length?bars(byLab):'<div class="empty">No borrowing yet</div>'}</div>
-    <div class="card"><h3>Most borrowed items</h3>${top.length?bars(top):'<div class="empty">No borrowing yet</div>'}</div>
-  </div>`;
-}
-function bars(d){const mx=Math.max(1,...d.map(x=>x[1]));return`<div class="bars">${d.map(([l,v,c])=>`<div class="b"><div class="bl"><span>${esc(l)}</span><span>${v}</span></div><div class="bt"><div class="bf" style="width:${v/mx*100}%;background:${c}"></div></div></div>`).join('')}</div>`}
-
-/* modals */
-function openModal(h){document.getElementById('mbox').innerHTML=h;document.getElementById('modal').classList.add('on')}
-function closeModal(){document.getElementById('modal').classList.remove('on');if(location.hash.startsWith('#item='))history.replaceState(null,'','#'+view)}
-const opt=(arr,sel)=>arr.map(a=>{const[v,n]=Array.isArray(a)?a:[a,a];return`<option value="${esc(v)}" ${v===sel?'selected':''}>${esc(n)}</option>`}).join('');
-const fv=id=>document.getElementById(id).value.trim();
-
-function itemForm(id){
-  const i=id?item(id):{cat:CATS.some(c=>c.k===invCat)?invCat:'CON',name:'',lab:LABS[0],location:'',qty:1,unit:'nos',min:0,condition:'Working',serial:'',purchased:'',expiry:'',hazard:'',notes:''};
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>${id?'Edit '+esc(i.name):'Add an item'}</h2><div class="sub">${id?i.id:'An ID and QR label are created automatically'}</div>
-  <div class="form">
-    <label>Category<select id="f_cat" onchange="document.getElementById('chm').style.display=this.value==='CHM'?'contents':'none'">${opt(CATS.map(c=>[c.k,c.name]),i.cat)}</select></label>
-    <label>Name<input id="f_name" value="${esc(i.name)}" placeholder="e.g. Vernier Calipers"></label>
-    <label>Lab<select id="f_lab">${opt(LABS,i.lab)}</select></label>
-    <label>Room or shelf<input id="f_loc" value="${esc(i.location)}" placeholder="Room 102"></label>
-    <label>Quantity<input id="f_qty" type="number" step="any" min="0" value="${i.qty}"></label>
-    <label>Unit<input id="f_unit" value="${esc(i.unit)}" placeholder="nos, kg, L, boxes"></label>
-    <label>Reorder when at or below<input id="f_min" type="number" step="any" min="0" value="${i.min}"><span class="hint">0 means no low stock alert</span></label>
-    <label>Condition<select id="f_cond">${opt(CONDS,i.condition)}</select></label>
-    <label>Serial number<input id="f_serial" value="${esc(i.serial)}"></label>
-    <label>Purchase date<input id="f_pur" type="date" value="${i.purchased}"></label>
-    <div id="chm" style="display:${i.cat==='CHM'?'contents':'none'}">
-      <label>Expiry date<input id="f_exp" type="date" value="${i.expiry||''}"></label>
-      <label>Hazard<input id="f_haz" value="${esc(i.hazard||'')}" placeholder="Corrosive, flammable"></label>
-    </div>
-    <label class="full">Notes<textarea id="f_notes" rows="2">${esc(i.notes)}</textarea></label>
-  </div>
-  <div class="row" style="justify-content:space-between">${id?`<button class="btn danger" onclick="delItem('${id}')">Delete</button>`:'<span></span>'}<div class="row"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveItem('${id||''}')">Save</button></div></div>`);
-  setTimeout(()=>document.getElementById('f_name').focus(),50);
-}
-function saveItem(id){
-  const name=fv('f_name');if(!name){toast('Give the item a name');return}
-  const c=fv('f_cat');
-  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),purchased:fv('f_pur'),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
-  if(id){const i=item(id);const ch=i.condition!==d.condition?` (condition: ${d.condition})`:'';Object.assign(i,d);addLog(id,'Record edited'+ch);toast('Saved')}
-  else{const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]),0)+1;const nid=`${c}-${String(n).padStart(3,'0')}`;S.items.push({id:nid,...d});addLog(nid,'Added to register');toast(`${nid} added`)}
-  save();closeModal();render();
-}
-function delItem(id){if(!confirm('Delete this item and its history?'))return;S.items=S.items.filter(i=>i.id!==id);S.log=S.log.filter(l=>l.itemId!==id);save();closeModal();render();toast('Deleted')}
-
-function showItem(id){
-  const i=item(id);if(!i){toast('Item not found on this device');return}
-  const ls=S.loans.filter(l=>l.itemId===id&&!l.returned),ms=openMaint().filter(m=>m.itemId===id);
-  const hist=S.log.filter(l=>l.itemId===id).slice().reverse().slice(0,12);
-  openModal(`<button class="x" onclick="closeModal()">×</button><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span><h2 style="margin-top:6px">${esc(i.name)}</h2><div class="id">${i.id}</div>
-  <div class="detail"><dl class="kv">
-    <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
-    <dt>Quantity</dt><dd>${i.qty} ${esc(i.unit)}${lent(id)?` (${lent(id)} borrowed)`:''} ${stockPill(i)}${i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
-    <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
-    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
-    ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
-    ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
-  </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
-  ${ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}</div>`:''}
-  ${ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
-  <div class="row" style="margin-bottom:16px">
-    <button class="btn pri" onclick="loanForm('${id}')">Issue / borrow</button>
-    ${ls.length?`<button class="btn okb" onclick="returnLoan('${ls[0].id}',1)">Mark returned</button>`:''}
-    ${i.cat!=='EQP'?`<button class="btn" onclick="useForm('${id}')">Record usage</button><button class="btn" onclick="restockForm('${id}')">Restock</button>`:''}
-    <button class="btn" onclick="damageForm('${id}')">Report damage</button>
-    <button class="btn" onclick="maintForm('${id}')">Schedule service</button>
-    <button class="btn" onclick="itemForm('${id}')">Edit</button>
-  </div>
-  <h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`);
-  makeQR(document.getElementById('dq'),id,240);
-}
-
-function loanForm(id){
-  const its=S.items.filter(i=>i.condition!=='Retired');
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Issue an item</h2><div class="sub">Record who is borrowing it and for which lab</div>
-  <div class="form">
-    <label class="full">Item<select id="l_item">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)} (${i.qty-lent(i.id)} ${esc(i.unit)} available)</option>`).join('')}</select></label>
-    <label>Borrowed by<input id="l_who" placeholder="Name of student or staff"></label>
-    <label>Borrowing lab or department<input id="l_lab" list="labs" placeholder="e.g. NMRL"><datalist id="labs">${LABS.map(l=>`<option value="${l}">`).join('')}</datalist></label>
-    <label>Quantity<input id="l_qty" type="number" min="1" value="1"></label>
-    <label>Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
-    <label class="full">Purpose<input id="l_pur" placeholder="Practical, project, workshop"></label>
-  </div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveLoan()">Issue</button></div>`);
-}
-function saveLoan(){
-  const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1;
-  if(!who||!lab){toast('Fill in who borrowed it and their lab');return}
-  const i=item(itemId);if(qty>i.qty-lent(itemId)){toast(`Only ${i.qty-lent(itemId)} available`);return}
-  S.loans.push({id:'L'+(++S.seq),itemId,qty,borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:fv('l_due')||addDays(today(),7),returned:''});
-  addLog(itemId,`Issued ${qty} to ${who} (${lab})`);save();closeModal();render();toast('Issued')
-}
-function returnLoan(lid,fromItem){const l=S.loans.find(x=>x.id===lid);l.returned=today();addLog(l.itemId,`Returned by ${l.borrower}`);save();render();toast('Marked returned');if(fromItem)showItem(l.itemId)}
-
-function useForm(id){
-  const i=item(id);
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${avail(i)} ${esc(i.unit)} available</div>
-  <div class="form"><label>Quantity used (${esc(i.unit)})<input id="u_qty" type="number" step="any" min="0" value="1"></label><label>Used by<input id="u_by" placeholder="Name"></label>
-  <label>Lab<select id="u_lab">${opt(LABS,i.lab)}</select></label><label>Purpose<input id="u_pur" placeholder="Experiment, project"></label></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveUse('${id}')">Save</button></div>`);
-}
-function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
-  i.qty=+(Number(i.qty)-q).toFixed(3);addLog(id,`Used ${q} ${i.unit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}`);save();render();showItem(id)}
-function restockForm(id){
-  const i=item(id);
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Restock</h2><div class="sub">${esc(i.name)} · ${i.qty} ${esc(i.unit)} in stock</div>
-  <div class="form"><label>Quantity received (${esc(i.unit)})<input id="r_qty" type="number" step="any" min="0" value="${Math.max(1,(i.min||0)*2-i.qty)}"></label><label>Supplier or bill number<input id="r_ref"></label></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveRestock('${id}')">Add to stock</button></div>`);
-}
-function saveRestock(id){const i=item(id),q=Number(fv('r_qty'));if(!(q>0)){toast('Enter the quantity received');return}
-  i.qty=+(Number(i.qty)+q).toFixed(3);addLog(id,`Restocked ${q} ${i.unit}${fv('r_ref')?' · '+fv('r_ref'):''}`);save();render();showItem(id);toast('Stock updated')}
-function damageForm(id){
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Report damage</h2><div class="sub">${esc(item(id).name)} · ${id}</div>
-  <div class="form"><label>New condition<select id="d_cond">${opt(CONDS.slice(1),'Needs repair')}</select></label><label>Reported by<input id="d_by"></label><label class="full">What happened<textarea id="d_note" rows="3"></textarea></label>
-  <label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="d_sched" checked style="width:auto">Also schedule a repair in 7 days</label></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveDamage('${id}')">Report</button></div>`);
-}
-function saveDamage(id){const i=item(id),c=fv('d_cond'),by=fv('d_by'),n=fv('d_note');i.condition=c;addLog(id,`Damage reported${by?' by '+by:''}: ${n||c}`);if(document.getElementById('d_sched').checked)S.maint.push({id:'M'+(++S.seq),itemId:id,type:'Repair',due:addDays(today(),7),done:'',by:'',notes:n});save();render();showItem(id);toast('Reported')}
-
-function maintForm(id){
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Schedule maintenance</h2>
-  <div class="form"><label class="full">Item<select id="m_item">${S.items.filter(i=>['EQP','OTH'].includes(i.cat)).map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.id} · ${esc(i.name)}</option>`).join('')}</select></label>
-  <label>Type<select id="m_type">${opt(['Maintenance','Calibration','Repair','Inspection'],'Maintenance')}</select></label><label>Due date<input id="m_due" type="date" value="${addDays(today(),14)}"></label>
-  <label class="full">Notes<input id="m_notes" placeholder="What needs doing"></label></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveMaint()">Schedule</button></div>`);
-}
-function saveMaint(){const itemId=fv('m_item');S.maint.push({id:'M'+(++S.seq),itemId,type:fv('m_type'),due:fv('m_due')||today(),done:'',by:'',notes:fv('m_notes')});addLog(itemId,`${fv('m_type')} scheduled for ${fmt(fv('m_due'))}`);save();closeModal();render();toast('Scheduled')}
-function doneForm(mid){
-  const m=S.maint.find(x=>x.id===mid);
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Complete ${esc(m.type.toLowerCase())}</h2><div class="sub">${esc(item(m.itemId)?.name||'')}</div>
-  <div class="form"><label>Done on<input id="c_date" type="date" value="${today()}"></label><label>Done by<input id="c_by" placeholder="Staff name or service company"></label>
-  <label>Condition after<select id="c_cond">${opt(CONDS,'Working')}</select></label><label>Certificate or job number<input id="c_ref"></label></div>
-  <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveDone('${mid}')">Mark complete</button></div>`);
-}
-function saveDone(mid){const m=S.maint.find(x=>x.id===mid);const by=fv('c_by');if(!by){toast('Who did it?');return}m.done=fv('c_date')||today();m.by=by+(fv('c_ref')?' · ref '+fv('c_ref'):'');const i=item(m.itemId);if(i)i.condition=fv('c_cond');addLog(m.itemId,`${m.type} completed by ${m.by}`);save();closeModal();render();toast('Completed')}
-
-function exportCSV(kind){
-  let rows;
-  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.expiry,i.hazard,lent(i.id)]));
-  if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
-  if(kind==='loans')rows=[['Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status']].concat(S.loans.map(l=>[l.itemId,item(l.itemId)?.name||'',l.qty,l.borrower,l.borrowerLab,l.purpose,l.out,l.due,l.returned,l.returned?'Returned':overdue(l)?'Overdue':'Out']));
-  if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
-  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['﻿'+csv],{type:'text/csv'}));a.download=`labloop_${kind}_${today()}.csv`;a.click();toast('CSV downloaded')
+  const cnt={},names={},lentBy={'EQP-002':1,'EQP-001':2,'CON-001':10,'EQP-005':1},chm=[[200,'Corrosive'],[25,'Corrosive'],[-10,'Oxidiser, toxic'],[400,'Flammable']];
+  rows.forEach(r=>{cnt[r[0]]=(cnt[r[0]]||0)+1;const id=`${r[0]}-${String(cnt[r[0]]).padStart(3,'0')}`;names[id]=r[1];const c=r[0]==='CHM'?chm[cnt.CHM-1]:null;
+    b.set(D('items',id),{cat:r[0],name:r[1],lab:r[2],location:r[3],qty:r[4],unit:r[5],min:r[6],condition:r[7],serial:r[8],purchased:r[9],notes:'',expiry:c?addDays(t,c[0]):'',hazard:c?c[1]:'',lent:lentBy[id]||0});addLog(b,id,'Added to register')});
+  const L=(itemId,qty,who,lab,pur,out,due,status,ret)=>b.set(FB.doc(FB.collection(FB.db,'loans')),{itemId,itemName:names[itemId],qty,borrower:who,borrowerLab:lab,purpose:pur,out:out===null?'':addDays(t,out),due:addDays(t,due),status,returned:ret==null?'':addDays(t,ret),createdAt:FB.serverTimestamp()});
+  L('EQP-002',1,'Anjali Menon','LAMS','Lissajous figures practical',-9,-2,'approved');
+  L('EQP-001',2,'Rahul K','NMRL','Project work',-3,4,'approved');
+  L('CON-001',10,'Dr. Suresh Nair','Computational Lab','IoT workshop',-2,5,'approved');
+  L('EQP-004',1,'Fathima Rinsha','LAMS','Resonance experiment',-14,-7,'returned',-8);
+  L('EQP-005',1,'Arun Das','DBRL','Sample weighing',-6,-1,'approved');
+  b.set(D('loans','SAMPLE01'),{itemId:'EQP-007',itemName:names['EQP-007'],qty:2,borrower:'Nithin P',borrowerLab:'UG Lab',purpose:'Second year practical',due:addDays(t,3),status:'pending',createdAt:FB.serverTimestamp()});
+  const M=(itemId,type,due,done,by,notes)=>b.set(FB.doc(FB.collection(FB.db,'maint')),{itemId,type,due:addDays(t,due),done:done==null?'':addDays(t,done),by,notes});
+  M('EQP-005','Calibration',6,null,'','Annual calibration by vendor');
+  M('EQP-003','Repair',-4,null,'','Prism table screw loose');
+  M('EQP-006','Maintenance',2,null,'','Clean and lubricate rack');
+  M('OTH-002','Inspection',24,null,'','Pressure check');
+  M('EQP-002','Calibration',-40,-38,'Techno Services, Kozhikode','Probe compensation verified');
+  b.commit().then(()=>toast('Sample data loaded')).catch(fail);
 }
 
 function route(){
-  const h=location.hash.slice(1);
-  if(h.startsWith('item=')){const id=decodeURIComponent(h.slice(5));render();showItem(id);return}
-  view=VIEWS.some(v=>v[0]===h)?h:'dash';closeModal();render();
+  const h=decodeURIComponent(location.hash.slice(1));
+  if(h.startsWith('item=')){const id=h.slice(5);const go=()=>{render();showItem(id)};ready?go():window.addEventListener('lams-ready',go,{once:true});return}
+  view=views().some(v=>v[0]===h)?h:'dash';closeModal();render();
 }
+const _render=render;render=function(fromData){const was=ready;_render(fromData);if(!was&&ready)window.dispatchEvent(new Event('lams-ready'))};
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 window.addEventListener('hashchange',route);
-load();save();route();startupAlert();
+route();
 </script>
 </body>
 </html>
