@@ -182,6 +182,11 @@ tbody tr:hover{background:#fafbff}
 .mhead .mlog{display:flex;gap:6px}
 .req{color:var(--bad)}
 .form .bad{border-color:var(--bad)!important;background:#fff5f5!important}
+.flag{display:inline-flex;align-items:center;gap:5px;background:var(--badSoft);color:var(--bad);font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 9px;margin:4px 6px 0 0;cursor:pointer}
+.flag:before{content:'';width:7px;height:7px;border-radius:50%;background:var(--bad);animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+tr.flagged td{background:#fff7f7}
+.cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;font-size:12px;font-weight:800;margin-left:8px}
 .adminpill{display:inline-flex;align-items:center;gap:6px;background:var(--okSoft);color:var(--ok);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
 </style>
 <div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div><span class="mlog" id="mlog"></span></div>
@@ -229,7 +234,7 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-21-records';
+const BUILD='2026-10-21-redflags';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='out', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -414,11 +419,19 @@ function needsYou(){
 }
 const reqRow=l=>`<div class="li"><div><b>${esc(l.borrower)}</b> <span class="sub">· ${esc(l.borrowerLab)}</span><small>${l.qty} × ${esc(l.itemName)} · till ${fmt(l.due)}${l.purpose?' · '+esc(l.purpose):''}</small></div><div class="row"><button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button></div></div>`;
 const stat=(n,l,t,st)=>`<div class="card stat"><div class="l">${l}</div><div class="n">${n}</div><div class="t" style="${st}">${t||'&nbsp;'}</div></div>`;
+function itemFlags(id){
+  if(!isAdmin)return'';
+  const f=[];const dmg=newDamage().filter(d=>d.itemId===id).length,oos=newOOS().filter(d=>d.itemId===id).length,it=item(id);
+  if(dmg)f.push(`Damage reported${dmg>1?' ×'+dmg:''}`);if(oos)f.push('Out of stock reported');
+  if(it&&['Needs repair','Damaged','Under maintenance'].includes(it.condition))f.push(it.condition);
+  return f.map(t=>`<span class="flag" onclick="event.stopPropagation();location.hash='inv';window.scrollTo(0,0)">${esc(t)}</span>`).join('');
+}
 function invAttention(){
   const oos=newOOS(),dm=newDamage(),rep=needsRepair(),out=S.items.filter(isOut);
   if(!oos.length&&!dm.length&&!rep.length&&!out.length)return'';
   const row=(t,sm,btns)=>`<div class="li"><div>${t}<small>${sm}</small></div><div class="row">${btns}</div></div>`;
-  return `<div class="card" style="margin-bottom:18px;border-color:#fde68a"><h3>Needs your attention</h3><div class="list">
+  const total=oos.length+dm.length+rep.length+out.filter(i=>!oos.some(d=>d.itemId===i.id)).length;
+  return `<div class="card" style="margin-bottom:18px;border-color:${dm.length||oos.length?'#fca5a5':'#fde68a'}"><h3><span>Needs your attention<span class="cnt">${total}</span></span></h3><div class="list">
   ${oos.map(d=>row(`<b>${esc(d.by)}</b> says <b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b> is out of stock`,`${when(d.createdAt)}${d.note?' · '+esc(d.note):''}`,`<button class="btn sm okb" onclick="setStock('${d.itemId}',true,'${d.id}')">Approve</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button>`)).join('')}
   ${dm.map(d=>row(`<b>${esc(d.by||'Someone')}</b> reported damage on <b class="nm" onclick="showItem('${d.itemId}')">${esc(d.itemName)}</b>`,`${when(d.createdAt)} · ${esc(d.note)}${d.borrower?' · borrowed by '+esc(d.borrower):''}`,`<button class="btn sm okb" onclick="damageForm('${d.itemId}','${d.id}')">Confirm</button><button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button>`)).join('')}
   ${rep.map(i=>row(`<b class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</b> ${i.condition==='Needs repair'?'needs repair':'is '+esc(i.condition.toLowerCase())}`,[i.lab,i.location].filter(Boolean).map(esc).join(' · '),`<button class="btn sm okb" onclick="markRepaired('${i.id}')">Mark repaired</button>`)).join('')}
@@ -450,7 +463,7 @@ function vInv(){
   <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(i=>{const out=Number(i.lent||0);return`<tr><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
+  ${rows.length?rows.map(i=>{const out=Number(i.lent||0),fl=itemFlags(i.id);return`<tr class="${fl?'flagged':''}"><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${fl?`<div>${fl}</div>`:''}${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
   </tbody></table></div>`;
 }
 
@@ -759,9 +772,10 @@ function showItem(id,silent){
   </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
   ${!isAdmin&&ls.length?`<div class="card" style="padding:4px 14px;margin-bottom:14px;box-shadow:none"><div class="list">${ls.map(outRow).join('')}</div></div>`:''}
   ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}. <a href="#loan" onclick="closeModal()">Returns are handled in Borrowing</a></div>`:''}
+  ${isAdmin?S.damage.filter(d=>d.status==='new'&&d.itemId===id).map(d=>`<div class="notice" style="background:var(--badSoft);border-color:#fecaca;color:#7f1d1d;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><b>${d.kind==='stock'?'Out of stock reported':'Damage reported'}</b> by ${esc(d.by||'someone')} · ${when(d.createdAt)}${d.note?'<br>'+esc(d.note):''}</div><div class="row">${d.kind==='stock'?`<button class="btn sm okb" onclick="setStock('${id}',true,'${d.id}')">Approve</button>`:`<button class="btn sm okb" onclick="damageForm('${id}','${d.id}')">Confirm</button>`}<button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join(''):''}
   ${isAdmin&&ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
   <div class="row" style="margin-bottom:16px">${actions}</div>
-  ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
+  ${isAdmin?`<h3 style="font-size:13.5px">History</h3><div class="hist">${hist.map(h=>`<div>${esc(h.text)} <small>· ${when(h.ts)||fmt(h.at)}</small></div>`).join('')||'<div>No history</div>'}</div>`:''}`);
   modalItem=id;
   makeQR(document.getElementById('dq'),id,240);
 }
@@ -807,10 +821,11 @@ function setStock(id,out,did){
 function pubDamageForm(id){
   const i=item(id);modalItem=null;
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Report a problem</h2><div class="sub">${esc(i.name)} · ${id}</div>
-  <div class="form"><label class="full">What is wrong<textarea id="p_note" rows="3" maxlength="500" placeholder="e.g. Display flickers, probe cable cut"></textarea></label><label class="full">Your name (optional)<input id="p_by" maxlength="80"></label></div>
+  <div class="form"><label class="full">What is wrong<textarea id="p_note" rows="3" maxlength="500" placeholder="e.g. Display flickers, probe cable cut"></textarea></label><label class="full">Your name <span class="req">*</span><input id="p_by" maxlength="80" oninput="this.classList.remove('bad')"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="sendDamage('${id}')">Send to admin</button></div>`);
 }
 function sendDamage(id){const n=fv('p_note');if(!n){toast('Say what is wrong');return}
+  const pb=document.getElementById('p_by');if(pb.value.trim().replace(/[^\p{L}]/gu,'').length<2){pb.classList.add('bad');toast('Name is required');return}
   FB.addDoc(FB.collection(FB.db,'damage'),{itemId:id,itemName:item(id).name,by:fv('p_by'),note:n,status:'new',createdAt:FB.serverTimestamp()}).then(()=>{closeModal();toast('Sent to the lab admin. Thank you.')}).catch(fail)}
 function dismissDamage(did){FB.updateDoc(D('damage',did),{status:'dismissed'}).then(()=>toast('Dismissed')).catch(fail)}
 function damageForm(id,did){
