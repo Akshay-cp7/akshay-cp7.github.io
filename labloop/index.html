@@ -825,7 +825,7 @@ function itemForm(id){
     ${i.group&&piecesOf(i).length>1?`<label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_all" checked>Also change name, category details, lab, room and unit on the other ${piecesOf(i).length-1} pieces</label>`:''}
     <label>Purchase date<input id="f_pur" type="date" value="${i.purchased||''}"></label>
     <label>Funding scheme / agency<input id="f_fund" maxlength="120" value="${esc(i.funding||'')}" placeholder="e.g. DST FIST, SERB, institute funds"></label>
-    <label>Seller / supplier<input id="f_seller" maxlength="160" value="${esc(i.seller||'')}" placeholder="Shop name, place, phone"></label>
+    <label>Seller / supplier (required)<input id="f_seller" required maxlength="160" value="${esc(i.seller||'')}" placeholder="Shop name, place, phone"></label>
     <label>Price (₹, optional)<input id="f_price" type="number" step="any" min="0" value="${i.price??''}" placeholder="Cost of one"></label>
     <div id="chm" style="display:${i.cat==='CHM'?'contents':'none'}">
       <label>Expiry date<input id="f_exp" type="date" value="${i.expiry||''}"></label>
@@ -861,6 +861,7 @@ function splitItem(id){
 }
 function saveItem(id){
   const name=fv('f_name');if(!name){toast('Give the item a name');return}
+  if(!fv('f_seller')){toast('Add who it was bought from');document.getElementById('f_seller').focus();return}
   const c=id?item(id).cat:fv('f_cat');
   const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),size:c==='EQP'?0:Number(fv('f_size'))||0,sizeUnit:c==='EQP'?'':fv('f_sunit'),purchased:fv('f_pur'),funding:fv('f_fund'),seller:fv('f_seller'),price:fv('f_price')===''?'':Math.max(0,Number(fv('f_price'))||0),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
   if(!d.size){d.sizeUnit='';if(id)d.left=FB.deleteField()}
