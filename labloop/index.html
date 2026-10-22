@@ -205,10 +205,10 @@ tr.flagged td{background:#fff7f7}
 
 <script type="module">
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import {getFirestore,collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where,waitForPendingWrites} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
+import {getFirestore,collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,deleteField,serverTimestamp,runTransaction,query,where,waitForPendingWrites} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
 const app=initializeApp({apiKey:'AIzaSyBlIrK76Q9t6lN_8AOXm8wKtiJzOwwb9gE',authDomain:'lams-lab-register.firebaseapp.com',projectId:'lams-lab-register',storageBucket:'lams-lab-register.firebasestorage.app',messagingSenderId:'974719142292',appId:'1:974719142292:web:283f96a6c84f18fc1b2781'});
-window.FB={db:getFirestore(app),auth:getAuth(app),collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,serverTimestamp,runTransaction,query,where,waitForPendingWrites,onAuthStateChanged,signInWithEmailAndPassword,signOut};
+window.FB={db:getFirestore(app),auth:getAuth(app),collection,doc,onSnapshot,getDoc,setDoc,addDoc,updateDoc,deleteDoc,writeBatch,increment,deleteField,serverTimestamp,runTransaction,query,where,waitForPendingWrites,onAuthStateChanged,signInWithEmailAndPassword,signOut};
 window.dispatchEvent(new Event('fb-ready'));
 </script>
 <script>
@@ -234,7 +234,7 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-22-pieces';
+const BUILD='2026-10-22-funding';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -268,7 +268,14 @@ const lent=id=>Number(item(id)?.lent||0);
 // Equipment is counted out and back. Consumables, chemicals and stationery are only out of stock when someone says so.
 const avail=i=>i.cat==='EQP'?Number(i.qty)-Number(i.lent||0):Number(i.qty);
 const isOut=i=>i.cat!=='EQP'&&!!i.outOfStock;
-const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&Number(i.qty)<=Number(i.min)));
+// Size is how much one bottle or pack holds (500 ml). `left` is what is left across this record's bottles, used up by Record usage.
+const sized=i=>i.cat!=='EQP'&&Number(i.size)>0;
+const amtLeft=i=>i.left??Number(i.size)*Number(i.qty||1);
+const nfmt=n=>String(+Number(n).toFixed(3));
+const sizeTxt=i=>sized(i)?`${nfmt(i.size)} ${i.sizeUnit||''}`.trim():'';
+const leftTxt=i=>`${nfmt(amtLeft(i))} ${i.sizeUnit||''}`.trim()+' left';
+const leftBar=i=>{const f=Math.max(0,Math.min(1,amtLeft(i)/(Number(i.size)*Number(i.qty||1))));return`<div style="height:6px;border-radius:3px;background:var(--line);margin-top:4px;max-width:160px"><div style="height:6px;border-radius:3px;width:${f*100}%;background:${f<=.1?'var(--bad)':f<=.25?'var(--warn)':'var(--ok,#16a34a)'}"></div></div>`};
+const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&Number(i.qty)<=Number(i.min))||(sized(i)&&amtLeft(i)<=Number(i.size)*Number(i.qty||1)*0.1));
 const canLend=i=>i.condition==='Working'&&(i.cat==='EQP'?avail(i)>0:!i.outOfStock);
 // Several of the same thing are kept as one record per piece, so each has its own QR label, condition and serial. `group` is the first piece's ID.
 const idCmp=(a,b)=>a.id.localeCompare(b.id,undefined,{numeric:true});
@@ -465,13 +472,13 @@ function stockBanner(low){
 /* inventory */
 function vInv(){
   const q=invQ.toLowerCase();
-  const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial].join(' ').toLowerCase().includes(q))).sort(idCmp);
+  const rows=S.items.filter(i=>(invCat==='ALL'||(invCat==='LOW'?isLow(i):i.cat===invCat))&&(!q||[i.id,i.name,i.lab,i.location,i.serial,isAdmin?i.funding:''].join(' ').toLowerCase().includes(q))).sort(idCmp);
   const showExp=invCat==='CHM';
   return `${isAdmin?invAttention():''}<div class="top"><div><h1>Inventory</h1><div class="sub">${isAdmin?'Every item has an ID and a QR label':'Tap an item to see where it is, or to borrow it'}</div></div><div class="row">${isAdmin?`<button class="btn" onclick="exportCSV('items')">Export CSV</button><button class="btn pri" onclick="itemForm()">+ Add item</button>`:`<button class="btn pri" onclick="reqForm()">Borrow an item</button>`}</div></div>
   <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
-  <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room or serial" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
+  <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room, serial${isAdmin?' or funding':''}" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(i=>{const out=Number(i.lent||0),fl=itemFlags(i.id);return`<tr class="${fl?'flagged':''}"><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.group?`<div class="sub" style="font-size:12px">${pieceTag(i)}</div>`:''}${fl?`<div>${fl}</div>`:''}${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${i.group&&!isAdmin?pieceCell(i):isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
+  ${rows.length?rows.map(i=>{const out=Number(i.lent||0),fl=itemFlags(i.id);return`<tr class="${fl?'flagged':''}"><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.group||sized(i)?`<div class="sub" style="font-size:12px">${[pieceTag(i),sizeTxt(i)].filter(Boolean).join(' · ')}</div>`:''}${fl?`<div>${fl}</div>`:''}${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${sized(i)&&!isOut(i)?`<div style="font-size:12.5px">${esc(leftTxt(i))}</div>${leftBar(i)}`:''}${i.group&&!isAdmin?pieceCell(i):sized(i)&&!isAdmin?'':isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
   </tbody></table></div>`;
 }
 
@@ -679,7 +686,7 @@ function vMnt(){
 function vQR(){
   return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Anyone who scans it sees that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
   <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
-  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div>${i.group?`<div class="sub" style="font-size:11px">${pieceTag(i)}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
+  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div>${i.group||sized(i)?`<div class="sub" style="font-size:11px">${[sizeTxt(i),pieceTag(i)].filter(Boolean).join(' · ')}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
 }
 const itemURL=id=>location.origin+location.pathname+'#item='+id;
 function makeQR(el,id,size){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:itemURL(id),width:size,height:size,correctLevel:QRCode.CorrectLevel.M});else el.textContent=id}
@@ -751,18 +758,24 @@ function itemForm(id){
   modalItem=null;
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>${id?'Edit '+esc(i.name):'Add an item'}</h2><div class="sub">${id?i.id:'An ID and QR label are created automatically'}</div>
   <div class="form">
-    <label>Category<select id="f_cat" ${id?'disabled':''} onchange="document.getElementById('chm').style.display=this.value==='CHM'?'contents':'none'">${opt(CATS.map(c=>[c.k,c.name]),i.cat)}</select></label>
+    <label>Category<select id="f_cat" ${id?'disabled':''} onchange="document.getElementById('chm').style.display=this.value==='CHM'?'contents':'none';document.getElementById('volw').style.display=this.value==='EQP'?'none':'contents'">${opt(CATS.map(c=>[c.k,c.name]),i.cat)}</select></label>
     <label>Name<input id="f_name" value="${esc(i.name)}" placeholder="e.g. Vernier Calipers"></label>
     <label>Lab<select id="f_lab">${opt(LABS,i.lab)}</select></label>
     <label>Room or shelf<input id="f_loc" value="${esc(i.location)}" placeholder="Room 102"></label>
     <label>Quantity<input id="f_qty" type="number" step="any" min="0" value="${i.qty}" ${i.group?'disabled':''} oninput="splitShow()">${i.group?`<span class="hint">${pieceTag(i)}. Each piece is its own record.</span>`:''}</label>
     <label>Unit<input id="f_unit" value="${esc(i.unit)}" placeholder="nos, kg, L, boxes"></label>
     <label>Reorder when at or below<input id="f_min" type="number" step="any" min="0" value="${i.min||0}"><span class="hint">0 means no low stock alert</span></label>
+    <div id="volw" style="display:${i.cat==='EQP'?'none':'contents'}">
+      <label>Size of each bottle or pack<input id="f_size" type="number" step="any" min="0" value="${i.size??guessSize(i.name).n}" placeholder="e.g. 500"><span class="hint">Leave empty if it does not apply</span></label>
+      <label>Size unit<input id="f_sunit" list="sunits" value="${esc(i.sizeUnit??guessSize(i.name).u)}" placeholder="ml, L, g, kg"><datalist id="sunits">${['ml','L','µL','g','kg','mg','pieces','sheets','m'].map(u=>`<option value="${u}">`).join('')}</datalist></label>
+      ${id&&sized(i)?`<label>Amount left (${esc(i.sizeUnit||'')})<input id="f_left" type="number" step="any" min="0" value="${nfmt(amtLeft(i))}"></label>`:''}
+    </div>
     <label>Condition<select id="f_cond">${opt(CONDS,i.condition)}</select></label>
     <label>Serial number<input id="f_serial" value="${esc(i.serial)}"><span class="hint" id="f_serh" style="display:none">One per piece, separated by commas</span></label>
     ${id?'':`<label class="full" id="f_splitw" style="display:none;flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_split" checked onchange="splitShow()">Give each one its own ID and QR label</label>`}
     ${i.group&&piecesOf(i).length>1?`<label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_all" checked>Also change name, category details, lab, room and unit on the other ${piecesOf(i).length-1} pieces</label>`:''}
     <label>Purchase date<input id="f_pur" type="date" value="${i.purchased||''}"></label>
+    <label>Funding scheme / agency<input id="f_fund" maxlength="120" value="${esc(i.funding||'')}" placeholder="e.g. DST FIST, SERB, institute funds"></label>
     <div id="chm" style="display:${i.cat==='CHM'?'contents':'none'}">
       <label>Expiry date<input id="f_exp" type="date" value="${i.expiry||''}"></label>
       <label>Hazard<input id="f_haz" value="${esc(i.hazard||'')}" placeholder="Corrosive, flammable"></label>
@@ -772,6 +785,8 @@ function itemForm(id){
   <div class="row" style="justify-content:space-between">${id?`<button class="btn danger" onclick="delItem('${id}')">Delete</button>`:'<span></span>'}<div class="row"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveItem('${id||''}')">Save</button></div></div>`);
   setTimeout(()=>{document.getElementById('f_name')?.focus();splitShow()},50);
 }
+// Most names already carry the size ("Toluene -2.5 L"), so a new size field starts from it.
+function guessSize(name){const m=String(name||'').match(/(\d+(?:\.\d+)?)\s*(ml|l|µl|ul|g|kg|mg)\b/i);if(!m)return{n:'',u:''};const u=m[2].toLowerCase();return{n:m[1],u:u==='l'?'L':u==='ul'||u==='µl'?'µL':u}}
 function splitShow(){
   const w=document.getElementById('f_splitw');if(!w)return;
   const q=Number(fv('f_qty')),on=Number.isInteger(q)&&q>1;
@@ -781,7 +796,7 @@ const pieceFields=i=>{const{id,lent,lastBorrow,unitNo,serial,...rest}=i;return r
 function addPiece(id){
   const i=item(id),g=i.group||id,ps=piecesOf(i),k=Math.max(...ps.map(p=>p.unitNo||1))+1,nid=`${g}-${k}`;
   const b=FB.writeBatch(FB.db);if(!i.group)b.update(D('items',id),{group:g,unitNo:1});
-  b.set(D('items',nid),{...pieceFields(i),qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working'});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
+  b.set(D('items',nid),{...pieceFields(i),qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working',outOfStock:false,...(sized(i)?{left:Number(i.size)}:{})});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
   b.commit().then(()=>{closeModal();toast(`${nid} added. Print its label in QR Labels.`)}).catch(fail);
 }
 function splitItem(id){
@@ -789,21 +804,25 @@ function splitItem(id){
   if(Number(i.lent||0)){toast('Some are borrowed. Split once all are back.');return}
   if(n>200){toast('Too many to split at once');return}
   if(!confirm(`Make ${n} separate records, ${id} and ${id}-2 to ${id}-${n}, each with its own QR label? ${id} keeps its label. Print the new ones after.`))return;
-  const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:1,group:id,unitNo:1});addLog(b,id,`Split into ${n} pieces`);
-  for(let k=2;k<=n;k++){b.set(D('items',`${id}-${k}`),{...pieceFields(i),qty:1,serial:'',group:id,unitNo:k,lent:0});addLog(b,`${id}-${k}`,`Added to register as piece ${k} of ${id}`)}
+  const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:1,group:id,unitNo:1,...(sized(i)?{left:Math.min(amtLeft(i),Number(i.size))}:{})});addLog(b,id,`Split into ${n} pieces`);
+  for(let k=2;k<=n;k++){b.set(D('items',`${id}-${k}`),{...pieceFields(i),qty:1,serial:'',group:id,unitNo:k,lent:0,...(sized(i)?{left:Number(i.size)}:{})});addLog(b,`${id}-${k}`,`Added to register as piece ${k} of ${id}`)}
   b.commit().then(()=>{closeModal();toast(`${n} pieces. Print the new labels in QR Labels.`)}).catch(fail);
 }
 function saveItem(id){
   const name=fv('f_name');if(!name){toast('Give the item a name');return}
   const c=id?item(id).cat:fv('f_cat');
-  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),purchased:fv('f_pur'),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
+  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),size:c==='EQP'?0:Number(fv('f_size'))||0,sizeUnit:c==='EQP'?'':fv('f_sunit'),purchased:fv('f_pur'),funding:fv('f_fund'),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
+  if(!d.size){d.sizeUnit='';if(id)d.left=FB.deleteField()}
+  else if(document.getElementById('f_left'))d.left=Math.max(0,Number(fv('f_left'))||0);
+  else if(id&&sized(item(id)))d.left=amtLeft(item(id));
+  else d.left=d.size*(d.qty||1);
   const b=FB.writeBatch(FB.db);let nid=id;
   if(id){const i=item(id);if(i.group)d.qty=1;b.update(D('items',id),d);addLog(b,id,'Record edited'+(i.condition!==d.condition?` (condition: ${d.condition})`:''));
-    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,location:d.location,unit:d.unit,min:d.min,purchased:d.purchased,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
+    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,location:d.location,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
   else if(document.getElementById('f_split')?.checked&&Number.isInteger(d.qty)&&d.qty>1){
     if(d.qty>200){toast('Add at most 200 at a time');return}
     const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1,ser=d.serial.split(',').map(x=>x.trim());nid=`${c}-${String(n).padStart(3,'0')}`;
-    for(let k=1;k<=d.qty;k++){const pid=k>1?`${nid}-${k}`:nid;b.set(D('items',pid),{...d,qty:1,serial:ser[k-1]||'',group:nid,unitNo:k,lent:0});addLog(b,pid,`Added to register as piece ${k} of ${d.qty}`)}
+    for(let k=1;k<=d.qty;k++){const pid=k>1?`${nid}-${k}`:nid;b.set(D('items',pid),{...d,qty:1,serial:ser[k-1]||'',group:nid,unitNo:k,lent:0,...(d.size?{left:d.size}:{})});addLog(b,pid,`Added to register as piece ${k} of ${d.qty}`)}
     b.commit().then(()=>{closeModal();toast(`${nid} to ${nid}-${d.qty} added. Print their labels in QR Labels.`)}).catch(fail);return}
   else{const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1;nid=`${c}-${String(n).padStart(3,'0')}`;b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
   b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
@@ -831,8 +850,9 @@ function showItem(id,silent){
     <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
     ${i.group?`<dt>Pieces</dt><dd>${pieceTag(i)}${isAdmin?'':`, ${freePieces(i).length} free`}<div class="row" style="gap:4px;margin-top:4px">${piecesOf(i).map(p=>`<span class="pill ${p.id===id?'p-info':pieceFree(p)?'p-ok':'p-warn'}" style="cursor:pointer" onclick="showItem('${p.id}')">${p.id}</span>`).join('')}</div></dd>`:''}
     <dt>${isAdmin?'Quantity':'Available'}</dt><dd>${i.group&&!isAdmin?pieceCell(i)||'Not available':isAdmin?`${i.qty} ${esc(i.unit)}${i.lent?` (${i.lent} borrowed)`:''}`:(i.cat==='EQP'?`${a} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')} ${stockPill(i)}${isAdmin&&i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
+    ${sized(i)?`<dt>Size</dt><dd>${esc(sizeTxt(i))}${Number(i.qty)>1?' each':''}</dd><dt>Left</dt><dd>${isOut(i)?'Empty':esc(leftTxt(i))}${leftBar(i)}</dd>`:''}
     <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
-    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
+    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.funding?`<dt>Funding</dt><dd>${esc(i.funding)}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
     ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
     ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
   </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
@@ -847,23 +867,28 @@ function showItem(id,silent){
 }
 
 function useForm(id){
-  const i=item(id);modalItem=null;
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${avail(i)} ${esc(i.unit)} available</div>
-  <div class="form"><label>Quantity used (${esc(i.unit)})<input id="u_qty" type="number" step="any" min="0" value="1"></label><label>Used by<input id="u_by" placeholder="Name"></label>
+  const i=item(id),v=sized(i);modalItem=null;
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${v?esc(leftTxt(i)):`${avail(i)} ${esc(i.unit)} available`}</div>
+  <div class="form"><label>Amount used (${esc(v?i.sizeUnit:i.unit)})<input id="u_qty" type="number" step="any" min="0" value="${v?'':1}"></label><label>Used by<input id="u_by" placeholder="Name"></label>
   <label>Lab<select id="u_lab">${opt(LABS,i.lab)}</select></label><label>Purpose<input id="u_pur" placeholder="Experiment, project"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveUse('${id}')">Save</button></div>`);
 }
-function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
+function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}
+  if(sized(i)){const l=amtLeft(i);if(q>l+1e-9){toast(`Only ${leftTxt(i)}`);return}
+    const left=+(l-q).toFixed(6),b=FB.writeBatch(FB.db);b.update(D('items',id),{left,...(left<=0?{outOfStock:true}:{})});
+    addLog(b,id,`Used ${nfmt(q)} ${i.sizeUnit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}${left<=0?'. Now empty':''}`);
+    b.commit().then(()=>{showItem(id);if(left<=0)toast('That empties it. Marked out of stock.')}).catch(fail);return}
+  if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
   const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:FB.increment(-q)});addLog(b,id,`Used ${q} ${i.unit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}`);
   b.commit().then(()=>showItem(id)).catch(fail)}
 function restockForm(id){
   const i=item(id);modalItem=null;
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Restock</h2><div class="sub">${esc(i.name)} · ${i.qty} ${esc(i.unit)} in stock</div>
-  <div class="form"><label>Quantity received (${esc(i.unit)})<input id="r_qty" type="number" step="any" min="0" value="${Math.max(1,(i.min||0)*2-i.qty)}"></label><label>Supplier or bill number<input id="r_ref"></label></div>
+  <div class="form"><label>${sized(i)?`Amount received (${esc(i.sizeUnit)})`:`Quantity received (${esc(i.unit)})`}<input id="r_qty" type="number" step="any" min="0" value="${sized(i)?nfmt(i.size):Math.max(1,(i.min||0)*2-i.qty)}"></label><label>Supplier or bill number<input id="r_ref"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveRestock('${id}')">Add to stock</button></div>`);
 }
 function saveRestock(id){const i=item(id),q=Number(fv('r_qty'));if(!(q>0)){toast('Enter the quantity received');return}
-  const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:FB.increment(q),outOfStock:false});addLog(b,id,`Restocked ${q} ${i.unit}${fv('r_ref')?' · '+fv('r_ref'):''}`);
+  const b=FB.writeBatch(FB.db);b.update(D('items',id),sized(i)?{left:amtLeft(i)*(i.outOfStock?0:1)+q,outOfStock:false}:{qty:FB.increment(q),outOfStock:false});addLog(b,id,`Restocked ${nfmt(q)} ${sized(i)?i.sizeUnit:i.unit}${fv('r_ref')?' · '+fv('r_ref'):''}`);
   b.commit().then(()=>{showItem(id);toast('Stock updated')}).catch(fail)}
 
 function oosForm(id){
@@ -930,7 +955,7 @@ function saveDone(mid){const m=S.maint.find(x=>x.id===mid),by=fv('c_by');if(!by)
 
 function exportCSV(kind){
   let rows;
-  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.expiry,i.hazard,i.lent||0]));
+  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Funding scheme / agency','Size','Size unit','Amount left','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.funding||'',sized(i)?i.size:'',sized(i)?i.sizeUnit:'',sized(i)?amtLeft(i):'',i.expiry,i.hazard,i.lent||0]));
   if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
   if(kind==='loans')rows=[['Code','Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status','Decline reason','Handed back by','Damage']].concat(S.loans.map(l=>[l.id,l.itemId,l.itemName,l.qty,l.borrower,l.borrowerLab,l.purpose,when(l.createdAt)||l.out,l.due,when(l.returnedAt)||l.returned,overdue(l)?'overdue':l.status,l.reason,l.returnedBy,l.damage]));
   if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
