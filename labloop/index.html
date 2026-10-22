@@ -826,6 +826,7 @@ function itemForm(id){
     <label>Purchase date<input id="f_pur" type="date" value="${i.purchased||''}"></label>
     <label>Funding scheme / agency<input id="f_fund" maxlength="120" value="${esc(i.funding||'')}" placeholder="e.g. DST FIST, SERB, institute funds"></label>
     <label>Seller / supplier<input id="f_seller" maxlength="160" value="${esc(i.seller||'')}" placeholder="Shop name, place, phone"></label>
+    <label>Price (₹, optional)<input id="f_price" type="number" step="any" min="0" value="${i.price??''}" placeholder="Cost of one"></label>
     <div id="chm" style="display:${i.cat==='CHM'?'contents':'none'}">
       <label>Expiry date<input id="f_exp" type="date" value="${i.expiry||''}"></label>
       <label>Hazard<input id="f_haz" value="${esc(i.hazard||'')}" placeholder="Corrosive, flammable"></label>
@@ -861,14 +862,14 @@ function splitItem(id){
 function saveItem(id){
   const name=fv('f_name');if(!name){toast('Give the item a name');return}
   const c=id?item(id).cat:fv('f_cat');
-  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),size:c==='EQP'?0:Number(fv('f_size'))||0,sizeUnit:c==='EQP'?'':fv('f_sunit'),purchased:fv('f_pur'),funding:fv('f_fund'),seller:fv('f_seller'),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
+  const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),size:c==='EQP'?0:Number(fv('f_size'))||0,sizeUnit:c==='EQP'?'':fv('f_sunit'),purchased:fv('f_pur'),funding:fv('f_fund'),seller:fv('f_seller'),price:fv('f_price')===''?'':Math.max(0,Number(fv('f_price'))||0),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
   if(!d.size){d.sizeUnit='';if(id)d.left=FB.deleteField()}
   else if(document.getElementById('f_left'))d.left=Math.max(0,Number(fv('f_left'))||0);
   else if(id&&sized(item(id)))d.left=amtLeft(item(id));
   else d.left=d.size*(d.qty||1);
   const b=FB.writeBatch(FB.db);let nid=id;
   if(id){const i=item(id);if(i.group)d.qty=1;b.update(D('items',id),d);addLog(b,id,'Record edited'+(i.condition!==d.condition?` (condition: ${d.condition})`:''));
-    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,location:d.location,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
+    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,location:d.location,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,price:d.price,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
   else if(document.getElementById('f_split')?.checked&&Number.isInteger(d.qty)&&d.qty>1){
     if(d.qty>200){toast('Add at most 200 at a time');return}
     const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1,ser=d.serial.split(',').map(x=>x.trim());nid=`${c}-${String(n).padStart(3,'0')}`;
@@ -904,7 +905,7 @@ function showItem(id,silent){
     <dt>${isAdmin?'Quantity':'Available'}</dt><dd>${i.group&&!isAdmin?pieceCell(i)||'Not available':isAdmin?`${i.qty} ${esc(i.unit)}${i.lent?` (${i.lent} borrowed)`:''}`:(i.cat==='EQP'?`${a} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')} ${stockPill(i)}${isAdmin&&i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
     ${sized(i)?`<dt>Size</dt><dd>${esc(sizeTxt(i))}${Number(i.qty)>1?' each':''}</dd><dt>Left</dt><dd>${isOut(i)?'Empty':esc(leftTxt(i))}${leftBar(i)}</dd>`:''}
     <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
-    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.funding?`<dt>Funding</dt><dd>${esc(i.funding)}</dd>`:''}${isAdmin&&i.seller?`<dt>Seller</dt><dd>${esc(i.seller)}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
+    ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.funding?`<dt>Funding</dt><dd>${esc(i.funding)}</dd>`:''}${isAdmin&&i.seller?`<dt>Seller</dt><dd>${esc(i.seller)}</dd>`:''}${isAdmin&&i.price!==''&&i.price!=null?`<dt>Price</dt><dd>₹${nfmt(i.price)}${Number(i.qty)>1?' each':''}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
     ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
     ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
   </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
@@ -1007,7 +1008,7 @@ function saveDone(mid){const m=S.maint.find(x=>x.id===mid),by=fv('c_by');if(!by)
 
 function exportCSV(kind){
   let rows;
-  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Funding scheme / agency','Seller / supplier','Size','Size unit','Amount left','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.funding||'',i.seller||'',sized(i)?i.size:'',sized(i)?i.sizeUnit:'',sized(i)?amtLeft(i):'',i.expiry,i.hazard,i.lent||0]));
+  if(kind==='items')rows=[['ID','Category','Name','Lab','Location','Quantity','Unit','Reorder level','Condition','Serial','Purchased','Funding scheme / agency','Seller / supplier','Price (₹)','Size','Size unit','Amount left','Expiry','Hazard','Borrowed now']].concat(S.items.map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,i.qty,i.unit,i.min,i.condition,i.serial,i.purchased,i.funding||'',i.seller||'',i.price??'',sized(i)?i.size:'',sized(i)?i.sizeUnit:'',sized(i)?amtLeft(i):'',i.expiry,i.hazard,i.lent||0]));
   if(kind==='low')rows=[['ID','Category','Name','Lab','Location','Available','Unit','Reorder level','Status']].concat(S.items.filter(isLow).map(i=>[i.id,cat(i.cat).name,i.name,i.lab,i.location,avail(i),i.unit,i.min,isOut(i)?'Out of stock':'Low']));
   if(kind==='loans')rows=[['Code','Item ID','Item','Quantity','Borrowed by','Borrowing lab','Purpose','Issued','Due','Returned','Status','Decline reason','Handed back by','Damage']].concat(S.loans.map(l=>[l.id,l.itemId,l.itemName,l.vol?`${l.qty} ${l.unit||''}${l.retAmt!=null?`, ${l.retAmt} back`:''}`:l.qty,l.borrower,l.borrowerLab,l.purpose,when(l.createdAt)||l.out,l.due,when(l.returnedAt)||l.returned,overdue(l)?'overdue':l.status,l.reason,l.returnedBy,l.damage]));
   if(kind==='maint')rows=[['Item ID','Item','Type','Due','Completed','Done by','Notes']].concat(S.maint.map(m=>[m.itemId,item(m.itemId)?.name||'',m.type,m.due,m.done,m.by,m.notes]));
