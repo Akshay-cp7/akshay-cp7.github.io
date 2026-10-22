@@ -234,7 +234,7 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-22-borrowvol';
+const BUILD='2026-10-22-fix4';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -273,11 +273,18 @@ const sized=i=>i.cat!=='EQP'&&Number(i.size)>0;
 const amtLeft=i=>i.left??Number(i.size)*Number(i.qty||1);
 const nfmt=n=>String(+Number(n).toFixed(3));
 const sizeTxt=i=>sized(i)?`${nfmt(i.size)} ${i.sizeUnit||''}`.trim():'';
-const leftTxt=i=>`${nfmt(amtLeft(i))} ${i.sizeUnit||''}`.trim()+' left';
+const leftTxt=i=>amtFmt(amtLeft(i),i.sizeUnit)+' left';
 const leftBar=i=>{const f=Math.max(0,Math.min(1,amtLeft(i)/(Number(i.size)*Number(i.qty||1))));return`<div style="height:6px;border-radius:3px;background:var(--line);margin-top:4px;max-width:160px"><div style="height:6px;border-radius:3px;width:${f*100}%;background:${f<=.1?'var(--bad)':f<=.25?'var(--warn)':'var(--ok,#16a34a)'}"></div></div>`};
 // A sized thing is borrowed by amount: 20 ml comes off that bottle's `left`, and the return says how much came back.
-const lq=l=>l.vol?`${nfmt(l.qty)} ${l.unit||''} of`:`${l.qty} ×`;
-const retNote=l=>l.vol&&['returning','returned'].includes(l.status)?` · ${nfmt(l.retAmt||0)} ${l.unit||''} back`:'';
+const UF={µL:[1e-3,'v'],ml:[1,'v'],L:[1e3,'v'],mg:[1e-3,'m'],g:[1,'m'],kg:[1e3,'m']};
+const famUnits=u=>UF[u]?Object.keys(UF).filter(k=>UF[k][1]===UF[u][1]):[u];
+const smallUnit=u=>u==='L'?'ml':u==='kg'?'g':u;
+// Amounts are stored in the bottle's unit; 0.02 L reads as 20 ml.
+const amtFmt=(q,u)=>{q=Number(q);if(UF[u]&&q&&Math.abs(q)<1){const d=famUnits(u).filter(k=>UF[k][0]<UF[u][0]).sort((a,b)=>UF[b][0]-UF[a][0]).find(k=>Math.abs(q*UF[u][0]/UF[k][0])>=1);if(d)return`${nfmt(q*UF[u][0]/UF[d][0])} ${d}`}return`${nfmt(q)} ${u||''}`.trim()};
+const unitSel=(id,u,pick)=>famUnits(u).length>1?`<select id="${id}" style="max-width:80px">${famUnits(u).map(k=>`<option ${k===(pick||smallUnit(u))?'selected':''}>${k}</option>`).join('')}</select>`:`<span class="sub">${esc(u||'')}</span>`;
+const inUnit=(v,selId,u)=>{const k=fv(selId)||u;return UF[k]&&UF[u]?Number(v)*UF[k][0]/UF[u][0]:Number(v)};
+const lq=l=>l.vol?`${amtFmt(l.qty,l.unit)} of`:`${l.qty} ×`;
+const retNote=l=>l.vol&&['returning','returned'].includes(l.status)?` · ${amtFmt(l.retAmt||0,l.unit)} back`:'';
 const bottles=i=>piecesOf(i).filter(p=>canLend(p)&&sized(p)).sort((a,b)=>(b.id===i.id)-(a.id===i.id)||amtLeft(b)-amtLeft(a));
 const mostLeft=i=>Math.max(0,...bottles(i).map(amtLeft));
 const isLow=i=>i.cat!=='EQP'&&(isOut(i)||(i.min>0&&Number(i.qty)<=Number(i.min))||(sized(i)&&amtLeft(i)<=Number(i.size)*Number(i.qty||1)*0.1));
@@ -316,8 +323,8 @@ function notifyRequests(){
   const ids=pending().map(l=>l.id);
   if(lastPending)ids.filter(id=>!lastPending.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) wants ${lq(l)} ${l.itemName}`;toast('New request: '+m);sysNotify('New borrow request',m)});
   lastPending=ids;
-  const nb=S.loans.filter(l=>l.selfIssued&&l.status==='approved').map(l=>l.id);
-  if(lastBorrow)nb.filter(id=>!lastBorrow.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) took ${lq(l)} ${l.itemName}, due ${fmt(l.due)}`;toast(m);sysNotify('Item borrowed',m)});
+  const nb=S.loans.filter(l=>l.selfIssued&&(l.status==='approved'||l.status==='used')).map(l=>l.id);
+  if(lastBorrow)nb.filter(id=>!lastBorrow.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.borrower} (${l.borrowerLab}) took ${lq(l)} ${l.itemName}${l.due?', due '+fmt(l.due):''}`;toast(m);sysNotify('Item borrowed',m)});
   lastBorrow=nb;
   const rs=returning().map(l=>l.id);
   if(lastReturning)rs.filter(id=>!lastReturning.includes(id)).forEach(id=>{const l=S.loans.find(x=>x.id===id);const m=`${l.returnedBy||l.borrower} handed back ${l.itemName}`;toast(m);sysNotify('Return to check',m)});
@@ -426,7 +433,7 @@ function notReceived(lid){
     const ls=await tx.get(D('loans',lid));if(!ls.exists())throw{code:'done'};const l=ls.data();
     if(l.status==='returned'){const is=await tx.get(D('items',l.itemId));if(is.exists())tx.update(D('items',l.itemId),l.vol?{left:Math.max(0,amtLeft(is.data())-Number(l.retAmt||0))}:{lent:Number(is.data().lent||0)+Number(l.qty)})}
     else if(l.status!=='returning')throw{code:'done'};
-    tx.update(D('loans',lid),{status:'approved',returned:'',selfReturned:false,returnAskedOn:''});
+    tx.update(D('loans',lid),{status:l.vol?'used':'approved',returned:'',selfReturned:false,returnAskedOn:''});
     tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:`Return by ${l.borrower} not received, still borrowed`,ts:FB.serverTimestamp()});
   }).then(()=>toast('Kept as borrowed')).catch(e=>e.code==='done'?toast('Already changed'):fail(e));
 }
@@ -488,25 +495,25 @@ function vInv(){
 }
 
 /* public borrowing */
-const statusPill=l=>l.status==='pending'?'<span class="pill p-warn">Waiting for approval</span>':l.status==='returning'?'<span class="pill p-info">Return waiting for admin</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-ok">Borrowed</span>'):l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Returned</span>';
-const outRow=l=>`<div class="li"><div><b class="nm" onclick="showItem('${l.itemId}')">${lname(l)}</b> <span class="sub">${l.vol?esc(nfmt(l.qty)+' '+(l.unit||''))+retNote(l):'× '+l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}${l.status==='returning'&&l.returnedBy?' · handed back by '+esc(l.returnedBy):''}</small>${l.status==='approved'?`<div class="row" style="margin-top:6px"><button class="btn sm okb" onclick="returnForm('${l.id}')">Mark returned</button><button class="btn sm danger" onclick="loanDamageForm('${l.id}')">Report damage</button></div>`:''}</div>${statusPill(l)}</div>`;
+const statusPill=l=>l.status==='used'?'<span class="pill p-mut">Taken</span>':l.status==='pending'?'<span class="pill p-warn">Waiting for approval</span>':l.status==='returning'?'<span class="pill p-info">Return waiting for admin</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-ok">Borrowed</span>'):l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Returned</span>';
+const outRow=l=>`<div class="li"><div><b class="nm" onclick="showItem('${l.itemId}')">${lname(l)}</b> <span class="sub">${l.vol?esc(amtFmt(l.qty,l.unit))+retNote(l):'× '+l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · due ${fmt(l.due)}${l.status==='returning'&&l.returnedBy?' · handed back by '+esc(l.returnedBy):''}</small>${l.status==='used'?`<div class="row" style="margin-top:6px"><button class="btn sm" onclick="returnForm('${l.id}')">Hand back what is left</button></div>`:''}${l.status==='approved'?`<div class="row" style="margin-top:6px"><button class="btn sm okb" onclick="returnForm('${l.id}')">Mark returned</button><button class="btn sm danger" onclick="loanDamageForm('${l.id}')">Report damage</button></div>`:''}</div>${statusPill(l)}</div>`;
 let bF='all';
 function vBorrow(){
   const groups=[['all','All',l=>l.status!=='pending'],['out','Borrowed',l=>l.status==='approved'],['over','Overdue',l=>overdue(l)],['returning','Return waiting',l=>l.status==='returning'],['returned','Returned',l=>l.status==='returned'],['declined','Declined',l=>l.status==='declined']];
   const g=groups.find(x=>x[0]===bF)||groups[0],q=invQ.toLowerCase();
-  const order={pending:0,returning:1,approved:2,declined:3,returned:4};
+  const order={pending:0,returning:1,approved:2,used:3,declined:3,returned:4};
   const rows=S.loans.filter(g[2]).filter(l=>l.status!=='pending').filter(l=>!q||[l.itemName,l.borrower,l.borrowerLab].join(' ').toLowerCase().includes(q)).sort((a,b)=>(order[a.status]-order[b.status])||((b.out||b.due||'')>(a.out||a.due||'')?1:-1));
   return `<div class="top"><div><h1>Borrow</h1><div class="sub">Borrow an item, hand it back, or report damage.</div></div><div class="row"><button class="btn pri" onclick="reqForm()">+ Borrow</button></div></div>
   <div class="tabs">${groups.map(([k,n,f])=>`<button class="tab ${bF===k?'on':''}" onclick="bF='${k}';render()">${n}<em>${S.loans.filter(f).length}</em></button>`).join('')}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search item, name or lab" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="card"><div class="list">${rows.length?rows.map(pubRow).join(''):'<div class="empty">Nothing here</div>'}</div></div>`;
 }
-const pubRow=l=>`<div class="li"><div><b class="nm" onclick="showItem('${l.itemId}')">${lname(l)}</b> <span class="sub">${l.vol?esc(nfmt(l.qty)+' '+(l.unit||''))+retNote(l):'× '+l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · ${l.status==='returned'?'returned '+fmt(l.returned)+(l.returnedBy&&l.returnedBy!==l.borrower?' by '+esc(l.returnedBy):''):l.status==='pending'?'wants it till '+fmt(l.due):'due '+fmt(l.due)}${l.status==='returning'&&l.returnedBy?' · handed back by '+esc(l.returnedBy):''}${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}${l.damage?'<br><span style="color:var(--bad);font-weight:600">Damaged: '+esc(l.damage)+'</span>':''}</small>${l.status==='approved'?`<div class="row" style="margin-top:6px"><button class="btn sm okb" onclick="returnForm('${l.id}')">Mark returned</button><button class="btn sm danger" onclick="loanDamageForm('${l.id}')">Report damage</button></div>`:''}</div>${statusPill(l)}</div>`;
+const pubRow=l=>`<div class="li"><div><b class="nm" onclick="showItem('${l.itemId}')">${lname(l)}</b> <span class="sub">${l.vol?esc(amtFmt(l.qty,l.unit))+retNote(l):'× '+l.qty}</span><small>${esc(l.borrower)} · ${esc(l.borrowerLab)} · ${l.status==='returned'?'returned '+fmt(l.returned)+(l.returnedBy&&l.returnedBy!==l.borrower?' by '+esc(l.returnedBy):''):l.status==='pending'?'wants it till '+fmt(l.due):'due '+fmt(l.due)}${l.status==='returning'&&l.returnedBy?' · handed back by '+esc(l.returnedBy):''}${l.status==='declined'&&l.reason?'<br>Reason: '+esc(l.reason):''}${l.damage?'<br><span style="color:var(--bad);font-weight:600">Damaged: '+esc(l.damage)+'</span>':''}</small>${l.status==='used'?`<div class="row" style="margin-top:6px"><button class="btn sm" onclick="returnForm('${l.id}')">Hand back what is left</button></div>`:''}${l.status==='approved'?`<div class="row" style="margin-top:6px"><button class="btn sm okb" onclick="returnForm('${l.id}')">Mark returned</button><button class="btn sm danger" onclick="loanDamageForm('${l.id}')">Report damage</button></div>`:''}</div>${statusPill(l)}</div>`;
 const batchOf=l=>S.loans.filter(x=>x.status==='approved'&&x.borrower===l.borrower&&x.id.split('-')[0]===l.id.split('-')[0]).sort(idCmp);
 function returnForm(lid){
   const l=S.loans.find(x=>x.id===lid),bt=batchOf(l);modalItem=null;
-  openModal(`<button class="x" onclick="closeModal()">×</button><h2>Mark returned</h2><div class="sub">${bt.length>1?`${bt.length} pieces of ${esc(l.itemName)}`:`${lq(l)} ${lname(l)}${retNote(l)}`} · borrowed by ${esc(l.borrower)} (${esc(l.borrowerLab)})</div>
-  <div class="form">${l.vol?`<label class="full">How much is coming back? (${esc(l.unit||'')})<input id="rt_amt" type="number" step="any" min="0" max="${l.qty}" value="0"><span class="hint">0 if it was all used up</span></label>`:''}${bt.length>1?`<div class="full sub" style="grid-column:1/-1">Untick any piece that is not being handed back.</div>${bt.map(x=>`<label class="full" style="flex-direction:row;align-items:center;gap:8px;font-weight:600"><input type="checkbox" class="rt_l" value="${x.id}" checked>${x.itemId}</label>`).join('')}`:''}<label class="full">Who is handing it back? <span class="req">*</span><input id="rt_by" maxlength="80" placeholder="Your name" value="" oninput="this.classList.remove('bad')"></label></div>
+  openModal(`<button class="x" onclick="closeModal()">×</button><h2>${l.vol?'Hand back what is left':'Mark returned'}</h2><div class="sub">${bt.length>1?`${bt.length} pieces of ${esc(l.itemName)}`:`${lq(l)} ${lname(l)}${retNote(l)}`} · borrowed by ${esc(l.borrower)} (${esc(l.borrowerLab)})</div>
+  <div class="form">${l.vol?`<label class="full">How much is coming back?<span class="row" style="gap:6px;flex-wrap:nowrap"><input id="rt_amt" type="number" step="any" min="0" style="flex:1;min-width:0">${unitSel('rt_unit',l.unit)}</span><span class="hint">Took ${esc(amtFmt(l.qty,l.unit))}</span></label>`:''}${bt.length>1?`<div class="full sub" style="grid-column:1/-1">Untick any piece that is not being handed back.</div>${bt.map(x=>`<label class="full" style="flex-direction:row;align-items:center;gap:8px;font-weight:600"><input type="checkbox" class="rt_l" value="${x.id}" checked>${x.itemId}</label>`).join('')}`:''}<label class="full">Who is handing it back? <span class="req">*</span><input id="rt_by" maxlength="80" placeholder="Your name" value="" oninput="this.classList.remove('bad')"></label></div>
   <p class="sub">The admin checks it and approves the return.</p>
   <div class="row" style="justify-content:flex-end;margin-top:12px"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn okb" id="rt_go" onclick="sendReturn('${lid}')">Send to admin</button></div>`);
   setTimeout(()=>document.getElementById('rt_by')?.focus(),50);
@@ -516,8 +523,9 @@ function sendReturn(lid){
   if(by.replace(/[^\p{L}]/gu,'').length<2){el.classList.add('bad');toast('Name is required');return}
   const ids=document.querySelector('.rt_l')?[...document.querySelectorAll('.rt_l:checked')].map(c=>c.value):[lid];
   if(!ids.length){toast('Tick at least one piece');return}
-  const l=S.loans.find(x=>x.id===lid),back=Number(fv('rt_amt'))||0;
-  if(l.vol&&(back<0||back>l.qty)){toast(`Between 0 and ${nfmt(l.qty)} ${l.unit||''}`);return}
+  const l=S.loans.find(x=>x.id===lid),back=l.vol?inUnit(fv('rt_amt')||0,'rt_unit',l.unit):0;
+  if(l.vol&&!(back>0)){toast('Enter how much is coming back');return}
+  if(l.vol&&back>l.qty*(1+1e-9)){toast(`They only took ${amtFmt(l.qty,l.unit)}`);return}
   document.getElementById('rt_go').disabled=true;
   const b=FB.writeBatch(FB.db);ids.forEach(x=>b.update(D('loans',x),{status:'returning',returnAskedOn:today(),returnedBy:by,returnAskedAt:FB.serverTimestamp(),...(l.vol?{retAmt:back}:{})}));
   b.commit().then(()=>{closeModal();toast('Sent. The admin will approve the return.')}).catch(e=>{document.getElementById('rt_go').disabled=false;fail(e)});
@@ -552,8 +560,8 @@ function reqForm(id){
     <label class="full">Item<select id="l_item" onchange="qtyMode()">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${esc(freeTxt(i))})</option>`).join('')}</select></label>
     <label>Your name <span class="req">*</span><input id="l_who" maxlength="80" required placeholder="Full name" oninput="this.classList.remove('bad')"></label>
     <label>Your lab <span class="req">*</span><select id="l_lab" required onchange="this.classList.remove('bad')"><option value="">Choose</option>${opt(LABS,'')}</select></label>
-    <label><span id="l_qtyl">Quantity</span><input id="l_qty" type="number" min="0" step="any" value="1"></label>
-    <label>Return by<input id="l_due" type="date" min="${today()}" value="${addDays(today(),7)}"></label>
+    <label><span id="l_qtyl">Quantity</span><span class="row" style="gap:6px;flex-wrap:nowrap"><input id="l_qty" type="number" min="0" step="any" value="1" style="flex:1;min-width:0"><span id="l_uw"></span></span></label>
+    <label id="l_duew">Return by<input id="l_due" type="date" min="${today()}" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" maxlength="200" placeholder="Experiment, project, class"></label>
   </div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Borrow</button></div>`);
@@ -561,8 +569,10 @@ function reqForm(id){
 }
 function qtyMode(){
   const i=item(fv('l_item')),q=document.getElementById('l_qty'),l=document.getElementById('l_qtyl');if(!i||!q)return;
-  if(sized(i)){l.textContent=`Amount (${i.sizeUnit||''})`;q.value='';q.placeholder=`up to ${nfmt(mostLeft(i))}`}
-  else{l.textContent='Quantity';if(!q.value)q.value=1;q.placeholder=''}
+  const v=sized(i),uw=document.getElementById('l_uw'),dw=document.getElementById('l_duew');
+  if(dw)dw.style.display=v?'none':'';
+  if(v){l.textContent='Amount';q.value='';q.placeholder=`up to ${amtFmt(mostLeft(i),i.sizeUnit)}`;uw.innerHTML=unitSel('l_unit',i.sizeUnit)}
+  else{l.textContent='Quantity';if(!q.value)q.value=1;q.placeholder='';uw.innerHTML=''}
 }
 async function takeVolume(tx,bid,amt,code,loan,logText){
   const s=await tx.get(D('items',bid));if(!s.exists())throw{code:'gone'};const it=s.data();
@@ -571,15 +581,15 @@ async function takeVolume(tx,bid,amt,code,loan,logText){
   const nl=left-amt;
   tx.set(D('loans',code),{...loan,itemId:bid,itemName:it.name,qty:amt,vol:true,unit:it.sizeUnit||''});
   tx.update(D('items',bid),{left:nl,...(loan.selfIssued?{lastBorrow:code}:{}),...(nl===0?{outOfStock:true}:{})});
-  tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:bid,at:today(),text:logText.replace('#',`${nfmt(amt)} ${it.sizeUnit||''}`),ts:FB.serverTimestamp()});
+  tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:bid,at:today(),text:logText.replace('#',amtFmt(amt,it.sizeUnit)),ts:FB.serverTimestamp()});
 }
 function volCheck(i,amt){
-  if(!(amt>0)){toast(`Enter how many ${i.sizeUnit||''} you need`);return null}
+  if(!(amt>0)){toast('Enter how much you need');return null}
   const bt=bottles(i).find(p=>amtLeft(p)>=amt);
-  if(!bt){toast(`At most ${nfmt(mostLeft(i))} ${i.sizeUnit||''} ${i.group?'from one bottle':'left'}`);return null}
+  if(!bt){toast(`At most ${amtFmt(mostLeft(i),i.sizeUnit)} ${i.group?'from one bottle':'left'}`);return null}
   return bt;
 }
-const volErr=e=>e.code==='vshort'?toast(`Only ${nfmt(e.left)} ${e.unit||''} left now`):e.code==='oos'?toast('That is out of stock'):e.code==='cond'?toast('That item is not working right now'):e.code==='gone'?toast('That item was removed'):fail(e);
+const volErr=e=>e.code==='vshort'?toast(`Only ${amtFmt(e.left,e.unit)} left now`):e.code==='oos'?toast('That is out of stock'):e.code==='cond'?toast('That item is not working right now'):e.code==='gone'?toast('That item was removed'):fail(e);
 function needNameLab(who,lab){
   const w=document.getElementById('l_who'),l=document.getElementById('l_lab');
   const okW=who.replace(/[^\p{L}]/gu,'').length>=2,okL=!!lab;
@@ -603,10 +613,10 @@ async function takePieces(tx,i,qty,code,loan,logText){
 function sendRequest(){
   const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
   if(!needNameLab(who,lab))return;
-  if(sized(i)){const amt=Number(fv('l_qty')),bt=volCheck(i,amt);if(!bt)return;
-    const code=newCode(),b=document.getElementById('l_go'),due=fv('l_due')||addDays(today(),7);b.disabled=true;
-    FB.runTransaction(FB.db,tx=>takeVolume(tx,bt.id,amt,code,{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due,status:'approved',out:today(),selfIssued:true,createdAt:FB.serverTimestamp()},`Borrowed # by ${who} (${lab})`))
-      .then(()=>{closeModal();toast(`Done. ${nfmt(amt)} ${i.sizeUnit} of ${i.name} is yours.`);bF='all';location.hash='loan';render()}).catch(e=>{b.disabled=false;volErr(e)});return}
+  if(sized(i)){const amt=inUnit(fv('l_qty'),'l_unit',i.sizeUnit),bt=volCheck(i,amt);if(!bt)return;
+    const code=newCode(),b=document.getElementById('l_go');b.disabled=true;
+    FB.runTransaction(FB.db,tx=>takeVolume(tx,bt.id,amt,code,{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due:'',status:'used',out:today(),selfIssued:true,createdAt:FB.serverTimestamp()},`Borrowed # by ${who} (${lab})`))
+      .then(()=>{closeModal();toast(`Done. ${amtFmt(amt,i.sizeUnit)} of ${i.name} is yours. If any is left over, hand it back from Borrow.`);bF='all';location.hash='loan';render()}).catch(e=>{b.disabled=false;volErr(e)});return}
   if(i.group&&qty>freePieces(i).length){toast(`Only ${freePieces(i).length} free`);return}
   if(!i.group&&i.cat==='EQP'&&qty>avail(i)){toast(`Only ${avail(i)} ${i.unit} free`);return}
   if(i.outOfStock){toast('That is out of stock');return}
@@ -639,14 +649,14 @@ function vLoan(){
   <div class="card"><div class="list">${rows.length?rows.map(recRow).join(''):'<div class="empty">No records here</div>'}</div></div>`;
 }
 const recRow=l=>{
-  const lines=[`Borrowed ${when(l.createdAt)||fmt(l.out)} · due back ${fmt(l.due)}${l.purpose?' · for '+esc(l.purpose):''}`];
+  const lines=[`${l.vol?'Taken':'Borrowed'} ${when(l.createdAt)||fmt(l.out)}${l.due?' · due back '+fmt(l.due):''}${l.purpose?' · for '+esc(l.purpose):''}`];
   if(l.status==='returned')lines.push(`<span style="color:var(--ok)">Returned ${when(l.returnedAt)||fmt(l.returned)}${l.returnedBy&&l.returnedBy!==l.borrower?' · handed back by '+esc(l.returnedBy):''}${l.selfReturned?' · by the student':''}</span>`);
   if(l.status==='returning')lines.push(`<span style="color:var(--warn)">${esc(l.returnedBy||l.borrower)} says it was handed back ${when(l.returnAskedAt)||fmt(l.returnAskedOn)}</span>`);
   if(overdue(l))lines.push(`<span style="color:var(--bad)">Overdue by ${Math.round((Date.parse(today())-Date.parse(l.due))/864e5)} day${Math.round((Date.parse(today())-Date.parse(l.due))/864e5)>1?'s':''}</span>`);
   if(l.status==='declined')lines.push(`<span style="color:var(--bad)">Declined${l.reason?': '+esc(l.reason):''}</span>`);
   if(l.damage)lines.push(`<span style="color:var(--bad);font-weight:600">Damaged: ${esc(l.damage)}</span>`);
   const act=l.status==='pending'?`<button class="btn sm okb" onclick="approve('${l.id}')">Approve</button><button class="btn sm danger" onclick="declineForm('${l.id}')">Decline</button>`:l.status==='returning'?`<button class="btn sm okb" onclick="returnLoan('${l.id}')">Approve return</button><button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:l.status==='approved'?`<button class="btn sm" onclick="returnLoan('${l.id}')">Mark returned</button>`:l.status==='returned'&&l.selfReturned?`<button class="btn sm danger" onclick="notReceived('${l.id}')">Not received</button>`:'';
-  const pill=l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-info">Borrowed</span>'):l.status==='returning'?'<span class="pill p-warn">Return waiting</span>':l.status==='returned'?'<span class="pill p-ok">Returned</span>':l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Old request</span>';
+  const pill=l.status==='used'?'<span class="pill p-mut">Taken</span>':l.status==='approved'?(overdue(l)?'<span class="pill p-bad">Overdue</span>':'<span class="pill p-info">Borrowed</span>'):l.status==='returning'?'<span class="pill p-warn">Return waiting</span>':l.status==='returned'?'<span class="pill p-ok">Returned</span>':l.status==='declined'?'<span class="pill p-bad">Declined</span>':'<span class="pill p-mut">Old request</span>';
   return `<div class="li" style="align-items:flex-start"><div><b>${esc(l.borrower)}</b> <span class="sub">(${esc(l.borrowerLab)})</span> borrowed <b class="nm" onclick="showItem('${l.itemId}')">${lq(l)} ${lname(l)}${retNote(l)}</b>${lines.map(x=>`<small>${x}</small>`).join('')}</div><div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">${pill}<div class="row">${act}</div></div></div>`;
 };
 const busy=new Set();
@@ -677,7 +687,7 @@ function returnLoan(lid,fromItem){
     const back=Number(l.retAmt||0);
     if(is.exists()&&!l.vol)tx.update(D('items',l.itemId),{lent:Math.max(0,Number(is.data().lent||0)-Number(l.qty))});
     if(is.exists()&&l.vol&&back>0)tx.update(D('items',l.itemId),{left:(is.data().outOfStock?0:amtLeft(is.data()))+back,outOfStock:false});
-    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:l.vol?`${l.borrower} used ${nfmt(l.qty-back)} ${l.unit||''}${back?`, ${nfmt(back)} ${l.unit||''} came back`:''}`:l.returnedBy&&l.returnedBy!==l.borrower?`Returned by ${l.returnedBy} (borrowed by ${l.borrower})`:`Returned by ${l.borrower}`,ts:FB.serverTimestamp()});
+    tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:l.itemId,at:today(),text:l.vol?`${l.borrower} used ${amtFmt(l.qty-back,l.unit)}${back?`, ${amtFmt(back,l.unit)} came back`:''}`:l.returnedBy&&l.returnedBy!==l.borrower?`Returned by ${l.returnedBy} (borrowed by ${l.borrower})`:`Returned by ${l.borrower}`,ts:FB.serverTimestamp()});
   }).then(()=>{toast('Marked returned');if(fromItem)showItem(itemId)}).catch(e=>e.code==='done'?toast('Already returned'):fail(e)).finally(()=>busy.delete(lid));
 }
 function loanForm(id){
@@ -687,8 +697,8 @@ function loanForm(id){
     <label class="full">Item<select id="l_item" onchange="qtyMode()">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${i.group?i.group:i.id} · ${esc(i.name)} (${esc(freeTxt(i))})</option>`).join('')}</select></label>
     <label>Borrowed by <span class="req">*</span><input id="l_who" required placeholder="Name of student or staff" oninput="this.classList.remove('bad')"></label>
     <label>Borrowing lab <span class="req">*</span><select id="l_lab" required onchange="this.classList.remove('bad')"><option value="">Choose</option>${opt(LABS,'')}</select></label>
-    <label><span id="l_qtyl">Quantity</span><input id="l_qty" type="number" min="0" step="any" value="1"></label>
-    <label>Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
+    <label><span id="l_qtyl">Quantity</span><span class="row" style="gap:6px;flex-wrap:nowrap"><input id="l_qty" type="number" min="0" step="any" value="1" style="flex:1;min-width:0"><span id="l_uw"></span></span></label>
+    <label id="l_duew">Return by<input id="l_due" type="date" value="${addDays(today(),7)}"></label>
     <label class="full">Purpose<input id="l_pur" placeholder="Practical, project, workshop"></label>
   </div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" onclick="saveLoan()">Issue</button></div>`);
@@ -697,8 +707,8 @@ function loanForm(id){
 function saveLoan(){
   const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
   if(!needNameLab(who,lab))return;
-  if(sized(i)){const amt=Number(fv('l_qty')),bt=volCheck(i,amt);if(!bt)return;
-    FB.runTransaction(FB.db,tx=>takeVolume(tx,bt.id,amt,newCode(),{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:fv('l_due')||addDays(today(),7),status:'approved',createdAt:FB.serverTimestamp()},`Issued # to ${who} (${lab})`))
+  if(sized(i)){const amt=inUnit(fv('l_qty'),'l_unit',i.sizeUnit),bt=volCheck(i,amt);if(!bt)return;
+    FB.runTransaction(FB.db,tx=>takeVolume(tx,bt.id,amt,newCode(),{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:'',status:'used',createdAt:FB.serverTimestamp()},`Issued # to ${who} (${lab})`))
       .then(()=>{closeModal();toast('Issued')}).catch(volErr);return}
   if(i.group){if(qty>freePieces(i).length){toast(`Only ${freePieces(i).length} free`);return}
     FB.runTransaction(FB.db,tx=>takePieces(tx,i,qty,newCode(),{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),out:today(),due:fv('l_due')||addDays(today(),7),status:'approved',createdAt:FB.serverTimestamp()},`Issued to ${who} (${lab})`))
@@ -866,7 +876,9 @@ function saveItem(id){
   else{const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1;nid=`${c}-${String(n).padStart(3,'0')}`;b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
   b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
 }
-function delItem(id){if(!confirm('Delete this item? Its history stays in the log.'))return;FB.deleteDoc(D('items',id)).then(()=>{closeModal();toast('Deleted')}).catch(fail)}
+function delItem(id){const out=S.loans.filter(l=>l.itemId===id&&(l.status==='approved'||l.status==='returning'));
+  if(out.length){toast(`${out[0].borrower} still has it. Mark it returned first.`);return}
+  if(!confirm('Delete this item? Its history stays in the log.'))return;FB.deleteDoc(D('items',id)).then(()=>{closeModal();toast('Deleted')}).catch(fail)}
 
 function showItem(id,silent){
   const i=item(id);if(!i){if(ready)toast('Item not found');return}
@@ -896,7 +908,7 @@ function showItem(id,silent){
     ${i.notes?`<dt>Notes</dt><dd>${esc(i.notes)}</dd>`:''}
   </dl><div class="qrbox"><div id="dq"></div><div class="id">${i.id}</div></div></div>
   ${!isAdmin&&ls.length?`<div class="card" style="padding:4px 14px;margin-bottom:14px;box-shadow:none"><div class="list">${ls.map(outRow).join('')}</div></div>`:''}
-  ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.vol?nfmt(l.qty)+' '+esc(l.unit||''):l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}. <a href="#loan" onclick="closeModal()">Returns are handled in Borrowing</a></div>`:''}
+  ${isAdmin&&ls.length?`<div class="notice info"><b>Borrowed now:</b> ${ls.map(l=>`${l.vol?esc(amtFmt(l.qty,l.unit)):l.qty} by ${esc(l.borrower)}, ${esc(l.borrowerLab)}, due ${fmt(l.due)}`).join('; ')}. <a href="#loan" onclick="closeModal()">Returns are handled in Borrowing</a></div>`:''}
   ${isAdmin?S.damage.filter(d=>d.status==='new'&&d.itemId===id).map(d=>`<div class="notice" style="background:var(--badSoft);border-color:#fecaca;color:#7f1d1d;display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap"><div><b>${d.kind==='stock'?'Out of stock reported':'Damage reported'}</b> by ${esc(d.by||'someone')} · ${when(d.createdAt)}${d.note?'<br>'+esc(d.note):''}</div><div class="row">${d.kind==='stock'?`<button class="btn sm okb" onclick="setStock('${id}',true,'${d.id}')">Approve</button>`:`<button class="btn sm okb" onclick="damageForm('${id}','${d.id}')">Confirm</button>`}<button class="btn sm" onclick="dismissDamage('${d.id}')">Dismiss</button></div></div>`).join(''):''}
   ${isAdmin&&ms.length?`<div class="notice" style="background:var(--warnSoft);border-color:#fde68a;color:#92400e"><b>Scheduled:</b> ${ms.map(m=>`${esc(m.type)} due ${fmt(m.due)}`).join('; ')}</div>`:''}
   <div class="row" style="margin-bottom:16px">${actions}</div>
@@ -908,14 +920,14 @@ function showItem(id,silent){
 function useForm(id){
   const i=item(id),v=sized(i);modalItem=null;
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Record usage</h2><div class="sub">${esc(i.name)} · ${v?esc(leftTxt(i)):`${avail(i)} ${esc(i.unit)} available`}</div>
-  <div class="form"><label>Amount used (${esc(v?i.sizeUnit:i.unit)})<input id="u_qty" type="number" step="any" min="0" value="${v?'':1}"></label><label>Used by<input id="u_by" placeholder="Name"></label>
+  <div class="form"><label>Amount used${v?'':` (${esc(i.unit)})`}<span class="row" style="gap:6px;flex-wrap:nowrap"><input id="u_qty" type="number" step="any" min="0" value="${v?'':1}" style="flex:1;min-width:0">${v?unitSel('u_unit',i.sizeUnit):''}</span></label><label>Used by<input id="u_by" placeholder="Name"></label>
   <label>Lab<select id="u_lab">${opt(LABS,i.lab)}</select></label><label>Purpose<input id="u_pur" placeholder="Experiment, project"></label></div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="showItem('${id}')">Back</button><button class="btn pri" onclick="saveUse('${id}')">Save</button></div>`);
 }
-function saveUse(id){const i=item(id),q=Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}
+function saveUse(id){const i=item(id),q=sized(item(id))?inUnit(fv('u_qty'),'u_unit',item(id).sizeUnit):Number(fv('u_qty'));if(!(q>0)){toast('Enter how much was used');return}
   if(sized(i)){const l=amtLeft(i);if(q>l+1e-9){toast(`Only ${leftTxt(i)}`);return}
-    const left=+(l-q).toFixed(6),b=FB.writeBatch(FB.db);b.update(D('items',id),{left,...(left<=0?{outOfStock:true}:{})});
-    addLog(b,id,`Used ${nfmt(q)} ${i.sizeUnit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}${left<=0?'. Now empty':''}`);
+    const left=Math.abs(l-q)<1e-9?0:l-q,b=FB.writeBatch(FB.db);b.update(D('items',id),{left,...(left<=0?{outOfStock:true}:{})});
+    addLog(b,id,`Used ${amtFmt(q,i.sizeUnit)}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}${left<=0?'. Now empty':''}`);
     b.commit().then(()=>{showItem(id);if(left<=0)toast('That empties it. Marked out of stock.')}).catch(fail);return}
   if(q>avail(i)){toast(`Only ${avail(i)} ${i.unit} available`);return}
   const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:FB.increment(-q)});addLog(b,id,`Used ${q} ${i.unit}${fv('u_by')?' by '+fv('u_by'):''} (${fv('u_lab')})${fv('u_pur')?' for '+fv('u_pur'):''}`);
