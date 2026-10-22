@@ -490,7 +490,7 @@ function vInv(){
   <div class="tabs"><button class="tab ${invCat==='ALL'?'on':''}" onclick="invCat='ALL';render()">All<em>${S.items.length}</em></button>${CATS.map(c=>`<button class="tab ${invCat===c.k?'on':''}" onclick="invCat='${c.k}';render()">${c.name}<em>${S.items.filter(i=>i.cat===c.k).length}</em></button>`).join('')}${isAdmin?`<button class="tab ${invCat==='LOW'?'on':''}" onclick="invCat='LOW';render()" style="${invCat==='LOW'?'':'color:var(--bad);border-color:#fecaca'}">Low stock<em>${S.items.filter(isLow).length}</em></button>`:''}</div>
   <div class="row" style="margin-bottom:14px"><input class="search" placeholder="Search name, ID, lab, room, serial${isAdmin?', funding or seller':''}" value="${esc(invQ)}" oninput="invQ=this.value;clearTimeout(this._t);this._t=setTimeout(()=>{render();const s=document.querySelector('.search');s.focus();s.setSelectionRange(s.value.length,s.value.length)},250)"></div>
   <div class="tablewrap"><table><thead><tr><th>ID</th><th>Name</th><th>Category</th><th>Lab · Location</th><th>${isAdmin?'Quantity':'Available'}</th><th>${showExp?'Expiry':'Condition'}</th><th></th></tr></thead><tbody>
-  ${rows.length?rows.map(i=>{const out=Number(i.lent||0),fl=itemFlags(i.id);return`<tr class="${fl?'flagged':''}"><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.group||sized(i)?`<div class="sub" style="font-size:12px">${[pieceTag(i),sizeTxt(i)].filter(Boolean).join(' · ')}</div>`:''}${fl?`<div>${fl}</div>`:''}${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${sized(i)&&!isOut(i)?`<div style="font-size:12.5px">${esc(leftTxt(i))}</div>${leftBar(i)}`:''}${i.group&&!isAdmin?pieceCell(i):sized(i)&&!isAdmin?'':isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
+  ${rows.length?rows.map(i=>{const out=Number(i.lent||0),fl=itemFlags(i.id);return`<tr class="${fl?'flagged':''}"><td class="id">${i.id}</td><td><span class="nm" onclick="showItem('${i.id}')">${esc(i.name)}</span>${i.group||sized(i)?`<div class="sub" style="font-size:12px">${[pieceTag(i),sizeTxt(i)].filter(Boolean).join(' · ')}</div>`:''}${fl?`<div>${fl}</div>`:''}${i.hazard?`<div class="sub" style="font-size:11.5px;color:var(--c3)">${esc(i.hazard)}</div>`:''}</td><td><span class="pill" style="background:#f1f5f9;color:${cat(i.cat).color}">${cat(i.cat).name}</span></td><td>${esc(i.lab)}<div class="sub" style="font-size:12px">${esc(i.location)}</div></td><td>${isAdmin&&sized(i)&&!isOut(i)?`<div style="font-size:12.5px">${esc(leftTxt(i))}</div>${leftBar(i)}`:''}${i.group&&!isAdmin?pieceCell(i):isAdmin?`${i.qty} ${esc(i.unit)}${out?`<div class="sub" style="font-size:12px">${out} borrowed</div>`:''}`:(i.cat==='EQP'?`${Math.max(0,avail(i))} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')}${stockPill(i)?' '+stockPill(i):''}</td><td>${showExp?(i.expiry?`<span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span>`:''):condPill(i.condition)}</td><td style="text-align:right;white-space:nowrap"><button class="btn sm" onclick="showItem('${i.id}')">Open</button></td></tr>`}).join(''):`<tr><td colspan="7" class="empty">${S.items.length?'No items match':'No items yet'}</td></tr>`}
   </tbody></table></div>`;
 }
 
@@ -557,7 +557,7 @@ function reqForm(id){
   if(sel)id=sel.id;
   openModal(`<button class="x" onclick="closeModal()">×</button><h2>Borrow an item</h2><div class="sub">Fill this in and take it. Please return it by the date you pick.</div>
   <div class="form">
-    <label class="full">Item<select id="l_item" onchange="qtyMode()">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${esc(freeTxt(i))})</option>`).join('')}</select></label>
+    <label class="full">Item<select id="l_item" onchange="qtyMode(1)">${its.map(i=>`<option value="${i.id}" ${i.id===id?'selected':''}>${esc(i.name)} (${esc(sized(i)?sizeTxt(i):freeTxt(i))})</option>`).join('')}</select></label>
     <label>Your name <span class="req">*</span><input id="l_who" maxlength="80" required placeholder="Full name" oninput="this.classList.remove('bad')"></label>
     <label>Your lab <span class="req">*</span><select id="l_lab" required onchange="this.classList.remove('bad')"><option value="">Choose</option>${opt(LABS,'')}</select></label>
     <label><span id="l_qtyl">Quantity</span><span class="row" style="gap:6px;flex-wrap:nowrap"><input id="l_qty" type="number" min="0" step="any" value="1" style="flex:1;min-width:0"><span id="l_uw"></span></span></label>
@@ -565,11 +565,13 @@ function reqForm(id){
     <label class="full">Purpose<input id="l_pur" maxlength="200" placeholder="Experiment, project, class"></label>
   </div>
   <div class="row" style="justify-content:flex-end"><button class="btn" onclick="closeModal()">Cancel</button><button class="btn pri" id="l_go" onclick="sendRequest()">Borrow</button></div>`);
-  qtyMode();
+  qtyMode(1);
 }
-function qtyMode(){
+// Students (stu) are never asked for an amount: a chemical goes out as the bottle and comes back by the date.
+function qtyMode(stu){
   const i=item(fv('l_item')),q=document.getElementById('l_qty'),l=document.getElementById('l_qtyl');if(!i||!q)return;
-  const v=sized(i),uw=document.getElementById('l_uw'),dw=document.getElementById('l_duew');
+  const v=sized(i)&&!stu,uw=document.getElementById('l_uw'),dw=document.getElementById('l_duew');
+  q.closest('label').style.display=stu&&sized(i)?'none':'';
   if(dw)dw.style.display=v?'none':'';
   if(v){l.textContent='Amount';q.value='';q.placeholder=`up to ${amtFmt(mostLeft(i),i.sizeUnit)}`;uw.innerHTML=unitSel('l_unit',i.sizeUnit)}
   else{l.textContent='Quantity';if(!q.value)q.value=1;q.placeholder='';uw.innerHTML=''}
@@ -611,12 +613,10 @@ async function takePieces(tx,i,qty,code,loan,logText){
     tx.set(FB.doc(FB.collection(FB.db,'log')),{itemId:s.id,at:today(),text:logText,ts:FB.serverTimestamp()})});
 }
 function sendRequest(){
-  const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),qty=Number(fv('l_qty'))||1,i=item(itemId);
+  const itemId=fv('l_item'),who=fv('l_who'),lab=fv('l_lab'),i=item(itemId);
+  // A chemical is borrowed as one bottle: nobody measures how much a student pours out.
+  const qty=sized(i)?1:Number(fv('l_qty'))||1;
   if(!needNameLab(who,lab))return;
-  if(sized(i)){const amt=inUnit(fv('l_qty'),'l_unit',i.sizeUnit),bt=volCheck(i,amt);if(!bt)return;
-    const code=newCode(),b=document.getElementById('l_go');b.disabled=true;
-    FB.runTransaction(FB.db,tx=>takeVolume(tx,bt.id,amt,code,{borrower:who,borrowerLab:lab,purpose:fv('l_pur'),due:'',status:'used',out:today(),selfIssued:true,createdAt:FB.serverTimestamp()},`Borrowed # by ${who} (${lab})`))
-      .then(()=>{closeModal();toast(`Done. ${amtFmt(amt,i.sizeUnit)} of ${i.name} is yours. If any is left over, hand it back from Borrow.`);bF='all';location.hash='loan';render()}).catch(e=>{b.disabled=false;volErr(e)});return}
   if(i.group&&qty>freePieces(i).length){toast(`Only ${freePieces(i).length} free`);return}
   if(!i.group&&i.cat==='EQP'&&qty>avail(i)){toast(`Only ${avail(i)} ${i.unit} free`);return}
   if(i.outOfStock){toast('That is out of stock');return}
@@ -905,7 +905,7 @@ function showItem(id,silent){
     <dt>Lab</dt><dd>${esc(i.lab)}</dd><dt>Location</dt><dd>${esc(i.location)||'n/a'}</dd>
     ${i.group?`<dt>Pieces</dt><dd>${pieceTag(i)}${isAdmin?'':`, ${freePieces(i).length} free`}<div class="row" style="gap:4px;margin-top:4px">${piecesOf(i).map(p=>`<span class="pill ${p.id===id?'p-info':pieceFree(p)?'p-ok':'p-warn'}" style="cursor:pointer" onclick="showItem('${p.id}')">${p.id}</span>`).join('')}</div></dd>`:''}
     <dt>${isAdmin?'Quantity':'Available'}</dt><dd>${i.group&&!isAdmin?pieceCell(i)||'Not available':isAdmin?`${i.qty} ${esc(i.unit)}${i.lent?` (${i.lent} borrowed)`:''}`:(i.cat==='EQP'?`${a} of ${i.qty} ${esc(i.unit)}`:isOut(i)?'':'<span class="pill p-ok">In stock</span>')} ${stockPill(i)}${isAdmin&&i.min>0?`<div class="sub" style="font-size:12px">Reorder at ${i.min} ${esc(i.unit)}</div>`:''}</dd>
-    ${sized(i)?`<dt>Size</dt><dd>${esc(sizeTxt(i))}${Number(i.qty)>1?' each':''}</dd><dt>Left</dt><dd>${isOut(i)?'Empty':esc(leftTxt(i))}${leftBar(i)}</dd>`:''}
+    ${sized(i)?`<dt>Size</dt><dd>${esc(sizeTxt(i))}${Number(i.qty)>1?' each':''}</dd>${isAdmin?`<dt>Left</dt><dd>${isOut(i)?'Empty':esc(leftTxt(i))}${leftBar(i)}</dd>`:''}`:''}
     <dt>Condition</dt><dd>${condPill(i.condition)}</dd>
     ${i.serial?`<dt>Serial</dt><dd>${esc(i.serial)}</dd>`:''}${isAdmin&&i.funding?`<dt>Funding</dt><dd>${esc(i.funding)}</dd>`:''}${isAdmin&&i.seller?`<dt>Seller</dt><dd>${esc(i.seller)}</dd>`:''}${isAdmin&&i.orderedBy?`<dt>Ordered by</dt><dd>${esc(i.orderedBy)}</dd>`:''}${isAdmin&&i.price!==''&&i.price!=null?`<dt>Price</dt><dd>₹${nfmt(i.price)}${Number(i.qty)>1?' each':''}</dd>`:''}${isAdmin&&i.purchased?`<dt>${i.cat==='CHM'?'Received':'Purchased'}</dt><dd>${fmt(i.purchased)}</dd>`:''}
     ${i.expiry?`<dt>Expiry</dt><dd><span class="pill ${i.expiry<today()?'p-bad':isExpiring(i)?'p-warn':'p-ok'}">${fmt(i.expiry)}</span></dd>`:''}${i.hazard?`<dt>Hazard</dt><dd style="color:var(--c3);font-weight:600">${esc(i.hazard)}</dd>`:''}
