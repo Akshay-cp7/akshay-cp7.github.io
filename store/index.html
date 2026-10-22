@@ -271,6 +271,92 @@
     .wa-btn:hover { filter: brightness(0.94); }
     .wa-btn svg { width: 1.05rem; height: 1.05rem; flex: none; }
 
+    /* The card stopped being one big WhatsApp link, so its buttons have to be
+       real buttons again. */
+    .card .wa-btn { pointer-events: auto; }
+
+    .buy-btn {
+      display: block; width: 100%; margin-top: 0.25rem;
+      background: var(--ink); color: var(--white);
+      font: inherit; font-weight: 700; font-size: 0.9rem;
+      border: 0; border-radius: 0.6rem; padding: 0.78rem 1rem;
+      cursor: pointer; transition: filter 0.15s ease;
+    }
+    .buy-btn:hover { filter: brightness(1.35); }
+
+    .chat-link {
+      display: flex; align-items: center; justify-content: center; gap: 0.4rem;
+      color: var(--steel); font-size: 0.82rem; font-weight: 600;
+      text-decoration: none; padding: 0.15rem;
+    }
+    .chat-link:hover { color: var(--wa-ink); }
+    .chat-link svg { width: 0.95rem; height: 0.95rem; flex: none; }
+
+    /* ── Checkout ─────────────────────────────────────────────────────── */
+    .sheet-bg {
+      position: fixed; inset: 0; background: rgba(11, 13, 16, 0.55);
+      display: flex; align-items: flex-end; justify-content: center;
+      z-index: 60; padding: 0;
+    }
+    @media (min-width: 640px) { .sheet-bg { align-items: center; padding: 1.5rem; } }
+
+    .sheet {
+      background: var(--white); width: 100%; max-width: 30rem;
+      max-height: 92vh; overflow-y: auto;
+      border-radius: 1.1rem 1.1rem 0 0; padding: 1.25rem 1.25rem 1.6rem;
+    }
+    @media (min-width: 640px) { .sheet { border-radius: 1.1rem; } }
+
+    .sheet-head { display: flex; align-items: flex-start; gap: 0.75rem; margin-bottom: 1rem; }
+    .sheet-head h3 { font-size: 1.02rem; font-weight: 800; line-height: 1.3; flex: 1; }
+    .sheet-head .sub { color: var(--steel); font-size: 0.85rem; font-weight: 500; margin-top: 0.15rem; }
+    .sheet-close {
+      background: var(--mist); border: 0; border-radius: 50%;
+      width: 2rem; height: 2rem; font-size: 1.1rem; line-height: 1;
+      color: var(--graphite); cursor: pointer; flex: none;
+    }
+
+    .fld { margin-bottom: 0.7rem; }
+    .fld label { display: block; font-size: 0.78rem; font-weight: 700; color: var(--graphite); margin-bottom: 0.28rem; }
+    .fld input, .fld select {
+      width: 100%; font: inherit; font-size: 0.95rem;
+      border: 1px solid var(--line); border-radius: 0.55rem;
+      padding: 0.68rem 0.75rem; background: var(--white); color: var(--ink);
+    }
+    .fld input:focus, .fld select:focus { outline: 2px solid var(--ink); outline-offset: -1px; }
+    .fld.bad input { border-color: #C0392B; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .hint { font-size: 0.75rem; color: var(--steel); margin-top: 0.25rem; }
+
+    .sheet-err {
+      background: #FDEDEC; color: #922B21; border-radius: 0.55rem;
+      padding: 0.6rem 0.75rem; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.75rem;
+    }
+    .sheet-note {
+      background: var(--mist); border-radius: 0.55rem;
+      padding: 0.6rem 0.75rem; font-size: 0.82rem; color: var(--graphite); margin-bottom: 0.8rem;
+    }
+    .sheet-submit {
+      width: 100%; background: var(--ink); color: var(--white);
+      font: inherit; font-weight: 700; font-size: 0.95rem;
+      border: 0; border-radius: 0.6rem; padding: 0.85rem; cursor: pointer; margin-top: 0.35rem;
+    }
+    .sheet-submit[disabled] { opacity: 0.55; cursor: default; }
+
+    .done { text-align: center; padding: 0.6rem 0 0.3rem; }
+    .done .tick { font-size: 2.4rem; line-height: 1; }
+    .done h3 { font-size: 1.1rem; font-weight: 800; margin: 0.6rem 0 0.4rem; }
+    .done p { color: var(--steel); font-size: 0.9rem; line-height: 1.55; margin-bottom: 0.5rem; }
+    .done .ref { font-weight: 700; color: var(--ink); }
+    .done a {
+      display: inline-flex; align-items: center; gap: 0.45rem; margin-top: 0.7rem;
+      background: var(--wa); color: #06331B; font-weight: 700; font-size: 0.88rem;
+      text-decoration: none; border-radius: 0.6rem; padding: 0.7rem 1.1rem;
+    }
+    /* Without this the shared WhatsApp glyph inherits the SVG's own size and
+       fills half the sheet. .wa-btn sizes it; nothing else did. */
+    .done a svg { width: 1.05rem; height: 1.05rem; flex: none; }
+
     .state {
       border: 1px dashed var(--line);
       border-radius: 1rem;
@@ -319,6 +405,15 @@
 
     .fab img { width: 1.35rem; height: 1.35rem; border-radius: 50%; }
 
+    /* On a phone the pill was landing squarely on a card's Buy now button, so
+       the tap that meant "order this" opened a chat instead. The escape hatch to
+       a human stays — it just stops being wider than the thing it covers. */
+    @media (max-width: 560px) {
+      .fab { padding: 0.7rem; gap: 0; }
+      .fab span, .fab { font-size: 0; }
+      .fab img { width: 1.6rem; height: 1.6rem; }
+    }
+
     /* Room for the button to sit over, so it never covers the last line. */
     footer { padding-bottom: 5.5rem; }
 
@@ -352,7 +447,7 @@
   <header class="page">
     <div class="eyebrow">The under ₹300 mela</div>
     <h1>Everything you<br>need, under ₹300</h1>
-    <p>Pick a department, then tap anything to chat about it on WhatsApp.</p>
+    <p>Pick a department, then order straight from the page. Cash on Delivery, no account needed.</p>
     <div class="assurances">
       <span>Pay by UPI on WhatsApp</span>
       <span>Delivered all over India</span>
@@ -372,7 +467,7 @@
 
   <a class="fab" href="https://wa.me/919911070741?text=Hi%2C%20I%20have%20a%20question." rel="noopener">
     <img src="/store/shopdesk-mark.png" alt="" width="128" height="128">
-    Chat with Shopdesk
+    <span>Chat with Shopdesk</span>
   </a>
 
   <footer>
@@ -420,9 +515,11 @@
     }
 
     function card(p) {
-      var c = el('a', 'card');
-      c.href = p.wa_link;
-      c.rel = 'noopener';
+      // Was an <a> wrapping the whole card, straight to WhatsApp. It is a div
+      // now because the card has two different things to do: buy, which is what
+      // most people who reach this page want, and ask, which is what the rest
+      // want. One of those cannot be the whole card.
+      var c = el('div', 'card');
 
       // A product added in the panel is live here before its photo is uploaded,
       // so no photo has to look deliberate rather than broken.
@@ -450,13 +547,239 @@
       }
       body.appendChild(row);
 
-      var btn = el('span', 'wa-btn');
-      btn.appendChild(waIcon());
-      btn.appendChild(el('span', null, 'Chat on WhatsApp'));
-      body.appendChild(btn);
+      var buy = el('button', 'buy-btn');
+      buy.type = 'button';
+      buy.textContent = 'Buy now · \u20B9' + p.price;
+      buy.addEventListener('click', function () { openCheckout(p); });
+      body.appendChild(buy);
+
+      // Kept, quietly. Someone who wants to ask whether it survives a balcony
+      // in Chennai before paying \u20B9599 should not have to guess that the shop
+      // has a person behind it.
+      var ask = el('a', 'chat-link');
+      ask.href = p.wa_link;
+      ask.rel = 'noopener';
+      ask.appendChild(waIcon());
+      ask.appendChild(el('span', null, 'Ask a question first'));
+      body.appendChild(ask);
 
       c.appendChild(body);
       return c;
+    }
+
+    /* ── Checkout ───────────────────────────────────────────────────────────
+     *
+     * Everything here is posted to the same bot that runs the chat, and lands in
+     * the same order desk as a chat order. Nothing about money is collected: it
+     * is Cash on Delivery, and the only reason a card number would ever appear
+     * on this page is if somebody had put a fake one there.
+     */
+    var sheetOpen = null;
+
+    function field(parent, name, label, attrs) {
+      var f = el('div', 'fld');
+      var id = 'f-' + name;
+      var l = el('label', null, label);
+      l.setAttribute('for', id);
+      var i = el('input');
+      i.id = id;
+      i.name = name;
+      Object.keys(attrs || {}).forEach(function (k) { i.setAttribute(k, attrs[k]); });
+      f.appendChild(l);
+      f.appendChild(i);
+      parent.appendChild(f);
+      return i;
+    }
+
+    function closeSheet() {
+      if (!sheetOpen) return;
+      document.body.style.overflow = '';
+      sheetOpen.remove();
+      sheetOpen = null;
+    }
+
+    function openCheckout(p) {
+      closeSheet();
+      var bg = el('div', 'sheet-bg');
+      var sheet = el('div', 'sheet');
+
+      var head = el('div', 'sheet-head');
+      var htxt = el('div');
+      htxt.appendChild(el('h3', null, p.name));
+      htxt.appendChild(el('div', 'sub', '\u20B9' + p.price + ' \u00B7 Cash on Delivery \u00B7 10\u201315 days'));
+      head.appendChild(htxt);
+      var x = el('button', 'sheet-close', '\u00D7');
+      x.type = 'button';
+      x.setAttribute('aria-label', 'Close');
+      x.addEventListener('click', closeSheet);
+      head.appendChild(x);
+      sheet.appendChild(head);
+
+      // An advance is set per department in the panel — live plants need one,
+      // because a plant that comes back is dead stock rather than stock. Saying
+      // so here rather than after they have typed an address is the whole
+      // difference between a condition and a catch.
+      if (p.advance) {
+        sheet.appendChild(el('div', 'sheet-note',
+          'This one needs a \u20B9' + p.advance + ' advance before we send it. '
+          + 'We will message you on WhatsApp to collect it \u2014 the rest is Cash on Delivery.'));
+      }
+
+      var err = el('div', 'sheet-err');
+      err.hidden = true;
+      sheet.appendChild(err);
+
+      var form = el('form');
+      var fName = field(form, 'name', 'Your name', { autocomplete: 'name', maxlength: '80' });
+      var fPhone = field(form, 'phone', 'WhatsApp number', {
+        type: 'tel', inputmode: 'numeric', autocomplete: 'tel', maxlength: '13',
+        placeholder: '10-digit mobile',
+      });
+      var fHouse = field(form, 'house', 'House / flat number', { maxlength: '120' });
+      var fRoad = field(form, 'road', 'Street, area, landmark', {
+        autocomplete: 'street-address', maxlength: '200',
+      });
+
+      var row = el('div', 'row2');
+      var fPin = field(row, 'pincode', 'Pincode', {
+        inputmode: 'numeric', autocomplete: 'postal-code', maxlength: '6',
+      });
+      var fCity = field(row, 'city', 'Town', { autocomplete: 'address-level2', maxlength: '80' });
+      form.appendChild(row);
+
+      // A datalist rather than a dropdown: one pincode is genuinely several
+      // post offices, and a customer whose village is on that list should be
+      // offered it, not made to pick the district instead.
+      var areas = el('datalist');
+      areas.id = 'area-list';
+      fCity.setAttribute('list', 'area-list');
+      form.appendChild(areas);
+
+      var fState = field(form, 'state', 'State', { autocomplete: 'address-level1', maxlength: '80' });
+      var pinHint = el('div', 'hint');
+      fState.parentNode.appendChild(pinHint);
+
+      /* Ask India Post as soon as there are six digits, so the town and state
+         agree with the pincode by construction. Never overwrite something the
+         customer typed themselves — if they say they are in Chandigarh and the
+         pincode also touches Punjab, they are right and we are guessing. */
+      var lastPin = '';
+      fPin.addEventListener('input', function () {
+        var pin = fPin.value.replace(/\D/g, '').slice(0, 6);
+        if (pin.length !== 6 || pin === lastPin) return;
+        lastPin = pin;
+        pinHint.textContent = 'Checking pincode\u2026';
+        fetch(API + '/store/pincode/' + pin).then(function (r) { return r.json(); })
+          .then(function (d) {
+            if (!d || !d.found) { pinHint.textContent = ''; return; }
+            areas.innerHTML = '';
+            (d.areas || []).forEach(function (a) {
+              var o = el('option');
+              o.value = a;
+              areas.appendChild(o);
+            });
+            if (!fState.value && (d.states || []).length === 1) fState.value = d.states[0];
+            if (!fCity.value && (d.districts || []).length === 1) fCity.value = d.districts[0];
+            pinHint.textContent = (d.states || []).length > 1
+              ? 'That pincode covers ' + d.states.join(' and ') + ' \u2014 please pick the right one.'
+              : '';
+          })
+          .catch(function () { pinHint.textContent = ''; });
+      });
+
+      var submit = el('button', 'sheet-submit', 'Place order \u00B7 \u20B9' + p.price);
+      submit.type = 'submit';
+      form.appendChild(submit);
+      form.appendChild(el('div', 'hint',
+        'Nothing is paid now. We call or message before dispatch.'));
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        err.hidden = true;
+        [fName, fPhone, fHouse, fRoad, fPin, fCity, fState].forEach(function (i) {
+          i.parentNode.classList.remove('bad');
+        });
+        submit.disabled = true;
+        submit.textContent = 'Placing\u2026';
+
+        fetch(API + '/store/order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            product_key: p.key, qty: 1,
+            name: fName.value, phone: fPhone.value, house: fHouse.value,
+            road: fRoad.value, pincode: fPin.value, city: fCity.value, state: fState.value,
+          }),
+        })
+          .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+          .then(function (res) {
+            if (!res.ok || !res.d.ok) {
+              err.textContent = (res.d && res.d.error) || 'Something went wrong. Please try again.';
+              err.hidden = false;
+              (res.d.missing || []).forEach(function (name) {
+                var f = form.querySelector('[name="' + name + '"]');
+                if (f) f.parentNode.classList.add('bad');
+              });
+              if (res.d.field === 'pincode') fPin.parentNode.classList.add('bad');
+              submit.disabled = false;
+              submit.textContent = 'Place order \u00B7 \u20B9' + p.price;
+              sheet.scrollTop = 0;
+              return;
+            }
+            done(sheet, p, res.d);
+          })
+          .catch(function () {
+            // A failed submit must never be a dead end: they still have a shop
+            // to reach, and it is the same shop.
+            err.innerHTML = 'Could not reach us just now. Please '
+              + '<a href="' + p.wa_link + '" rel="noopener">message us on WhatsApp</a> and we will book it.';
+            err.hidden = false;
+            submit.disabled = false;
+            submit.textContent = 'Place order \u00B7 \u20B9' + p.price;
+          });
+      });
+
+      sheet.appendChild(form);
+      bg.appendChild(sheet);
+      bg.addEventListener('click', function (e) { if (e.target === bg) closeSheet(); });
+      document.body.appendChild(bg);
+      document.body.style.overflow = 'hidden';
+      sheetOpen = bg;
+      fName.focus();
+    }
+
+    function done(sheet, p, d) {
+      sheet.innerHTML = '';
+      var w = el('div', 'done');
+      w.appendChild(el('div', 'tick', '\u2705'));
+      w.appendChild(el('h3', null, d.duplicate ? 'Already booked' : 'Order placed'));
+
+      var ref = el('p');
+      ref.appendChild(document.createTextNode('Order '));
+      ref.appendChild(el('span', 'ref', '#' + d.order_id));
+      ref.appendChild(document.createTextNode(' \u00B7 ' + p.name + ' \u00B7 \u20B9' + d.amount));
+      w.appendChild(ref);
+
+      w.appendChild(el('p', null, d.advance_due
+        ? 'We will message you on WhatsApp to collect the \u20B9' + d.advance_due
+          + ' advance, then it ships. The rest is Cash on Delivery.'
+        : 'Nothing to pay now \u2014 it is Cash on Delivery. Delivery takes 10 to 15 days '
+          + 'and we will message you on WhatsApp before it is dispatched.'));
+
+      var a = el('a');
+      a.href = 'https://wa.me/' + (d.wa_number || '919911070741')
+        + '?text=' + encodeURIComponent('Hi, I placed order #' + d.order_id + ' on your website.');
+      a.rel = 'noopener';
+      a.appendChild(waIcon());
+      a.appendChild(el('span', null, 'Message us about this order'));
+      w.appendChild(a);
+
+      var close = el('button', 'sheet-submit', 'Keep shopping');
+      close.type = 'button';
+      close.style.marginTop = '1rem';
+      close.addEventListener('click', closeSheet);
+      w.appendChild(close);
+      sheet.appendChild(w);
     }
 
     // However this page ends up empty, the visitor must still be able to reach a
@@ -610,6 +933,9 @@
     document.getElementById('backBtn').addEventListener('click', function () {
       if (location.hash) location.hash = '';
       else route();
+    });
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeSheet();
     });
     window.addEventListener('hashchange', route);
 

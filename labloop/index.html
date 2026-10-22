@@ -234,7 +234,7 @@ const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing']
 const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-22-fix4';
+const BUILD='2026-10-22-seller1';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
