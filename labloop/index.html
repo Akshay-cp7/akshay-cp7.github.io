@@ -114,6 +114,7 @@ tbody tr:hover{background:#fafbff}
 .lbl .q{width:110px;height:110px;margin:0 auto 6px}
 .lbl .q img,.lbl .q canvas{width:110px!important;height:110px!important}
 .lbl b{display:block;font-size:13px;line-height:1.25}
+.lbl .loc{font-size:12px;font-weight:700;margin-top:2px}
 .lbl .brand{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-top:4px}
 .notice{border-radius:12px;padding:12px 14px;font-size:13px;margin-bottom:16px;border:1px solid}
 .notice.info{background:#f0f7ff;border-color:#bfdbfe;color:#1e3a8a}
@@ -707,7 +708,7 @@ function vMnt(){
 function vQR(){
   return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Anyone who scans it sees that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
   <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
-  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div>${i.group||sized(i)?`<div class="sub" style="font-size:11px">${[sizeTxt(i),pieceTag(i)].filter(Boolean).join(' · ')}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
+  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div>${i.location?`<div class="loc">${esc(i.location)}</div>`:''}${i.group||sized(i)?`<div class="sub" style="font-size:11px">${[sizeTxt(i),pieceTag(i)].filter(Boolean).join(' · ')}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
 }
 const itemURL=id=>location.origin+location.pathname+'#item='+id;
 function makeQR(el,id,size){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:itemURL(id),width:size,height:size,correctLevel:QRCode.CorrectLevel.M});else el.textContent=id}
