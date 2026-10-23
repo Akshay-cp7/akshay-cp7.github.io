@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Camera Tracker for Blender | Phone camera tracking for VFX</title>
+<meta name="description" content="Record video on your Android phone with its real 3D camera path, then open it in Blender with a matched camera. Free Blender add-on.">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root { --bg:#0E0F12; --panel:#17191E; --line:#2A2E36; --text:#F2F3F5; --muted:#8B919C; --orange:#FF5A1F; --lime:#C6FF3D; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:"Space Grotesk",system-ui,sans-serif; line-height:1.5; }
+  a { color:inherit; }
+  .wrap { max-width:980px; margin:0 auto; padding:0 20px; }
+  header { display:flex; align-items:center; gap:12px; padding:22px 0; }
+  header img { width:40px; height:40px; border-radius:11px; }
+  header b { font-size:18px; }
+  .tag { font-family:"JetBrains Mono",monospace; font-size:12px; letter-spacing:.12em; text-transform:uppercase; color:var(--lime); }
+  .hero { padding:48px 0 30px; }
+  h1 { font-size:clamp(36px,7vw,64px); line-height:1.02; letter-spacing:-.03em; margin:14px 0 18px; }
+  h1 span { color:var(--orange); }
+  .lede { color:var(--muted); font-size:19px; max-width:640px; margin:0 0 30px; }
+  .btns { display:flex; flex-wrap:wrap; gap:12px; }
+  .btn { display:inline-flex; align-items:center; gap:10px; padding:16px 22px; border-radius:16px; font-weight:700; font-size:16px; text-decoration:none; }
+  .btn.main { background:var(--orange); color:#fff; }
+  .btn.ghost { border:1.5px solid var(--line); }
+  .small { color:var(--muted); font-size:14px; margin-top:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin:54px 0; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:22px; }
+  .card h3 { margin:10px 0 6px; font-size:18px; }
+  .card p { margin:0; color:var(--muted); font-size:15px; }
+  h2 { font-size:30px; letter-spacing:-.02em; margin:0 0 20px; }
+  ol { list-style:none; padding:0; margin:0 0 56px; counter-reset:s; }
+  ol li { counter-increment:s; position:relative; padding:0 0 22px 52px; }
+  ol li::before { content:counter(s); position:absolute; left:0; top:0; width:32px; height:32px; border-radius:50%; border:1.6px solid var(--lime); color:var(--lime); font-family:"JetBrains Mono",monospace; font-size:14px; display:flex; align-items:center; justify-content:center; }
+  ol li b { display:block; font-size:17px; }
+  ol li span { color:var(--muted); }
+  code { font-family:"JetBrains Mono",monospace; font-size:.9em; background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:1px 6px; }
+  footer { border-top:1px solid var(--line); padding:28px 0 50px; color:var(--muted); font-size:14px; display:flex; flex-wrap:wrap; gap:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><img src="icon.png" alt=""><b>Camera Tracker</b></header>
+
+  <section class="hero">
+    <div class="tag">Android app + free Blender add-on</div>
+    <h1>Film it on your phone.<br><span>Drop 3D into it.</span></h1>
+    <p class="lede">Camera Tracker records your video together with the phone's real 3D camera path, using Google's ARCore. Import the shot in Blender and the camera, the floor and even the light are already matched. No solving, no tracking markers to fix.</p>
+    <div class="btns">
+      <a class="btn main" href="camera_tracker_blender.zip" download>Download the Blender add-on</a>
+      <a class="btn ghost" href="https://play.google.com/store/apps/details?id=com.arzdrz.camera_tracker">Get the Android app</a>
+    </div>
+    <p class="small">Add-on for Blender 4.2 and newer, tested on Blender 5.1. Free.</p>
+  </section>
+
+  <div class="grid">
+    <div class="card"><div class="tag">Camera</div><h3>Matched every frame</h3><p>One pose for every video frame, with the real lens, so 3D stays glued to the footage.</p></div>
+    <div class="card"><div class="tag">Floor</div><h3>Real scale, real ground</h3><p>Metres, gravity aligned, with the floor at zero and the spot you tapped as the centre.</p></div>
+    <div class="card"><div class="tag">Shadows</div><h3>One click shadow catcher</h3><p>Your object casts its shadow onto the real floor in the video.</p></div>
+    <div class="card"><div class="tag">Light</div><h3>Match the real light</h3><p>The phone measures where the main light came from. The add-on turns it into a sun.</p></div>
+  </div>
+
+  <h2>Install and import</h2>
+  <ol>
+    <li><b>Download the add-on</b><span>The zip above. Keep it zipped.</span></li>
+    <li><b>Install it in Blender</b><span>Edit &gt; Preferences &gt; Get Extensions, the arrow at the top right, Install from Disk, then pick the zip.</span></li>
+    <li><b>Record a shot on your phone</b><span>Move slowly until green dots appear, tap the floor to drop a marker, then record.</span></li>
+    <li><b>Send the shot to your computer</b><span>Send to computer in the app gives you one zip with the video and the track.</span></li>
+    <li><b>Import it</b><span>File &gt; Import &gt; Camera Tracker take. Press Numpad 0 to look through the phone.</span></li>
+    <li><b>Make it real</b><span>In the <code>Tracker</code> tab of the sidebar: Add shadow catcher, Match the real light, Set up composite. Then render.</span></li>
+  </ol>
+
+  <h2>Good to know</h2>
+  <div class="grid" style="margin-top:0">
+    <div class="card"><h3>Which phones</h3><p>Any Android phone that supports Google Play Services for AR. Most phones from the last few years do.</p></div>
+    <div class="card"><h3>Smooth shake</h3><p>A slider in the add-on smooths small jitters, and a frame offset slides the track if you ever need it.</p></div>
+    <div class="card"><h3>Your files stay yours</h3><p>Nothing is uploaded. A shot leaves the phone only when you send or save it.</p></div>
+  </div>
+
+  <footer>
+    <span>Made by <a href="https://akshaycp.com/">Akshay CP</a></span>
+    <a href="/privacypolicy/camera-tracker/">Privacy policy</a>
+    <a href="mailto:contact.akshaycp@gmail.com">Support</a>
+  </footer>
+</div>
+</body>
+</html>
