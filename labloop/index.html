@@ -820,10 +820,9 @@ const pieceFields=i=>{const{id,lent,lastBorrow,unitNo,serial,...rest}=i;return r
 function addPiece(id){
   const i=item(id),g=i.group||id,ps=piecesOf(i),k=Math.max(...ps.map(p=>p.unitNo||1))+1,nid=`${g}-${k}`;
   const b=FB.writeBatch(FB.db);if(!i.group)b.update(D('items',id),{group:g,unitNo:1});
-  const taken=ps.map(p=>p.location||''),last=ps.find(p=>(p.unitNo||1)===k-1)?.location||i.location||'';let loc=last;
-  const m=last.includes('/')&&last.match(/^(.*\/\D*)(\d+)(\D*)$/);if(m){let n=Number(m[2]);do{n++;loc=m[1]+n+m[3]}while(taken.includes(loc))}
+  const loc=i.location||'';
   b.set(D('items',nid),{...pieceFields(i),location:loc,qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working',outOfStock:false});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
-  b.commit().then(()=>{closeModal();toast(`${nid} added at ${loc||'no location'}. Check its spot, then print its label.`);let t=0;const w=setInterval(()=>{if(item(nid)||++t>20){clearInterval(w);if(item(nid))itemForm(nid)}},150)}).catch(fail);
+  b.commit().then(()=>{closeModal();toast(`${nid} added. Type where this one is kept, then print its label.`);let t=0;const w=setInterval(()=>{if(item(nid)||++t>20){clearInterval(w);if(item(nid)){itemForm(nid);const f=document.getElementById('f_loc');if(f){f.focus();f.setSelectionRange(f.value.length,f.value.length)}}}},150)}).catch(fail);
 }
 function splitItem(id){
   const i=item(id),n=Number(i.qty);
