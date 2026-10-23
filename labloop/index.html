@@ -794,7 +794,7 @@ function itemForm(id){
     <label>Condition<select id="f_cond">${opt(CONDS,i.condition)}</select></label>
     <label>Serial number<input id="f_serial" value="${esc(i.serial)}"><span class="hint" id="f_serh" style="display:none">One per piece, separated by commas</span></label>
     ${id?'':`<label class="full" id="f_splitw" style="display:none;flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_split" checked onchange="splitShow()">Give each one its own ID and QR label</label>`}
-    ${i.group&&piecesOf(i).length>1?`<label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_all" checked>Also change name, category details, lab, room and unit on the other ${piecesOf(i).length-1} pieces</label>`:''}
+    ${i.group&&piecesOf(i).length>1?`<label class="full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="f_all" checked>Also change name, category details, lab and unit (not the room or shelf) on the other ${piecesOf(i).length-1} pieces</label>`:''}
     <label>Purchase date<input id="f_pur" type="date" value="${i.purchased||''}"></label>
     <label>Funding scheme / agency<input id="f_fund" maxlength="120" value="${esc(i.funding||'')}" placeholder="e.g. DST FIST, SERB, institute funds"></label>
     <label>Seller / supplier (required)<input id="f_seller" required maxlength="160" value="${esc(i.seller||'')}" placeholder="Shop name, place, phone"></label>
@@ -820,8 +820,10 @@ const pieceFields=i=>{const{id,lent,lastBorrow,unitNo,serial,...rest}=i;return r
 function addPiece(id){
   const i=item(id),g=i.group||id,ps=piecesOf(i),k=Math.max(...ps.map(p=>p.unitNo||1))+1,nid=`${g}-${k}`;
   const b=FB.writeBatch(FB.db);if(!i.group)b.update(D('items',id),{group:g,unitNo:1});
-  b.set(D('items',nid),{...pieceFields(i),qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working',outOfStock:false});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
-  b.commit().then(()=>{closeModal();toast(`${nid} added. Print its label in QR Labels.`)}).catch(fail);
+  const taken=ps.map(p=>p.location||''),last=ps.find(p=>(p.unitNo||1)===k-1)?.location||i.location||'';let loc=last;
+  const m=last.includes('/')&&last.match(/^(.*\/\D*)(\d+)(\D*)$/);if(m){let n=Number(m[2]);do{n++;loc=m[1]+n+m[3]}while(taken.includes(loc))}
+  b.set(D('items',nid),{...pieceFields(i),location:loc,qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working',outOfStock:false});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
+  b.commit().then(()=>{closeModal();toast(`${nid} added at ${loc||'no location'}. Check its spot, then print its label.`);let t=0;const w=setInterval(()=>{if(item(nid)||++t>20){clearInterval(w);if(item(nid))itemForm(nid)}},150)}).catch(fail);
 }
 function splitItem(id){
   const i=item(id),n=Number(i.qty);
@@ -841,7 +843,7 @@ function saveItem(id){
   if(id&&item(id).left!=null)d.left=FB.deleteField();
   const b=FB.writeBatch(FB.db);let nid=id;
   if(id){const i=item(id);if(i.group)d.qty=1;b.update(D('items',id),d);addLog(b,id,'Record edited'+(i.condition!==d.condition?` (condition: ${d.condition})`:''));
-    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,location:d.location,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,orderedBy:d.orderedBy,price:d.price,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
+    if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,orderedBy:d.orderedBy,price:d.price,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
   else if(document.getElementById('f_split')?.checked&&Number.isInteger(d.qty)&&d.qty>1){
     if(d.qty>200){toast('Add at most 200 at a time');return}
     const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1,ser=d.serial.split(',').map(x=>x.trim());nid=`${c}-${String(n).padStart(3,'0')}`;
