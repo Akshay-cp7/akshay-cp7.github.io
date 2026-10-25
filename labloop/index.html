@@ -708,7 +708,7 @@ function vMnt(){
 function vQR(){
   return `<div class="top"><div><h1>QR labels</h1><div class="sub">Print, cut and stick one on each item. Anyone who scans it sees that item's page.</div></div><div class="row"><button class="btn pri" onclick="window.print()">Print labels</button></div></div>
   <div class="tabs noprint"><button class="tab ${qrCat==='ALL'?'on':''}" onclick="qrCat='ALL';render()">All</button>${CATS.map(c=>`<button class="tab ${qrCat===c.k?'on':''}" onclick="qrCat='${c.k}';render()">${c.name}</button>`).join('')}</div>
-  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><b>${esc(i.name)}</b><div class="id">${i.id}</div>${i.location?`<div class="loc">${esc(i.location)}</div>`:''}${i.group||sized(i)?`<div class="sub" style="font-size:11px">${[sizeTxt(i),pieceTag(i)].filter(Boolean).join(' · ')}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
+  <div class="labels">${S.items.filter(i=>qrCat==='ALL'||i.cat===qrCat).sort(idCmp).map(i=>`<div class="lbl"><div class="q" data-qr="${i.id}"></div><div class="id">${i.id}</div>${i.location?`<div class="loc">${esc(i.location)}</div>`:''}${i.group||sized(i)?`<div class="sub" style="font-size:11px">${[sizeTxt(i),pieceTag(i)].filter(Boolean).join(' · ')}</div>`:''}<div class="brand">LAMS · NIT Calicut</div></div>`).join('')}</div>`;
 }
 const itemURL=id=>location.origin+location.pathname+'#item='+id;
 function makeQR(el,id,size){el.innerHTML='';if(window.QRCode)new QRCode(el,{text:itemURL(id),width:size,height:size,correctLevel:QRCode.CorrectLevel.M});else el.textContent=id}
