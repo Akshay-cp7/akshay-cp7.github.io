@@ -850,7 +850,7 @@ function saveItem(id){
   const d={cat:c,name,lab:fv('f_lab'),location:fv('f_loc'),qty:Number(fv('f_qty'))||0,unit:fv('f_unit')||'nos',min:Number(fv('f_min'))||0,condition:fv('f_cond'),serial:fv('f_serial'),make:c==='EQP'?fv('f_make'):'',model:c==='EQP'?fv('f_model'):'',spec:c==='EQP'?fv('f_spec'):'',size:c==='EQP'?0:Number(fv('f_size'))||0,sizeUnit:c==='EQP'?'':fv('f_sunit'),purchased:fv('f_pur'),funding:fv('f_fund'),seller:fv('f_seller'),orderedBy:fv('f_oby'),price:fv('f_price')===''?'':Math.max(0,Number(fv('f_price'))||0),expiry:c==='CHM'?fv('f_exp'):'',hazard:c==='CHM'?fv('f_haz'):'',notes:fv('f_notes')};
   if(!d.size)d.sizeUnit='';
   if(id&&item(id).left!=null)d.left=FB.deleteField();
-  const b=FB.writeBatch(FB.db);let nid=id;
+  const b=FB.writeBatch(FB.db);let nid=id,joined='';
   if(id){const i=item(id);if(i.group)d.qty=1;b.update(D('items',id),d);addLog(b,id,'Record edited'+(i.condition!==d.condition?` (condition: ${d.condition})`:''));
     if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,make:d.make,model:d.model,spec:d.spec,lab:d.lab,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,orderedBy:d.orderedBy,price:d.price,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
   else if(document.getElementById('f_split')?.checked&&Number.isInteger(d.qty)&&d.qty>1){
@@ -860,11 +860,12 @@ function saveItem(id){
     b.commit().then(()=>{closeModal();toast(`${nid} to ${ids[d.qty-1]} added. Print their labels in QR Labels.`)}).catch(fail);return}
   else{nid=nextIds(c,1)[0];
     // A single bottle with the same name as one already here is another piece of it (Acetone-2.5 L twice = Piece 1 of 2, Piece 2 of 2)
-    const key=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim(),sib=d.qty===1&&S.items.filter(x=>x.cat===c&&Number(x.qty)<=1&&key(x.name)===key(name)).sort(idCmp)[0];
+    // Spacing around dashes is ignored (Acetone - 2.5 L = Acetone-2.5 L); equipment must also share company and model
+    const key=s=>String(s||'').toLowerCase().replace(/\s*-\s*/g,'-').replace(/\s+/g,' ').trim(),sib=d.qty===1&&S.items.filter(x=>x.cat===c&&Number(x.qty)<=1&&key(x.name)===key(name)&&(c!=='EQP'||key(x.make)===key(d.make)&&key(x.model)===key(d.model))).sort(idCmp)[0];
     if(sib){const g=sib.group||sib.id,k=Math.max(...piecesOf(sib).map(p=>p.unitNo||1))+1;if(!sib.group)b.update(D('items',sib.id),{group:g,unitNo:1});
-      b.set(D('items',nid),{...d,lent:0,group:g,unitNo:k});addLog(b,nid,`Added to register as piece ${k} of ${g}`)}
+      b.set(D('items',nid),{...d,lent:0,group:g,unitNo:k});addLog(b,nid,`Added to register as piece ${k} of ${g}`);joined=` as piece ${k} of ${g}`}
     else{b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}}
-  b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
+  b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added${joined}`)}).catch(fail);
 }
 function delItem(id){const out=S.loans.filter(l=>l.itemId===id&&(l.status==='approved'||l.status==='returning'));
   if(out.length){toast(`${out[0].borrower} still has it. Mark it returned first.`);return}
