@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>LAMS Lab Register</title>
-<meta name="description" content="LAMS Lab Register: QR based inventory, borrowing and maintenance for the Laboratory of Applied Materials, NIT Calicut.">
+<meta name="description" content="LAMS Lab Register: QR based inventory, borrowing and maintenance for the Laboratory for Applied Microscopy and Spectroscopy, NIT Calicut.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231d4ed8'/%3E%3Ccircle cx='16' cy='16' r='8' fill='none' stroke='white' stroke-width='3'/%3E%3Ccircle cx='16' cy='16' r='2.5' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -190,13 +190,13 @@ tr.flagged td{background:#fff7f7}
 .cnt{display:inline-grid;place-items:center;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:var(--bad);color:#fff;font-size:12px;font-weight:800;margin-left:8px}
 .adminpill{display:inline-flex;align-items:center;gap:6px;background:var(--okSoft);color:var(--ok);font-weight:700;font-size:12px;border-radius:999px;padding:3px 10px}
 </style>
-<div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div><span class="mlog" id="mlog"></span></div>
+<div class="mhead"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div><b>LAMS Lab Register</b><small>Laboratory for Applied Microscopy and Spectroscopy<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div><span class="mlog" id="mlog"></span></div>
 <div class="app">
   <aside class="side">
-    <div class="logo"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div>LAMS Lab Register<small>Laboratory of Applied Materials<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div></div>
+    <div class="logo"><i><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="1.6" fill="#fff"/></svg></i><div>LAMS Lab Register<small>Laboratory for Applied Microscopy and Spectroscopy<br>Material Science and Engineering Department<br>National Institute of Technology, Calicut</small></div></div>
     <button class="scanbtn" onclick="scanQR()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Scan a QR label</button>
     <nav class="nav" id="nav"></nav>
-    <div class="inst"><b>Laboratory of Applied Materials</b><span>MSE Department, NIT Calicut</span><div class="who" id="who"></div></div>
+    <div class="inst"><b>Laboratory for Applied Microscopy and Spectroscopy</b><span>MSE Department, NIT Calicut</span><div class="who" id="who"></div></div>
   </aside>
   <main id="main"><div class="loading">Loading the register…</div></main>
 </div>
@@ -391,7 +391,7 @@ function logout(){
 /* public home */
 function vHome(){
   const eq=S.items.filter(i=>i.cat==='EQP');
-  return `<div class="hero"><h1>Laboratory of Applied Materials</h1><p>See what the lab has, where it is and whether it is free. Scan the QR label on any item, or borrow something below.</p>
+  return `<div class="hero"><h1>Laboratory for Applied Microscopy and Spectroscopy</h1><p>See what the lab has, where it is and whether it is free. Scan the QR label on any item, or borrow something below.</p>
   <div class="row"><button class="btn" style="background:#fff;color:var(--brand)" onclick="reqForm()">Borrow an item</button><button class="btn ghost" onclick="location.hash='loan'">Return or report damage</button></div></div>
   <div class="grid g4">
     ${stat(S.items.length,'Items in the lab','','')}
@@ -405,7 +405,7 @@ function vHome(){
 /* admin dashboard */
 function vDash(){
   const low=S.items.filter(isLow),od=S.loans.filter(overdue),dueM=openMaint().filter(m=>m.due<=addDays(today(),14)).sort((a,b)=>a.due<b.due?-1:1),exp=S.items.filter(isExpiring),pr=pending(),dm=newDamage();
-  return `<div class="top"><div><h1>Good to see you</h1><div class="sub">Laboratory of Applied Materials · ${fmt(today())}</div></div>
+  return `<div class="top"><div><h1>Good to see you</h1><div class="sub">Laboratory for Applied Microscopy and Spectroscopy · ${fmt(today())}</div></div>
   <div class="row"><button class="btn" onclick="loanForm()">${ico('loan')}Issue item</button><button class="btn pri" onclick="itemForm()">+ Add item</button></div></div>
   ${!S.items.length?`<div class="notice info">The register is empty. Tap <b>+ Add item</b> to enter your first instrument, consumable or chemical.</div>`:''}
   ${stockBanner(low)}
