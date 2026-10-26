@@ -858,7 +858,12 @@ function saveItem(id){
     const ids=nextIds(c,d.qty),ser=d.serial.split(',').map(x=>x.trim());nid=ids[0];
     for(let k=1;k<=d.qty;k++){const pid=ids[k-1];b.set(D('items',pid),{...d,qty:1,serial:ser[k-1]||'',group:nid,unitNo:k,lent:0});addLog(b,pid,`Added to register as piece ${k} of ${d.qty}`)}
     b.commit().then(()=>{closeModal();toast(`${nid} to ${ids[d.qty-1]} added. Print their labels in QR Labels.`)}).catch(fail);return}
-  else{nid=nextIds(c,1)[0];b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
+  else{nid=nextIds(c,1)[0];
+    // A single bottle with the same name as one already here is another piece of it (Acetone-2.5 L twice = Piece 1 of 2, Piece 2 of 2)
+    const key=s=>String(s||'').toLowerCase().replace(/\s+/g,' ').trim(),sib=d.qty===1&&S.items.filter(x=>x.cat===c&&Number(x.qty)<=1&&key(x.name)===key(name)).sort(idCmp)[0];
+    if(sib){const g=sib.group||sib.id,k=Math.max(...piecesOf(sib).map(p=>p.unitNo||1))+1;if(!sib.group)b.update(D('items',sib.id),{group:g,unitNo:1});
+      b.set(D('items',nid),{...d,lent:0,group:g,unitNo:k});addLog(b,nid,`Added to register as piece ${k} of ${g}`)}
+    else{b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}}
   b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
 }
 function delItem(id){const out=S.loans.filter(l=>l.itemId===id&&(l.status==='approved'||l.status==='returning'));
