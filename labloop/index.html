@@ -405,6 +405,7 @@ function doLogin(){
   FB.signInWithEmailAndPassword(FB.auth,u,document.getElementById('a_pass').value).then(()=>{closeModal();toast('Logged in as admin');view='dash';location.hash='dash'}).catch(e=>{b.disabled=false;b.textContent='Log in';toast(['auth/invalid-credential','auth/wrong-password','auth/user-not-found','auth/invalid-email'].includes(e.code)?'Wrong username or password':'Could not log in: '+e.code)});
 }
 function logout(){
+  if(!confirm('Log out of admin?'))return;
   toast('Saving…');
   // Finish every admin save first, or Firebase would retry it as a logged-out visitor and drop it.
   Promise.race([FB.waitForPendingWrites(FB.db),new Promise((_,no)=>setTimeout(()=>no('slow'),15000))])
