@@ -245,6 +245,8 @@ const when=t=>{const d=t?.toDate?t.toDate():t?.seconds?new Date(t.seconds*1000):
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const cat=k=>CATS.find(c=>c.k===k)||CATS[4];
 const item=id=>S.items.find(i=>i.id===id);
+// Labels printed before pieces got plain numbers say CHM-033-2; the renamed record keeps that as oldId
+const liveId=id=>item(id)?id:(S.items.find(i=>i.oldId===id)||{}).id||id;
 const views=()=>isAdmin?ADMIN_VIEWS:PUBLIC_VIEWS;
 function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('on');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('on'),2600)}
 const fail=e=>{console.error(e);toast(e&&e.code==='permission-denied'?'Not allowed. Are you logged in as admin?':'Could not save. Check the internet and try again.')};
@@ -765,8 +767,8 @@ function gotScan(t){
   const m=String(t||'').toUpperCase().match(/(EQP|CON|CHM|STA|OTH)-\d{3,}(-\d+)?/);
   if(!m){if(t)toast('That is not a LAMS label');return}
   stopScan();if(navigator.vibrate)navigator.vibrate(60);
-  if(!item(m[0])){closeModal();toast(m[0]+' is not in the register');return}
-  showItem(m[0]);
+  const id=liveId(m[0]);if(!item(id)){closeModal();toast(m[0]+' is not in the register');return}
+  showItem(id);
 }
 
 /* modals */
@@ -816,9 +818,11 @@ function splitShow(){
   const q=Number(fv('f_qty')),on=Number.isInteger(q)&&q>1;
   w.style.display=on?'flex':'none';document.getElementById('f_serh').style.display=on&&document.getElementById('f_split').checked?'block':'none';
 }
-const pieceFields=i=>{const{id,lent,lastBorrow,unitNo,serial,...rest}=i;return rest};
+const pieceFields=i=>{const{id,lent,lastBorrow,unitNo,serial,oldId,...rest}=i;return rest};
+// Every record, piece or not, gets the next plain number in its category: CHM-033, then CHM-034
+const nextIds=(c,n)=>{const m=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0);return Array.from({length:n},(_,k)=>`${c}-${String(m+1+k).padStart(3,'0')}`)};
 function addPiece(id){
-  const i=item(id),g=i.group||id,ps=piecesOf(i),k=Math.max(...ps.map(p=>p.unitNo||1))+1,nid=`${g}-${k}`;
+  const i=item(id),g=i.group||id,ps=piecesOf(i),k=Math.max(...ps.map(p=>p.unitNo||1))+1,nid=nextIds(i.cat,1)[0];
   const b=FB.writeBatch(FB.db);if(!i.group)b.update(D('items',id),{group:g,unitNo:1});
   const loc=i.location||'';
   b.set(D('items',nid),{...pieceFields(i),location:loc,qty:1,serial:'',group:g,unitNo:k,lent:0,condition:'Working',outOfStock:false});addLog(b,nid,`Added to register as piece ${k} of ${g}`);
@@ -828,9 +832,10 @@ function splitItem(id){
   const i=item(id),n=Number(i.qty);
   if(Number(i.lent||0)){toast('Some are borrowed. Split once all are back.');return}
   if(n>200){toast('Too many to split at once');return}
-  if(!confirm(`Make ${n} separate records, ${id} and ${id}-2 to ${id}-${n}, each with its own QR label? ${id} keeps its label. Print the new ones after.`))return;
+  const ids=nextIds(i.cat,n-1);
+  if(!confirm(`Make ${n} separate records, ${id} and ${ids[0]}${n>2?' to '+ids[n-2]:''}, each with its own QR label? ${id} keeps its label. Print the new ones after.`))return;
   const b=FB.writeBatch(FB.db);b.update(D('items',id),{qty:1,group:id,unitNo:1});addLog(b,id,`Split into ${n} pieces`);
-  for(let k=2;k<=n;k++){b.set(D('items',`${id}-${k}`),{...pieceFields(i),qty:1,serial:'',group:id,unitNo:k,lent:0});addLog(b,`${id}-${k}`,`Added to register as piece ${k} of ${id}`)}
+  for(let k=2;k<=n;k++){b.set(D('items',ids[k-2]),{...pieceFields(i),qty:1,serial:'',group:id,unitNo:k,lent:0});addLog(b,ids[k-2],`Added to register as piece ${k} of ${id}`)}
   b.commit().then(()=>{closeModal();toast(`${n} pieces. Print the new labels in QR Labels.`)}).catch(fail);
 }
 function saveItem(id){
@@ -845,10 +850,10 @@ function saveItem(id){
     if(i.group&&document.getElementById('f_all')?.checked){const sh={name:d.name,lab:d.lab,unit:d.unit,size:d.size,sizeUnit:d.sizeUnit,min:d.min,purchased:d.purchased,funding:d.funding,seller:d.seller,orderedBy:d.orderedBy,price:d.price,expiry:d.expiry,hazard:d.hazard};piecesOf(i).filter(p=>p.id!==id).forEach(p=>b.update(D('items',p.id),sh))}}
   else if(document.getElementById('f_split')?.checked&&Number.isInteger(d.qty)&&d.qty>1){
     if(d.qty>200){toast('Add at most 200 at a time');return}
-    const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1,ser=d.serial.split(',').map(x=>x.trim());nid=`${c}-${String(n).padStart(3,'0')}`;
-    for(let k=1;k<=d.qty;k++){const pid=k>1?`${nid}-${k}`:nid;b.set(D('items',pid),{...d,qty:1,serial:ser[k-1]||'',group:nid,unitNo:k,lent:0});addLog(b,pid,`Added to register as piece ${k} of ${d.qty}`)}
-    b.commit().then(()=>{closeModal();toast(`${nid} to ${nid}-${d.qty} added. Print their labels in QR Labels.`)}).catch(fail);return}
-  else{const n=S.items.filter(x=>x.cat===c).reduce((m,x)=>Math.max(m,+x.id.split('-')[1]||0),0)+1;nid=`${c}-${String(n).padStart(3,'0')}`;b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
+    const ids=nextIds(c,d.qty),ser=d.serial.split(',').map(x=>x.trim());nid=ids[0];
+    for(let k=1;k<=d.qty;k++){const pid=ids[k-1];b.set(D('items',pid),{...d,qty:1,serial:ser[k-1]||'',group:nid,unitNo:k,lent:0});addLog(b,pid,`Added to register as piece ${k} of ${d.qty}`)}
+    b.commit().then(()=>{closeModal();toast(`${nid} to ${ids[d.qty-1]} added. Print their labels in QR Labels.`)}).catch(fail);return}
+  else{nid=nextIds(c,1)[0];b.set(D('items',nid),{...d,lent:0});addLog(b,nid,'Added to register')}
   b.commit().then(()=>{closeModal();toast(id?'Saved':`${nid} added`)}).catch(fail);
 }
 function delItem(id){const out=S.loans.filter(l=>l.itemId===id&&(l.status==='approved'||l.status==='returning'));
@@ -1034,7 +1039,7 @@ function loadSample(){
 
 function route(){
   const h=decodeURIComponent(location.hash.slice(1));
-  if(h.startsWith('item=')){const id=h.slice(5);const go=()=>{render();showItem(id)};ready?go():window.addEventListener('lams-ready',go,{once:true});return}
+  if(h.startsWith('item=')){const id=h.slice(5);const go=()=>{render();showItem(liveId(id))};ready?go():window.addEventListener('lams-ready',go,{once:true});return}
   view=views().some(v=>v[0]===h)?h:'dash';closeModal();render();
 }
 const _render=render;render=function(fromData){const was=ready;_render(fromData);if(!was&&ready)window.dispatchEvent(new Event('lams-ready'))};
