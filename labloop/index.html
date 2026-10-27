@@ -245,16 +245,17 @@ const CONDS=['Working','Needs repair','Under maintenance','Damaged','Retired'];
 const ICONS={
   dash:'<path d="M3 13h8V3H3zM13 21h8V11h-8zM3 21h8v-6H3zM13 3v6h8V3z"/>',
   inv:'<path d="M21 8l-9-5-9 5 9 5 9-5zM3 8v8l9 5 9-5V8M12 13v8"/>',
+  con:'<path d="M12 2l10 5-10 5L2 7zM2 17l10 5 10-5M2 12l10 5 10-5"/>',
   loan:'<path d="M7 7h11l-3-3M17 17H6l3 3"/>',
   mnt:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.4-.6-.6-2.4z"/>',
   qr:'<path d="M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3zM14 20h2M20 14v2"/>',
   rep:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'
 };
-const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['loan','Borrowing'],['mnt','Maintenance'],['qr','QR Labels'],['rep','Reports']];
-const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['loan','Borrow']];
+const ADMIN_VIEWS=[['dash','Dashboard'],['inv','Inventory'],['con','Consumables'],['loan','Borrowing'],['mnt','Maintenance'],['qr','QR Labels'],['rep','Reports']];
+const PUBLIC_VIEWS=[['dash','Home'],['inv','Inventory'],['con','Consumables'],['loan','Borrow']];
 const ico=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICONS[k]}</svg>`;
 
-const BUILD='2026-10-22-noleft2';
+const BUILD='2026-10-27-connav';
 let S={items:[],loans:[],maint:[],log:[],damage:[]}, isAdmin=false, ready=false, view='dash', invCat='ALL', invQ='', loanF='all', qrCat='ALL';
 let unsubs=[];
 const today=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10)};
@@ -368,8 +369,13 @@ function startupAlert(){
 function nav(){
   const nl=S.items.filter(isLow).length+newOOS().length+newDamage().length+needsRepair().length,np=pending().length+returning().length;
   const bd=k=>isAdmin&&k==='inv'&&nl?`<span class="badge">${nl}</span>`:isAdmin&&k==='loan'&&np?`<span class="badge">${np}</span>`:'';
-  document.getElementById('nav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
-  document.getElementById('mobnav').innerHTML=views().map(([k,n])=>`<a href="#${k}" class="${view===k?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
+  // Consumables is a shortcut to Inventory with that tab picked, so it lights up whenever that tab is showing
+  const on=k=>k==='con'?view==='inv'&&invCat==='CON':k==='inv'?view==='inv'&&invCat!=='CON':view===k;
+  const go=k=>k==='con'||k==='inv'?` onclick="invCat='${k==='con'?'CON':'ALL'}';if(view==='inv')render()"`:'';
+  const href=k=>k==='con'?'inv':k;
+  document.getElementById('nav').innerHTML=views().map(([k,n])=>`<a href="#${href(k)}"${go(k)} class="${on(k)?'on':''}">${ico(k)}${n}${bd(k)}</a>`).join('');
+  // the phone bar has no room for a seventh tab, so admins reach Consumables from the Inventory tabs there
+  document.getElementById('mobnav').innerHTML=views().filter(([k])=>k!=='con'||!isAdmin).map(([k,n])=>`<a href="#${href(k)}"${go(k)} class="${on(k)?'on':''}">${ico(k)}${n==='QR Labels'?'Labels':n}${bd(k)}</a>`).join('');
   const w=isAdmin?`<div style="margin-bottom:8px"><span class="adminpill">● Admin</span></div><button class="btn sm" onclick="logout()">Log out</button>`:`<button class="btn sm" onclick="loginForm()">Admin login</button>`;
   const tb=`<button class="btn sm themebtn" onclick="toggleTheme()" title="${isDark()?'Light mode':'Dark mode'}" aria-label="${isDark()?'Light mode':'Dark mode'}">${isDark()?SUN:MOON}</button>`;
   document.getElementById('who').innerHTML=`<div style="display:flex;gap:6px;align-items:flex-end"><div style="flex:1;min-width:0">${w}</div>${tb}</div>`;
@@ -1074,7 +1080,8 @@ function loadSample(){
 }
 
 function route(){
-  const h=decodeURIComponent(location.hash.slice(1));
+  let h=decodeURIComponent(location.hash.slice(1));
+  if(h==='con'){invCat='CON';h='inv'}
   if(h.startsWith('item=')){const id=h.slice(5);const go=()=>{render();showItem(liveId(id))};ready?go():window.addEventListener('lams-ready',go,{once:true});return}
   view=views().some(v=>v[0]===h)?h:'dash';closeModal();render();
 }
