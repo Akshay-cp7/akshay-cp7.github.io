@@ -13,7 +13,7 @@
     />
     <meta
       name="description"
-      content="Akshay CP is the founder of Swaylo AI, an AI engine that routes every message to the most efficient model that can answer it, with voice recognition, image recognition and model switching inside a single conversation. Also the founder of Shopdesk AI Assistant and ESTAZY, an AI financial advisor that reads spending, business income and ad spend together. Flutter App Developer with 30+ apps on Google Play and a macOS app on the Mac App Store. Based in Kerala, India."
+      content="Akshay CP is the founder of Swaylo AI, an AI engine that routes every message to the most efficient model that can answer it, with voice recognition, image recognition and model switching inside a single conversation. Also the founder of Shopdesk AI Assistant and ESTAZY, an AI financial advisor that reads spending, business income and ad spend together. Flutter App Developer with 80+ apps on Google Play and a macOS app on the Mac App Store. Based in Kerala, India."
     />
     <meta
       name="keywords"
@@ -40,7 +40,7 @@
     />
     <meta
       property="og:description"
-      content="Flutter App Developer with 2+ years of experience. Specializing in mobile and macOS apps, ERP systems, 3D experiences. 30+ apps on Google Play and a macOS app on the Mac App Store."
+      content="Flutter App Developer with 2+ years of experience. Specializing in mobile and macOS apps, ERP systems, 3D experiences. 80+ apps on Google Play and a macOS app on the Mac App Store."
     />
     <meta
       property="og:image"
@@ -64,7 +64,7 @@
     />
     <meta
       name="twitter:description"
-      content="Flutter App Developer with 2+ years of experience. Specializing in mobile and macOS apps, ERP systems, 3D experiences. 30+ apps on Google Play and a macOS app on the Mac App Store."
+      content="Flutter App Developer with 2+ years of experience. Specializing in mobile and macOS apps, ERP systems, 3D experiences. 80+ apps on Google Play and a macOS app on the Mac App Store."
     />
     <meta
       name="twitter:image"
@@ -84,8 +84,8 @@
     <meta name="ICBM" content="10.8505, 76.2711" />
 
     <!-- Theme & Favicon -->
-    <meta name="theme-color" content="#000000" />
-    <meta name="msapplication-TileColor" content="#000000" />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="favicon.png" type="image/png" sizes="256x256" />
     <link rel="shortcut icon" href="favicon.png" type="image/png" />
@@ -193,7 +193,7 @@
         "@type": "WebSite",
         "name": "Akshay CP Portfolio",
         "url": "https://akshaycp.com/",
-        "description": "Portfolio website of Akshay CP - Flutter App Developer, ERP Developer & 3D Developer with 30+ published apps",
+        "description": "Portfolio website of Akshay CP - Flutter App Developer, ERP Developer & 3D Developer with 80+ published apps",
         "author": {
           "@id": "https://akshaycp.com/#person"
         },
@@ -211,7 +211,7 @@
           "@id": "https://akshaycp.com/#person"
         },
         "dateCreated": "2025-01-01",
-        "dateModified": "2026-05-16"
+        "dateModified": "2026-10-28"
       }
     </script>
 
@@ -429,1866 +429,572 @@
     </script>
 
     <!-- Preconnect to critical third-party origins -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
-    <link rel="preconnect" href="https://ajax.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://blogger.googleusercontent.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link rel="preconnect" href="https://play-lh.googleusercontent.com" crossorigin />
-
-    <!-- DNS Prefetch -->
-    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net" />
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link rel="dns-prefetch" href="https://raw.githubusercontent.com" />
 
-    <!-- Preload critical resources -->
-    <link rel="preload" href="style.css" as="style" />
-    <link rel="preload" href="script.js" as="script" />
-
-    <!-- Stylesheets -->
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:wght@300..800&family=Google+Sans+Code:wght@400;500&display=swap"
+    />
     <link rel="stylesheet" href="style.css" />
 
-    <!-- Deferred scripts for performance -->
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"
-      defer
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
-      defer
-    ></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"
-      defer
-    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js" defer></script>
+    <script src="script.js" defer></script>
     <script
       type="module"
       src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"
     ></script>
   </head>
 
-  <body itemscope itemtype="https://schema.org/WebPage">
-    <!-- LOADING SCREEN -->
-    <div id="loading-screen" role="status" aria-label="Loading portfolio content" aria-live="polite">
-      <div class="loading-content">
-        <div class="loading-text" aria-hidden="true">Adjusting to orbit..</div>
-        <div class="loading-dots" aria-hidden="true">
-          <div class="dot"></div>
-          <div class="dot"></div>
-          <div class="dot"></div>
+  <body itemscope itemtype="https://schema.org/WebPage" class="is-loading">
+    <!-- Loader -->
+    <div id="loader" role="status" aria-label="Loading">
+      <div class="loader-inner">
+        <div class="loader-name" aria-hidden="true">
+          <span>A</span><span>K</span><span>S</span><span>H</span><span>A</span><span>Y</span>
         </div>
-        <span class="sr-only">Loading portfolio, please wait...</span>
+        <div class="loader-count mono"><span id="loader-num">0</span>%</div>
       </div>
+      <div class="loader-bar"><i id="loader-bar"></i></div>
     </div>
 
-    <!-- Custom Cursor -->
-    <div class="custom-cursor" id="cursor" aria-hidden="true"></div>
-    <div id="canvas-container" aria-hidden="true" role="presentation"></div>
+    <!-- Global layers -->
+    <canvas id="gl" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="vignette" aria-hidden="true"></div>
+    <div class="cursor" aria-hidden="true"><div class="cursor-ring"><span class="cursor-label"></span></div><div class="cursor-dot"></div></div>
+    <div class="hover-img" aria-hidden="true"><img alt="" /></div>
+    <div class="progress" aria-hidden="true"><i></i></div>
 
-    <!-- Skip to main content link for accessibility -->
-    <a
-      href="#main-content"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-white focus:text-black focus:font-bold focus:rounded"
-    >
-      Skip to main content
-    </a>
+    <a href="#main" class="skip">Skip to content</a>
 
     <!-- Navigation -->
-    <nav
-      class="fixed top-0 w-full p-6 flex justify-between items-center z-50"
-      role="navigation"
-      aria-label="Main navigation"
-      itemscope
-      itemtype="https://schema.org/SiteNavigationElement"
-    >
-      <a
-        href="#home"
-        class="text-2xl font-black italic tracking-tighter hover:text-gray-300 transition"
-        aria-label="Akshay CP Portfolio - Go to homepage"
-        itemprop="url"
-      >
-        <span itemprop="name">Portfolio.</span>
+    <header class="nav" role="banner">
+      <a href="#home" class="nav-logo magnetic" aria-label="Akshay CP, back to top">
+        <span class="logo-mark">AC</span><span class="logo-word">Akshay&nbsp;CP</span>
       </a>
-      <div
-        class="hidden md:flex space-x-8 text-sm uppercase tracking-widest font-medium"
-        role="menubar"
-      >
-        <a href="#home" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">Home</a>
-        <a href="#highlights" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">Highlights</a>
-        <a href="#services" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">Services</a>
-        <a href="#about" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">About</a>
-        <a href="#experience" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">Experience</a>
-        <a href="#contact" class="hover:text-gray-400 transition" role="menuitem" itemprop="url">Contact</a>
-      </div>
-    </nav>
+      <div class="nav-now mono" aria-hidden="true"><span class="pulse"></span><span id="nav-section">Index</span></div>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#work" class="scramble">Work</a>
+        <a href="#apps" class="scramble">Apps</a>
+        <a href="#about" class="scramble">About</a>
+        <a href="#experience" class="scramble">Journey</a>
+        <a href="#contact" class="nav-cta magnetic"><span>Let's talk</span></a>
+      </nav>
+      <button class="nav-burger" aria-label="Open menu" aria-expanded="false"><i></i><i></i></button>
+    </header>
+    <div class="menu" aria-hidden="true">
+      <a href="#work">Work</a><a href="#apps">Apps</a><a href="#about">About</a><a href="#experience">Journey</a><a href="#contact">Contact</a>
+    </div>
 
-    <!-- Main Content -->
-    <main id="main-content" role="main" itemprop="mainContentOfPage">
-      <!-- Hero Section -->
-      <section
-        id="home"
-        class="flex flex-col justify-center items-start max-w-7xl mx-auto"
-        aria-labelledby="hero-heading"
-        itemscope
-        itemtype="https://schema.org/WPHeader"
-      >
-        <div class="reveal">
-          <header>
-            <h1 id="hero-heading" class="font-black leading-none mb-4 text-gradient" itemprop="headline">
-              <span class="text-3xl md:text-6xl block mb-2">HEY I'M</span>
-              <span class="text-5xl md:text-8xl">AKSHAY C P</span>
-            </h1>
-          </header>
-          <p class="text-xl md:text-2xl text-gray-400 max-w-xl" itemprop="description">
-            Founder of <strong class="text-gray-300 font-bold">Swaylo AI</strong>, my own AI engine that picks a
-            different model for every message, so texting stays fast and efficient. Shopdesk AI Assistant, the WhatsApp
-            salesperson built on it, is the first thing it runs. Flutter and ERP developer with 2 + years of
-            experience, 30+ apps on Google Play and a macOS app on the Mac App Store. 3D and AR is where I started, and it’s a side project now.
+    <main id="main">
+      <!-- HERO -->
+      <section id="home" class="hero" data-shape="galaxy" data-label="Index">
+        <div class="hero-top mono reveal-fade">
+          <span>Kerala, India</span>
+          <span class="hide-sm">AI · Flutter · ERP</span>
+          <span id="clock" class="hide-sm">IST 00:00</span>
+        </div>
+
+        <h1 class="hero-title" aria-label="Akshay C P">
+          <span class="hero-pills"><span class="hero-hey">Founder of Swaylo AI and Shopdesk</span></span>
+          <span class="hero-name">AKSHAY C&nbsp;P</span>
+        </h1>
+
+        <div class="hero-bottom">
+          <p class="hero-lede reveal-lines">
+            I build <em>AI that picks the right brain</em> for every message, and the
+            apps around it. Flutter and ERP developer
+            with 80+ apps on Google Play and two on the Mac App Store.
           </p>
-          <div class="mt-8 flex gap-4">
+          <div class="hero-actions">
+            <a href="#work" class="btn btn-solid magnetic" data-cursor="Scroll"><span>See the work</span></a>
+            <a href="#contact" class="btn btn-ghost magnetic"><span>Get in touch</span></a>
+          </div>
+        </div>
+
+        <div class="hero-stats">
+          <div><b data-count="80" data-suffix="+">0</b><span>apps on Google Play</span></div>
+          <div><b>#<i data-count="1">0</i></b><span>for "aadhaar to pdf"</span></div>
+          <div><b data-count="10">0</b><span>Indian languages, one engine</span></div>
+          <div><b data-count="2" data-suffix="+">0</b><span>years shipping full time</span></div>
+          <div><b data-count="2" data-suffix="×">0</b><span>AI world contest winner</span></div>
+        </div>
+
+      </section>
+
+      <!-- ORBIT -->
+      <div class="orbit" aria-hidden="true">
+        <div class="orbit-track"><span class="orb"><small>{ }</small></span><span class="orb"><small>✓</small></span><span class="orb"><small>⧉</small></span><span class="orb"><small>⑂</small></span><span class="orb"><small>⁘</small></span><span class="orb"><small>✦</small></span><span class="orb"><small>‹/›</small></span><span class="orb"><small>⋏</small></span><span class="orb"><small>⬡</small></span><span class="orb"><small>✎</small></span><span class="orb"><small>⇥</small></span><span class="orb"><small>⌕</small></span><span class="orb"><small>◎</small></span><span class="orb"><small>⚡</small></span><span class="orb"><small>◐</small></span><span class="orb"><small>☰</small></span><span class="orb"><small>{ }</small></span><span class="orb"><small>✓</small></span><span class="orb"><small>⧉</small></span><span class="orb"><small>⑂</small></span><span class="orb"><small>⁘</small></span><span class="orb"><small>✦</small></span><span class="orb"><small>‹/›</small></span><span class="orb"><small>⋏</small></span><span class="orb"><small>⬡</small></span><span class="orb"><small>✎</small></span><span class="orb"><small>⇥</small></span><span class="orb"><small>⌕</small></span><span class="orb"><small>◎</small></span><span class="orb"><small>⚡</small></span><span class="orb"><small>◐</small></span><span class="orb"><small>☰</small></span></div>
+      </div>
+
+      <!-- SWAYLO -->
+      <section id="work" class="chapter swaylo" data-shape="bird" data-label="01 Swaylo AI" aria-labelledby="swaylo-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">01</span>
+          <span class="chapter-tag mono">Founder · My own AI engine</span>
+        </div>
+        <div class="split">
+          <div class="split-text">
+            <h2 id="swaylo-h" class="display split-chars">Swaylo AI</h2>
+            <p class="big-lede reveal-lines">
+              Most messages don't need a big model, <em>so most messages don't get one.</em>
+            </p>
+            <p class="body reveal-lines">
+              Swaylo classifies every message the moment it arrives and routes it to the leanest
+              model that can actually answer it. A small fast model for ordinary text, which is
+              nearly all the traffic. One that can hear for a voice note. One that can see for a
+              photo, even a delivery address written by hand. It switches inside a single
+              conversation, and three models still sound like one assistant with one memory.
+            </p>
+            <ul class="facts">
+              <li><b>Fails over</b> between two providers mid sentence, so an outage degrades the answer instead of ending it.</li>
+              <li><b>Ten Indian languages</b>, in their own script or in Latin letters.</li>
+              <li><b>No keyword lists.</b> No menu trees. It judges the message.</li>
+            </ul>
+            <a href="https://swayloweb.com/" target="_blank" rel="noopener" class="link-arrow magnetic" data-cursor="Visit">swayloweb.com <span>↗</span></a>
+          </div>
+
+          <!-- Router visual -->
+          <figure class="router card-dark" aria-label="Animated diagram: messages routed to different models">
+            <figcaption class="mono router-cap"><span class="live-dot"></span> live routing</figcaption>
+            <svg viewBox="0 0 520 440" class="router-svg" role="img" aria-hidden="true">
+              <defs>
+                <linearGradient id="wire" x1="0" x2="1">
+                  <stop offset="0" stop-color="#ffffff" stop-opacity=".05" />
+                  <stop offset=".5" stop-color="#ffffff" stop-opacity=".28" />
+                  <stop offset="1" stop-color="#ffffff" stop-opacity=".05" />
+                </linearGradient>
+                <filter id="glow"><feGaussianBlur stdDeviation="4" result="b" /><feMerge><feMergeNode in="b" /><feMergeNode in="SourceGraphic" /></feMerge></filter>
+              </defs>
+              <!-- in -> router -->
+              <path id="w-in" d="M40 220 C 110 220, 130 220, 200 220" stroke="url(#wire)" />
+              <!-- router -> models -->
+              <path id="w-text" d="M250 220 C 300 220, 300 90, 360 90" stroke="url(#wire)" />
+              <path id="w-voice" d="M250 220 C 300 220, 300 220, 360 220" stroke="url(#wire)" />
+              <path id="w-vision" d="M250 220 C 300 220, 300 350, 360 350" stroke="url(#wire)" />
+              <!-- models -> out -->
+              <path id="o-text" d="M440 90 C 470 90, 470 220, 490 220" stroke="url(#wire)" />
+              <path id="o-voice" d="M440 220 C 470 220, 470 220, 490 220" stroke="url(#wire)" />
+              <path id="o-vision" d="M440 350 C 470 350, 470 220, 490 220" stroke="url(#wire)" />
+
+              <g class="node router-core" transform="translate(225 220)">
+                <circle r="34" class="core-ring" />
+                <circle r="22" class="core-fill" />
+                <text y="4" text-anchor="middle">route</text>
+              </g>
+              <g class="node model" id="m-text" transform="translate(400 90)">
+                <rect x="-40" y="-26" width="80" height="52" rx="14" />
+                <text y="-3" text-anchor="middle">small</text><text y="12" text-anchor="middle" class="sub">fast text</text>
+              </g>
+              <g class="node model" id="m-voice" transform="translate(400 220)">
+                <rect x="-40" y="-26" width="80" height="52" rx="14" />
+                <text y="-3" text-anchor="middle">hears</text><text y="12" text-anchor="middle" class="sub">voice note</text>
+              </g>
+              <g class="node model" id="m-vision" transform="translate(400 350)">
+                <rect x="-40" y="-26" width="80" height="52" rx="14" />
+                <text y="-3" text-anchor="middle">sees</text><text y="12" text-anchor="middle" class="sub">photo</text>
+              </g>
+              <g id="packet" filter="url(#glow)"><circle r="7" /></g>
+            </svg>
+            <div class="router-feed mono" aria-hidden="true">
+              <div class="msg-chip" id="chip"><span id="chip-ico">💬</span><span id="chip-txt">"price for the combo?"</span></div>
+              <div class="provider"><span class="prov" id="prov-a">provider A</span><span class="prov" id="prov-b">provider B</span></div>
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- SHOPDESK -->
+      <section id="shopdesk" class="chapter shopdesk" data-shape="bubble" data-label="02 Shopdesk" aria-labelledby="shopdesk-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">02</span>
+          <span class="chapter-tag mono">Founder · Built on Swaylo AI</span>
+        </div>
+        <div class="split split-rev">
+          <div class="phone-wrap">
+            <div class="phone" aria-label="Demo WhatsApp conversation handled by Shopdesk">
+              <div class="phone-notch"></div>
+              <div class="wa-head">
+                <div class="wa-avatar">S</div>
+                <div><b>Shopdesk</b><small id="wa-status">online</small></div>
+              </div>
+              <div class="wa-body" id="wa-body"></div>
+              <div class="wa-input"><span>Message</span><i>🎤</i></div>
+            </div>
+            <p class="mono phone-note">A demo conversation. The real ones run 24/7.</p>
+          </div>
+          <div class="split-text">
+            <h2 id="shopdesk-h" class="display split-chars">Shopdesk</h2>
+            <p class="big-lede reveal-lines">You make. <em>AI sells.</em></p>
+            <p class="body reveal-lines">
+              Swaylo AI put to work as a salesperson on WhatsApp. It opens on the exact product the
+              customer tapped, at its real price, quoted from a live catalogue instead of an invented
+              number. It checks the delivery pincode against India Post mid chat, books the order,
+              cancels it if they change their mind, and knows when to stop and hand the chat to a
+              human.
+            </p>
+            <div class="pills">
+              <span>Cash on Delivery</span><span>UPI advances</span><span>Pincode checks</span><span>Voice notes</span><span>Their language</span>
+            </div>
             <a
-              href="#highlights"
-              class="px-8 py-4 glass hover:bg-white hover:text-black transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
-              aria-label="View my featured projects and highlights"
-            >
-              Projects
-            </a>
-            <a
-              href="#contact"
-              class="px-8 py-4 border border-white/20 rounded-xl hover:bg-white/10 transition-all duration-300 font-bold uppercase tracking-widest text-xs inline-block"
-              aria-label="Get in touch with me for project inquiries"
-            >
-              Contact
-            </a>
+              href="https://wa.me/919911070741?text=Hi%21%20I%20saw%20Shopdesk%20AI%20Assistant%20on%20your%20portfolio%20and%20I%27d%20like%20to%20know%20more."
+              target="_blank" rel="noopener" class="link-arrow magnetic" data-cursor="Chat">Chat on WhatsApp <span>↗</span></a>
           </div>
         </div>
       </section>
 
-      <!-- About Section -->
-      <section
-        id="about"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="about-heading"
-        itemscope
-        itemtype="https://schema.org/AboutPage"
-      >
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-          <!-- 3D Model Viewer -->
-          <div class="glass aspect-square overflow-hidden relative p-0">
+      <!-- ID CARD TO PDF -->
+      <section id="idpdf" class="chapter idpdf" data-shape="one" data-label="03 #1 on Play" aria-labelledby="idpdf-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">03</span>
+          <span class="chapter-tag mono">#1 on Google Play India · September 2026</span>
+        </div>
+        <div class="split">
+          <div class="split-text">
+            <h2 id="idpdf-h" class="display split-chars">ID Card to&nbsp;PDF</h2>
+            <p class="big-lede reveal-lines">Search it and <em>mine comes up first.</em></p>
+            <p class="body reveal-lines">
+              Type "aadhaar to pdf", "aadhar card print" or "id card to pdf" into Google Play in
+              India and my app is the top result. It sits above the government's own Aadhaar app
+              from UIDAI.
+            </p>
+            <a href="https://play.google.com/store/apps/details?id=com.arzdrz.idcard_pdf_maker&hl=en_IN" target="_blank" rel="noopener" class="link-arrow magnetic" data-cursor="Play">Open on Google Play <span>↗</span></a>
+          </div>
+          <div class="play glass" aria-label="Animated Google Play search showing ID Card to PDF ranked first">
+            <div class="play-search"><span class="g">⌕</span><span id="play-q"></span><i class="caret"></i></div>
+            <ol class="play-results" id="play-results">
+              <li data-id="mine" class="mine">
+                <img src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s128-rw" alt="" loading="lazy" />
+                <div><b>ID Card to PDF</b><small>Akshay CP</small></div><span class="rank mono">#1</span>
+              </li>
+              <li data-id="gov"><i class="ph">🪪</i><div><b>mAadhaar</b><small>UIDAI</small></div><span class="rank mono"></span></li>
+              <li data-id="a"><i class="ph">📄</i><div><b>Document Scanner</b><small>Other developer</small></div><span class="rank mono"></span></li>
+              <li data-id="b"><i class="ph">🖨</i><div><b>PDF Maker</b><small>Other developer</small></div><span class="rank mono"></span></li>
+            </ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- APPS horizontal -->
+      <section id="apps" class="apps" data-shape="grid" data-label="04 Apps" aria-labelledby="apps-h">
+        <div class="apps-pin">
+          <div class="apps-row">
+          <div class="apps-intro">
+            <span class="chapter-num mono">04</span>
+            <h2 id="apps-h" class="display split-chars">Shipped<br />apps</h2>
+            <p class="body">
+              <b class="count-big" data-count="80" data-suffix="+">0</b> on Google Play, utilities,
+              AR and Firebase backed products. Then the same Flutter codebase taken to the desktop:
+              signed, notarised, sandboxed, with StoreKit purchases on the Mac App Store.
+            </p>
+            <a href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN" target="_blank" rel="noopener" class="link-arrow magnetic">View all on Play <span>↗</span></a>
+          </div>
+          <div class="apps-track">
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.arzdrz.photowall.ar&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #7c5cff"></div>
+              <img src="https://play-lh.googleusercontent.com/xYkpJIM-kLmxGfzUbItoTbH2xsBUYTCDi76ScmQnWZkePZ0PqS4bStuBT7chgadGq_FNKy_fvIfPhDd3HxrY8_k=w240-h480-rw" alt="PhotoWall AR icon" loading="lazy" />
+              <span class="app-tag mono">Android · AR</span>
+              <h3>PhotoWall AR</h3>
+              <p>Put any picture from your gallery onto a real wall, live through the camera, before you commit to a nail.</p>
+            </a>
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #22c3ee"></div>
+              <img src="glb.jpeg" alt="GLB AR Viewer PRO" class="app-shot" loading="lazy" />
+              <span class="app-tag mono">Android · 3D · Paid</span>
+              <h3>GLB AR Viewer PRO</h3>
+              <p>Ranked #4 top paid app in House and Home on Google Play. Any 3D model, in your room.</p>
+            </a>
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.arzdrz.idcard_pdf_maker&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #ff7a45"></div>
+              <img src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s256-rw" alt="ID Card to PDF icon" loading="lazy" />
+              <span class="app-tag mono">Android · #1 in search</span>
+              <h3>ID Card to PDF</h3>
+              <p>Front and back of any card on one printable page. The top result for "aadhaar to pdf".</p>
+            </a>
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.arzdrz.pdf_to_booklets&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #3ee6a8"></div>
+              <img src="https://play-lh.googleusercontent.com/hbK2Sj7rpvYErfe3-CUvcg3l9JX72X7CR6nhudHjeOOcdG0b6LgU2YgtHoix0qX55VsM3CKPcl7nktmrP9p0=w240-h480-rw" alt="PDF and Images to Booklet icon" loading="lazy" />
+              <span class="app-tag mono">Android · Utilities</span>
+              <h3>PDF &amp; Images to Booklet</h3>
+              <p>Reorders pages for double sided printing so a folded stack comes out as a real booklet.</p>
+            </a>
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.pixelapplogic.GyroAir&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #5b8cff"></div>
+              <img src="https://play-lh.googleusercontent.com/atKbAdMzLKsNJ6W3lbDy0b5syPt712jzg6RLzAr1p1ui6z87-oqKcHudFL8Xa8q6OLodes73UqXhnBSfotMbiA=w240-h480-rw" alt="Air Mouse Gyroair icon" loading="lazy" />
+              <span class="app-tag mono">Android · Gyroscope</span>
+              <h3>Air Mouse, Gyroair</h3>
+              <p>Wave your phone and the cursor on your computer follows.</p>
+            </a>
+            <a class="app-card tilt" href="https://play.google.com/store/apps/details?id=com.arzdrz.pinspace&hl=en_IN" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #ff5fa2"></div>
+              <img src="https://play-lh.googleusercontent.com/YYVxmCC2xammRO3Cwu-t-z6_G9uvV5yB75zfCUkLk-_mNbcZBxGlTFlsLA1LGf_zvfqSmucr7pM60U5W2RE2PZE=w240-h480-rw" alt="Vision Board icon" loading="lazy" />
+              <span class="app-tag mono">Android · Mac</span>
+              <h3>Vision Board</h3>
+              <p>A mood board for goals. On Android, and since September 2026 a paid Mac app.</p>
+            </a>
+            <a class="app-card tilt app-mac" href="https://apps.apple.com/in/app/pdf-images-to-booklet/id6794624542" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #c9c9d6"></div>
+              <img src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/a9/f2/b8/a9f2b8ec-cd17-1f9d-b5d2-f7b8f0b00e62/AppIcon-0-0-85-220-0-5-0-2x.png/256x256bb.png" alt="PDF and Images to Booklet for Mac icon" loading="lazy" />
+              <span class="app-tag mono">macOS · Mac App Store</span>
+              <h3>Booklet for Mac</h3>
+              <p>The phone app, native on the desktop. Own window, StoreKit purchases, same codebase.</p>
+            </a>
+            <a class="app-card tilt app-mac" href="https://apps.apple.com/in/app/vision-board-mood-board/id6812633506?mt=12" target="_blank" rel="noopener" data-cursor="Open">
+              <div class="app-glow" style="--c: #ffb547"></div>
+              <img src="https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/6e/e2/e7/6ee2e7db-bf98-0d30-7adf-15aa80debeb5/721e011e-109f-4227-8978-1f8c6071c48f.png/256x256bb.png" alt="Vision Board for Mac icon" loading="lazy" />
+              <span class="app-tag mono">macOS · Paid</span>
+              <h3>Vision Board for Mac</h3>
+              <p>A paid Mac app since September 2026. Same codebase as the phone.</p>
+            </a>
+            <a class="app-card app-more" href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN" target="_blank" rel="noopener" data-cursor="All">
+              <span class="more-num">+72</span>
+              <h3>And the rest</h3>
+              <p>PDF tools, image tools, AR, file viewers. All on my Google Play page.</p>
+              <span class="link-arrow">See them all <span>↗</span></span>
+            </a>
+          </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ESTAZY -->
+      <section id="estazy" class="chapter estazy" data-shape="chart" data-label="05 ESTAZY" aria-labelledby="estazy-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">05</span>
+          <span class="chapter-tag mono">Built it · AI financial advisor</span>
+        </div>
+        <div class="split">
+          <div class="split-text">
+            <h2 id="estazy-h" class="display split-chars">ESTAZY</h2>
+            <p class="big-lede reveal-lines">Money advice that can <em>actually see the accounts.</em></p>
+            <p class="body reveal-lines">
+              Most money advice is generic because nobody giving it can see your accounts. ESTAZY
+              reads mine: bank messages, ad spend, every order the shop settled and what the apps
+              earn. Then it argues with statistics. It caught money sitting in scattered
+              investments returning a few percent while the same money in the business was turning
+              nearly twice, and it says how much to move and when to stop.
+            </p>
+            <a href="/estazy/" class="link-arrow magnetic" data-cursor="Demo">Open the live demo <span>→</span></a>
+          </div>
+          <div class="chart card-dark" aria-label="Illustrative chart drawing itself">
+            <div class="chart-top">
+              <div><small class="mono">Return on the business</small><b><span data-count="1.9" data-decimals="1">0</span>x</b></div>
+              <div><small class="mono">Scattered investments</small><b class="dim"><span data-count="4.2" data-decimals="1">0</span>%</b></div>
+            </div>
+            <svg viewBox="0 0 400 200" preserveAspectRatio="none" class="chart-svg">
+              <defs><clipPath id="chart-reveal"><rect id="chart-clip" x="0" y="0" width="0" height="200" /></clipPath></defs>
+              <g class="chart-grid"><line x1="0" y1="50" x2="400" y2="50" /><line x1="0" y1="100" x2="400" y2="100" /><line x1="0" y1="150" x2="400" y2="150" /></g>
+              <path class="chart-area" clip-path="url(#chart-reveal)" d="M0 170 C 40 160, 60 150, 90 140 S 150 120, 180 110 S 240 70, 270 72 S 330 40, 360 30 L 400 22 L 400 200 L 0 200 Z" />
+              <path class="chart-line a" d="M0 170 C 40 160, 60 150, 90 140 S 150 120, 180 110 S 240 70, 270 72 S 330 40, 360 30 L 400 22" />
+              <path class="chart-line b" d="M0 172 C 60 170, 120 168, 180 165 S 300 160, 400 157" />
+            </svg>
+            <p class="mono chart-note">Illustration. The real numbers stay private.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABOUT -->
+      <section id="about" class="chapter about" data-shape="sphere" data-label="06 About" aria-labelledby="about-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">06</span>
+          <span class="chapter-tag mono">About</span>
+        </div>
+        <div class="about-grid">
+          <div class="avatar glass">
             <model-viewer
               id="avatar-model"
               src="https://raw.githubusercontent.com/Akshay-cp7/Glb_host/main/akshay_cp_animated3.glb"
-              alt="Akshay CP - Interactive 3D animated portrait model showcasing development and 3D skills"
-              loading="eager"
+              alt="Akshay CP, an interactive 3D animated portrait"
+              loading="lazy"
               reveal="auto"
               autoplay
               camera-controls
               disable-zoom
               touch-action="pan-y"
-              rotation-per-second="30deg"
               camera-orbit="0deg 90deg 2.5m"
               min-camera-orbit="auto 90deg 2.5m"
               max-camera-orbit="auto 90deg 2.5m"
-              exposure="1"
-              shadow-intensity="1"
-              ar-status="not-presenting"
-              style="
-                width: 100%;
-                height: 100%;
-                min-height: 400px;
-                background: radial-gradient(
-                  ellipse at center,
-                  rgba(30, 30, 30, 1) 0%,
-                  rgba(10, 10, 10, 1) 100%
-                );
-                border-radius: 1rem;
-              "
-            >
-            </model-viewer>
-            <div class="model-bottom-fade" aria-hidden="true"></div>
+              interaction-prompt="none"
+              shadow-intensity="0"
+              exposure="1.05"
+            ></model-viewer>
+            <span class="mono avatar-hint">drag to turn me</span>
           </div>
-
-          <!-- Info Side -->
-          <div itemscope itemtype="https://schema.org/Person">
-            <meta itemprop="name" content="Akshay CP" />
-            <meta itemprop="url" content="https://akshaycp.com" />
-            <meta itemprop="image" content="https://akshaycp.com/banner.png" />
-            <div class="space-y-8">
-              <div>
-                <h2 id="about-heading" class="text-4xl font-bold mb-4 text-gradient">ABOUT ME</h2>
-                <p class="text-gray-400 text-lg leading-relaxed" itemprop="description">
-                  I build AI. <strong class="text-gray-300 font-bold">Swaylo AI</strong> is my own conversational
-                  engine. Its whole idea is that it classifies every incoming message and routes it to the
-                  most efficient model that can answer it. Small and fast for text, one that can hear for a voice
-                  note, one that can see for a photo. It switches inside a single conversation and fails
-                  over between providers without dropping the thread.
-                  <strong class="text-gray-300 font-bold">Shopdesk AI Assistant</strong> is the first product
-                  built on it, the WhatsApp salesperson that answers customers, checks their address and
-                  books their orders. I am the founder of both. Alongside that, 2 + years building Flutter
-                  mobile apps, ERP systems and business applications, with 30+ published on Google Play.
-                  I also ship on the desktop: <strong class="text-gray-300 font-bold">PDF &amp; Images to Booklet</strong>
-                  is a native macOS build of the same codebase, live on the Mac App Store.
-                  <strong class="text-gray-300 font-bold">ESTAZY</strong> is the third thing I run, an AI
-                  financial advisor that reads my bank messages, ad spend and settled orders together and
-                  says where the money is going wrong, with the statistic underneath every claim.
-                  3D and augmented reality is where I started; it is a side project now.
-                </p>
-              </div>
-              <div>
-                <h3
-                  class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                >
-                  Technologies
-                </h3>
-                <ul class="flex flex-wrap gap-2 mt-2" aria-label="Technical skills and technologies">
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">AI</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">LLMs</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">FLUTTER</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">DART</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">MACOS</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">FIREBASE</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">3D/AR</span></li>
-                  <li><span class="px-4 py-2 glass text-xs" itemprop="knowsAbout">ERP</span></li>
-                </ul>
-              </div>
-              <div>
-                <h3
-                  class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                >
-                  Recognition
-                </h3>
-                <ul class="mt-2 space-y-2 text-gray-400" aria-label="Awards and recognition">
-                  <li>
-                    <a
-                      href="https://www.tripo3d.ai/event/2026-bit-to-atom-challenge"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="hover:text-white transition-colors"
-                      aria-label="Tripo Bit to Atom 3D Model Designing Challenge - Best Visual Award"
-                      itemprop="award"
-                    >
-                      🏅 Tripo Bit to Atom Challenge, Best Visual Award ↗
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="hover:text-white transition-colors"
-                      aria-label="Tripo 3D AI Contest Winner - View submission"
-                      itemprop="award"
-                    >
-                      🏆 Tripo 3D AI Contest Winner ↗
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      class="hover:text-white transition-colors"
-                      aria-label="View 30+ published apps on Google Play Store"
-                    >
-                      📱 30+ Apps on Google Play Store ↗
-                    </a>
-                  </li>
-                  <li itemprop="alumniOf" itemscope itemtype="https://schema.org/EducationalOrganization">
-                    🎓 <span itemprop="name">B.Tech Computer Science</span>
-                  </li>
-                </ul>
-              </div>
+          <div class="about-text">
+            <h2 id="about-h" class="statement reveal-words">
+              I started in 3D and AR. Now I build AI that sells, apps people search for by name,
+              and the ERP that runs a college.
+            </h2>
+            <p class="body reveal-lines">
+              Swaylo AI is my own conversational engine and Shopdesk is the first product on it.
+              Alongside that, 2+ years building Flutter mobile apps, ERP systems and business
+              software, with 80+ apps on Google Play and native macOS builds on the Mac App Store.
+              ESTAZY is the third thing I run. 3D is where I started, and it is a side project now.
+            </p>
+            <div class="tech-cloud" aria-label="Technologies">
+              <span>LLMs</span><span>Flutter</span><span>Dart</span><span>Node.js</span><span>WhatsApp Cloud API</span>
+              <span>Firebase</span><span>macOS</span><span>StoreKit</span><span>ERP · REST</span><span>Three.js</span>
+              <span>GSAP</span><span>ARCore</span><span>Blender</span><span>Figma</span>
             </div>
           </div>
         </div>
       </section>
 
-      <!-- Highlights Section -->
-      <section
-        id="highlights"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="highlights-heading"
-      >
-        <div class="w-full">
-          <h2 id="highlights-heading" class="text-5xl font-bold mb-12 text-gradient">Highlights</h2>
-          <div
-            class="grid grid-cols-1 md:grid-cols-2 gap-8"
-            role="list"
-            aria-label="Featured projects and achievements"
-          >
-            <!-- Highlight 1 - Swaylo AI -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="BusinessApplication" />
-              <meta itemprop="operatingSystem" content="Web, WhatsApp" />
-              <a
-                href="https://swayloweb.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Swaylo AI - the conversational AI engine I built, at swayloweb.com"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container image-mat-cream rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="swaylo.png"
-                      class="project-image image-contain"
-                      alt="Swaylo AI - the conversational AI engine built by Akshay CP with voice recognition, image recognition and automatic model switching"
-                      loading="lazy"
-                      decoding="async"
-                      width="512"
-                      height="512"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Founder &middot; My own AI engine
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      Swaylo AI
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Efficient AI for texting. It classifies every message and routes it to the leanest
-                      model that can answer it. Small and fast for text, one that can hear for a voice
-                      note, one that can see for a photo, including an address written by hand. It
-                      switches inside a single conversation and fails over between two providers
-                      without dropping the thread. Chatting on WhatsApp is Shopdesk's job; this is the
-                      engine underneath it.
-                    </p>
-                    <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
-                      swayloweb.com &#8599;
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 2 - Shopdesk AI Assistant -->
-            <article role="listitem" class="highlight-card mt-0 md:mt-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="BusinessApplication" />
-              <meta itemprop="operatingSystem" content="Web, WhatsApp" />
-              <a
-                href="https://wa.me/919911070741?text=Hi%21%20I%20saw%20Shopdesk%20AI%20Assistant%20on%20your%20portfolio%20and%20I%27d%20like%20to%20know%20more."
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Chat on WhatsApp about Shopdesk AI Assistant"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container image-mat rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="shopdesk.jpeg"
-                      class="project-image image-contain"
-                      alt="Shopdesk AI Assistant - an AI salesperson that chats with customers on WhatsApp in any language, answers questions and collects orders"
-                      loading="lazy"
-                      decoding="async"
-                      width="656"
-                      height="456"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Founder &middot; Built on Swaylo AI
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      Shopdesk AI Assistant
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Swaylo AI put to work as a salesperson. It chats with customers on WhatsApp in
-                      their own language, answers their questions and takes the order on its own, 24/7.
-                    </p>
-                    <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
-                      Chat on WhatsApp ↗
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 3 - ID Card to PDF ranks first on Google Play -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="UtilitiesApplication" />
-              <meta itemprop="operatingSystem" content="Android" />
-              <a
-                href="https://play.google.com/store/apps/details?id=com.arzdrz.idcard_pdf_maker&hl=en_IN"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="ID Card to PDF on Google Play, ranked first in India for aadhaar to pdf"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container image-mat rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s512-rw"
-                      class="project-image image-contain"
-                      alt="ID Card to PDF app icon"
-                      loading="lazy"
-                      decoding="async"
-                      width="512"
-                      height="512"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      #1 on Google Play India &middot; September 2026
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      ID Card to PDF
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Search Google Play in India for &ldquo;aadhaar to pdf&rdquo;, &ldquo;aadhar card
-                      print&rdquo; or &ldquo;id card to pdf&rdquo; and my app comes up first. It sits
-                      above the government&rsquo;s own Aadhaar app from UIDAI.
-                    </p>
-                    <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
-                      Google Play &#8599;
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 4 - Published Apps -->
-            <article role="listitem" class="highlight-card mt-0 md:mt-20" itemscope itemtype="https://schema.org/CreativeWork">
-              <a
-                href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="View all published apps by Akshay CP on Google Play Store"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="apps.jpeg?v=100k"
-                      class="project-image"
-                      alt="Collection of 30+ published apps by Akshay CP on Google Play Store"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-2 pb-2">
-                    <h3 class="text-lg font-bold text-gray-400" itemprop="name">
-                      Published Apps on Google Play
-                    </h3>
-                    <p class="text-gray-500 text-xs" itemprop="description">
-                      Building practical tools and experimental apps while
-                      exploring technologies.
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 5 - Apps on the Mac App Store -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="UtilitiesApplication" />
-              <meta itemprop="operatingSystem" content="macOS" />
-              <a
-                href="https://apps.apple.com/in/app/pdf-images-to-booklet/id6794624542"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="PDF and Images to Booklet on the Mac App Store, one of two macOS apps built by Akshay CP"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="macos.jpeg"
-                      class="project-image"
-                      alt="Two macOS apps built by Akshay CP with Flutter, both live on the Mac App Store: PDF and Images to Booklet, and Vision Board - Mood Board App"
-                      loading="lazy"
-                      decoding="async"
-                      width="1240"
-                      height="760"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Desktop &middot; Same Flutter codebase
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      Apps on macOS
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      The phone apps taken to the desktop. PDF &amp; Images to Booklet is live on the
-                      Mac App Store, signed, notarised and sandboxed, with its own native window and
-                      StoreKit purchases. Vision Board &ndash; Mood Board App joined it in September 2026
-                      as a paid Mac app. One codebase, three platforms.
-                    </p>
-                    <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
-                      Mac App Store &#8599;
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 6 - ESTAZY -->
-            <article role="listitem" class="highlight-card mt-0 md:mt-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="FinanceApplication" />
-              <meta itemprop="operatingSystem" content="Web" />
-              <a
-                href="/estazy/"
-                aria-label="ESTAZY - an AI financial advisor. Open the live demo"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="estazy.jpeg"
-                      class="project-image"
-                      alt="ESTAZY dashboard - an AI financial advisor showing spending by day, where the money went and the investment pile"
-                      loading="lazy"
-                      decoding="async"
-                      width="1240"
-                      height="760"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Built it &middot; AI financial advisor
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      ESTAZY
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Most money advice is generic because nobody giving it can see your accounts.
-                      ESTAZY reads mine: bank messages, ad spend, every order the shop settled and
-                      what the apps earn. Then it argues with statistics. It caught money sitting in
-                      scattered investments returning a few percent while the same money in the
-                      business was turning nearly twice, and it says how much to move and when to
-                      stop.
-                    </p>
-                    <p class="text-gray-300 text-[11px] font-bold uppercase tracking-[0.2em] mt-3">
-                      Open the live demo &#8594;
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 7 - Campus Management -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="EducationalApplication" />
-              <meta itemprop="operatingSystem" content="Android" />
-              <div class="glass p-4 group cursor-pointer overflow-hidden">
-                <div
-                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative carousel-container"
-                  id="campus-carousel"
-                >
-                  <!-- Carousel Images -->
-                  <div class="carousel-slide active" data-index="0">
-                    <img
-                      src="https://akshaycp.com/fk.jpeg"
-                      class="project-image"
-                      alt="Campus Management ERP System app for college operations including attendance and mark entry"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="carousel-slide" data-index="1">
-                    <img
-                      src="https://akshaycp.com/first_app.jpeg"
-                      class="project-image"
-                      alt="First campus management application interface"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-
-                  <!-- Carousel Controls -->
-                  <div class="carousel-controls">
-                    <button
-                      class="carousel-btn carousel-prev"
-                      aria-label="Previous image"
-                      data-carousel-id="campus-carousel"
-                    >
-                      ❮
-                    </button>
-                    <button
-                      class="carousel-btn carousel-next"
-                      aria-label="Next image"
-                      data-carousel-id="campus-carousel"
-                    >
-                      ❯
-                    </button>
-                  </div>
-
-                  <!-- Carousel Indicators -->
-                  <div class="carousel-indicators">
-                    <span class="indicator active" data-slide="0" data-carousel-id="campus-carousel"></span>
-                    <span class="indicator" data-slide="1" data-carousel-id="campus-carousel"></span>
-                  </div>
-                </div>
-                <div class="px-2 pb-2">
-                  <h3 class="text-lg font-bold text-gray-400" itemprop="name">
-                    Campus Management Apps
-                  </h3>
-                  <p class="text-gray-500 text-xs" itemprop="description">
-                    Built ERP apps for college campus management system including attendance and academic operations
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <!-- Highlight 8 - NAAC A++ -->
-            <article role="listitem" class="highlight-card mt-0 md:mt-20" itemscope itemtype="https://schema.org/CreativeWork">
-              <div class="glass p-4 group cursor-pointer overflow-hidden">
-                <div
-                  class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                >
-                  <img
-                    src="naac.jpeg"
-                    class="project-image"
-                    alt="Farook College NAAC A++ accreditation achievement"
-                    loading="lazy"
-                    decoding="async"
-                    width="600"
-                    height="400"
-                    itemprop="image"
-                  />
-                </div>
-                <div class="px-2 pb-2">
-                  <h3 class="text-lg font-bold text-gray-400" itemprop="name">
-                    Farook College NAAC A++
-                  </h3>
-                  <p class="text-gray-500 text-xs" itemprop="description">
-                    Contributed to Farook College gaining NAAC A++ accreditation through technical implementations and support
-                  </p>
-                </div>
-              </div>
-            </article>
-
-            <!-- Highlight 9 - GLB AR Viewer PRO -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/SoftwareApplication">
-              <meta itemprop="applicationCategory" content="UtilitiesApplication" />
-              <meta itemprop="operatingSystem" content="Android" />
-              <a
-                href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="GLB AR Viewer PRO - Ranked #4 top paid app on Google Play in House and Home category"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="glb.jpeg"
-                      class="project-image"
-                      alt="GLB AR Viewer PRO app screenshot showing 3D model viewer for Android"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-2 pb-2">
-                    <h3 class="text-lg font-bold text-gray-400" itemprop="name">
-                      GLB AR Viewer PRO
-                    </h3>
-                    <p class="text-gray-500 text-xs" itemprop="description">
-                      Ranked #4 as top paid app (House and home category) on
-                      Google Play
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 10 - Bit to Atom Best Visual Award -->
-            <article role="listitem" class="highlight-card mt-0 md:mt-20" itemscope itemtype="https://schema.org/CreativeWork">
-              <a
-                href="https://www.tripo3d.ai/event/2026-bit-to-atom-challenge"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Tripo Bit to Atom 3D Model Designing Challenge - Best Visual Award"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative award-banner"
-                  >
-                    <img
-                      src="tripo_bit_to_atom.jpeg"
-                      class="project-image"
-                      alt="Akshay CP robot shell design for the Tripo Bit to Atom 3D Model Designing Challenge, winner of the Best Visual Award"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      Robot Shell Design Contest
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      Best Visual Award
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Special award winner of Bit to Atom 3D Model Designing Challenge for robot shell visuals.
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-
-            <!-- Highlight 11 - Tripo AI Winner -->
-            <article role="listitem" class="highlight-card md:mb-20" itemscope itemtype="https://schema.org/CreativeWork">
-              <a
-                href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Global AI Event Winner - Tripo AI 3D Boss fight in Multiverse Event"
-                itemprop="url"
-              >
-                <div class="glass p-4 group cursor-pointer overflow-hidden">
-                  <div
-                    class="project-image-container bg-zinc-900 rounded-lg mb-4 overflow-hidden relative"
-                  >
-                    <img
-                      src="https://akshaycp.com/challenge.jpeg"
-                      class="project-image"
-                      alt="Akshay CP winning the Tripo 3D AI Global Boss Fight in Multiverse Event"
-                      loading="lazy"
-                      decoding="async"
-                      width="600"
-                      height="400"
-                      itemprop="image"
-                    />
-                  </div>
-                  <div class="px-4 pb-1 pt-2">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.25em] text-yellow-100/70">
-                      3D Boss Team Design Contest
-                    </p>
-                    <h3 class="mt-2 text-lg font-bold text-gray-200" itemprop="name">
-                      Global AI Event Winner
-                    </h3>
-                    <p class="text-gray-500 text-xs mt-2" itemprop="description">
-                      Tripo AI Boss Fight in Multiverse challenge.
-                    </p>
-                  </div>
-                </div>
-              </a>
-            </article>
-          </div>
+      <!-- EXPERIENCE -->
+      <section id="experience" class="chapter journey" data-shape="helix" data-label="07 Journey" aria-labelledby="exp-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">07</span>
+          <span class="chapter-tag mono">Journey</span>
+        </div>
+        <h2 id="exp-h" class="display split-chars">The journey</h2>
+        <div class="timeline">
+          <div class="tl-line"><i></i></div>
+          <article class="tl-item">
+            <span class="tl-when mono">Now · Main focus</span>
+            <h3>Founder, Swaylo AI</h3>
+            <p>My own AI engine, built from scratch and running unattended in production. Vision and speech are billed only on the messages that actually contain them.</p>
+          </article>
+          <article class="tl-item">
+            <span class="tl-when mono">Now</span>
+            <h3>Founder, Shopdesk AI Assistant</h3>
+            <p>The WhatsApp salesperson on top of Swaylo. Handles every conversation the ads bring in, round the clock, so the seller can stay focused on making and packing.</p>
+          </article>
+          <article class="tl-item">
+            <span class="tl-when mono">Current role</span>
+            <h3>Flutter App &amp; ERP Developer, Digital Wing Farook College</h3>
+            <p>Led the mobile apps for academic operations, attendance and mark entry, wired into the ERP backend. Part of the work behind Farook College's NAAC A++ accreditation.</p>
+          </article>
+          <article class="tl-item">
+            <span class="tl-when mono">2026</span>
+            <h3>To the desktop</h3>
+            <p>App Store Connect, signing and notarisation, sandbox entitlements, native window sizing and StoreKit purchases. Two apps live on the Mac App Store.</p>
+          </article>
+          <article class="tl-item">
+            <span class="tl-when mono">Ongoing</span>
+            <h3>80+ apps on Google Play</h3>
+            <p>Designed, built and shipped end to end. Utilities, AR and 3D, Firebase backed products.</p>
+          </article>
+          <article class="tl-item">
+            <span class="tl-when mono">Education</span>
+            <h3>B.Tech in Computer Science</h3>
+            <p>APJ Abdul Kalam Technological University. Vedavyasa Institute of Technology, Malappuram.</p>
+          </article>
         </div>
       </section>
 
-      <!-- Experience Section -->
-      <section
-        id="experience"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="experience-heading"
-      >
-        <div class="w-full">
-          <h2 id="experience-heading" class="text-5xl font-bold mb-4 text-gradient">EXPERIENCE</h2>
-          <!-- <p class="text-gray-400 text-lg mb-12 max-w-2xl">
-            A journey through building real-world mobile products, from
-            institutional ERP systems to independently published apps and 3D experiences.
-          </p> -->
-<br><br>
-          <div class="exp-flow">
-            <!-- Education: a short box in the top right, with the roles running
-                 past it and on underneath, the way a newspaper sets a sidebar. -->
-            <aside class="glass edu-card">
-              <h3 class="text-[11px] font-bold tracking-[0.25em] text-gray-500 uppercase mb-3">Education</h3>
-              <article itemscope itemtype="https://schema.org/EducationalOccupationalCredential">
-                <h4 class="text-base font-bold leading-snug" itemprop="credentialCategory">
-                  B.Tech in Computer Science
-                </h4>
-                <p class="text-gray-400 text-sm mt-1 leading-relaxed" itemprop="recognizedBy" itemscope itemtype="https://schema.org/EducationalOrganization">
-                  <span itemprop="name">APJ Abdul Kalam Technological University</span><br />
-                  <span>Vedavyasa Institute of Technology, Malappuram</span>
-                </p>
-              </article>
-            </aside>
+      <!-- RECOGNITION -->
+      <section id="recognition" class="chapter recog" data-shape="stars" data-label="08 Recognition" aria-labelledby="recog-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">08</span>
+          <span class="chapter-tag mono">2× AI world contest winner</span>
+        </div>
+        <h2 id="recog-h" class="display split-chars">Wins &amp; proof</h2>
+        <ul class="recog-list">
+          <li>
+            <a href="https://www.tripo3d.ai/event/boss-fight-in-multiverse#allSubmissions" target="_blank" rel="noopener" data-img="challenge.jpeg">
+              <span class="r-year mono">AI world</span><span class="r-title">Tripo 3D AI Contest Winner</span><span class="r-what">Boss Fight in Multiverse challenge</span><span class="r-arrow">↗</span>
+            </a>
+            <img class="r-mobile" src="challenge.jpeg" alt="Tripo 3D AI challenge winner" loading="lazy" />
+          </li>
+          <li>
+            <a href="https://www.tripo3d.ai/event/2026-bit-to-atom-challenge" target="_blank" rel="noopener" data-img="tripo_bit_to_atom.jpeg">
+              <span class="r-year mono">AI world</span><span class="r-title">Best Visual Award</span><span class="r-what">Tripo Bit to Atom robot shell design, 2026</span><span class="r-arrow">↗</span>
+            </a>
+            <img class="r-mobile" src="tripo_bit_to_atom.jpeg" alt="Bit to Atom Best Visual Award" loading="lazy" />
+          </li>
+          <li>
+            <a href="https://play.google.com/store/apps/details?id=com.arzDrzapps.flutter_glb_viewer_ar_pro&hl=en_IN" target="_blank" rel="noopener" data-img="glb.jpeg">
+              <span class="r-year mono">Play</span><span class="r-title">#4 Top Paid, House &amp; Home</span><span class="r-what">GLB AR Viewer PRO</span><span class="r-arrow">↗</span>
+            </a>
+            <img class="r-mobile" src="glb.jpeg" alt="GLB AR Viewer PRO" loading="lazy" />
+          </li>
+          <li>
+            <a href="#experience" data-img="naac.jpeg">
+              <span class="r-year mono">College</span><span class="r-title">Farook College NAAC A++</span><span class="r-what">Technical implementation and support</span><span class="r-arrow">→</span>
+            </a>
+            <img class="r-mobile" src="naac.jpeg" alt="Farook College NAAC A++" loading="lazy" />
+          </li>
+          <li>
+            <a href="#experience" data-img="first_app.jpeg">
+              <span class="r-year mono">Campus</span><span class="r-title">Campus Management Apps</span><span class="r-what">Attendance and academic operations</span><span class="r-arrow">→</span>
+            </a>
+            <img class="r-mobile" src="first_app.jpeg" alt="Campus management app launch" loading="lazy" />
+          </li>
+        </ul>
+      </section>
 
-            <!-- Work Experience -->
-            <div class="exp-roles space-y-12">
-              <article class="relative pl-8" itemscope itemtype="https://schema.org/OrganizationRole">
-                <div class="timeline-line" aria-hidden="true"></div>
-                <div class="timeline-dot" aria-hidden="true"></div>
-                <span
-                  class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                >
-                  Founder &middot; Main focus
-                </span>
-                <h3 class="text-xl font-bold mt-2" itemprop="roleName">Swaylo AI</h3>
-                <p class="text-gray-400 mt-1" itemprop="memberOf" itemscope itemtype="https://schema.org/Organization">
-                  <span itemprop="name">Swaylo AI</span> &middot;
-                  <a href="https://swayloweb.com/" target="_blank" rel="noopener noreferrer" class="hover:text-white transition-colors">swayloweb.com &#8599;</a>
-                </p>
-                <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  My own AI engine. Efficient AI for texting, built from scratch and running unattended in
-                  production.<br><br>
-                  The idea is that most messages do not need a big model, so most messages do not get
-                  one. It classifies every message as it arrives and routes it to the most efficient model
-                  that can actually do that job: the small fast model for ordinary text, which is
-                  nearly all the traffic; a model that can hear when someone sends a voice note, which
-                  it transcribes and hands straight back; a model that can see when they send a photo,
-                  including a delivery address written by hand, which it types out as usable text.
-                  Vision and speech are billed only on the messages that actually contain them.<br><br>
-                  It switches inside a single conversation and the customer never notices. Three models
-                  can touch one thread and it still sounds like one assistant, with one memory and one
-                  tone. It runs across two providers and fails over between them in the middle of a
-                  sentence, onto the backup's most efficient model, so an outage degrades the answer instead
-                  of ending it.<br><br>
-                  It handles ten Indian languages, in their own script or in Latin letters, and there
-                  is no keyword list or menu tree anywhere in it. It judges the message. Shopdesk AI
-                  Assistant is the first product built on it; the engine has no opinion about where a
-                  message came from, and the next applications are being fitted to it now.
-                </p>
-              </article>
-
-              <article class="relative pl-8" itemscope itemtype="https://schema.org/OrganizationRole">
-                <div class="timeline-line" aria-hidden="true"></div>
-                <div class="timeline-dot" aria-hidden="true"></div>
-                <span
-                  class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                >
-                  Founder
-                </span>
-                <h3 class="text-xl font-bold mt-2" itemprop="roleName">Shopdesk AI Assistant</h3>
-                <p class="text-gray-400 mt-1" itemprop="memberOf" itemscope itemtype="https://schema.org/Organization">
-                  <span itemprop="name">Shopdesk</span> &middot; built on Swaylo AI
-                </p>
-                <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  Swaylo AI put to work as a salesperson. This is the half that actually chats on
-                  WhatsApp. It handles every conversation the ads bring in: opens on the product they
-                  tapped at its real price, quotes from a live catalogue instead of inventing a number,
-                  verifies the delivery pincode against India Post mid-chat, books the order and cancels
-                  it if they change their mind, handles Cash on Delivery and UPI advances, and knows to
-                  stop and hand the chat to a human when a question isn't its to answer. Round the
-                  clock, so the seller can stay focused on making and packing.
-                </p>
-              </article>
-
-              <article class="relative pl-8" itemscope itemtype="https://schema.org/OrganizationRole">
-                <div class="timeline-line" aria-hidden="true"></div>
-                <div class="timeline-dot" aria-hidden="true"></div>
-                <span
-                  class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                >
-                  Current Role
-                </span>
-                <h3 class="text-xl font-bold mt-2" itemprop="roleName">Flutter App & ERP Developer</h3>
-                <p class="text-gray-400 mt-1" itemprop="memberOf" itemscope itemtype="https://schema.org/Organization">
-                  <span itemprop="name">Digital Wing Farook College</span>
-                </p>
-                <p class="text-gray-500 text-sm mt-3 leading-relaxed" itemprop="description">
-                  Led the development of mobile applications for college
-                  academic operations, including attendance marking and mark
-                  entry, with seamless integration to the ERP backend APIs.<br><br>
-                  <!-- Farook College had no dedicated Flutter developer position prior to my joining. I proactively approached the team, demonstrated my skills, and created this role for myself.<br><br> -->
-                  Alongside my professional work, I design, build and ship my own Flutter apps end to end, with 30+ published on the Google Play Store, spanning utility apps, AR/3D experiences and Firebase backed products.<br><br>
-                  Since 2026 that extends to the desktop. PDF &amp; Images to Booklet is live on the Mac App Store as a native macOS app, built from the same Flutter codebase and taken through Apple's side of the work myself: App Store Connect, signing and notarisation, the sandbox entitlements a desktop app needs, native window sizing and in-app purchases on StoreKit.
-                </p>
-              </article>
-
-            </div>
-
-          </div>
+      <!-- SERVICES -->
+      <section id="services" class="chapter services" data-shape="stars" data-label="09 Services" aria-labelledby="svc-h">
+        <div class="chapter-head">
+          <span class="chapter-num mono">09</span>
+          <span class="chapter-tag mono">What I can build for you</span>
+        </div>
+        <h2 id="svc-h" class="display split-chars">Services</h2>
+        <div class="dots" aria-hidden="true"></div>
+        <div class="svc-grid">
+          <article class="svc spot"><span class="svc-n mono">A</span><h3>AI assistants</h3><p>Conversational AI that answers, sells and books on WhatsApp, in your customers' language.</p></article>
+          <article class="svc spot"><span class="svc-n mono">B</span><h3>Flutter apps</h3><p>Android, iOS and macOS from one codebase, shipped through the stores end to end.</p></article>
+          <article class="svc spot"><span class="svc-n mono">C</span><h3>ERP systems</h3><p>REST integrations and business logic for institutions that run on data.</p></article>
+          <article class="svc spot"><span class="svc-n mono">D</span><h3>3D &amp; AR</h3><p>Interactive 3D on the web and AR on the phone. Models, viewers, placement.</p></article>
+          <article class="svc spot"><span class="svc-n mono">E</span><h3>UI &amp; motion</h3><p>Interfaces with taste, and motion like this page. Design systems, prototypes, GSAP.</p></article>
+          <article class="svc spot"><span class="svc-n mono">F</span><h3>Speed</h3><p>Audits and Core Web Vitals work for apps and sites that feel slow.</p></article>
         </div>
       </section>
 
-      <!-- Skills Section -->
-      <section
-        id="skills"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="skills-heading"
-      >
-        <div class="w-full">
-          <h2 id="skills-heading" class="text-5xl font-bold mb-4 text-gradient">
-            SKILLS & EXPERTISE
-          </h2>
-          <p class="text-gray-400 text-lg mb-12 max-w-2xl">
-            2 + years of hands-on experience building Flutter apps for Android and macOS, ERP
-            integrations, 3D experiences, and interactive applications.
-          </p>
+      <!-- CONTACT -->
+      <section id="contact" class="contact" data-shape="hello" data-label="10 Contact" aria-labelledby="contact-h">
+        <div class="dots" aria-hidden="true"></div>
+        <p class="mono contact-kicker">Have a project in mind?</p>
+        <h2 id="contact-h" class="contact-title">
+          <span class="line"><span>Let's build</span></span>
+          <span class="line"><span><em>something</em> real.</span></span>
+        </h2>
+        <a href="mailto:com.akshaycp@gmail.com" class="mail magnetic" data-cursor="Write">com.akshaycp@gmail.com</a>
 
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <!-- Technical Skills -->
-            <div class="space-y-8" role="list" aria-label="Technical development skills">
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">Flutter / Dart</span>
-                  <span class="text-gray-500 text-sm" aria-label="95 percent proficiency">95%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="95" aria-valuemin="0" aria-valuemax="100" aria-label="Flutter and Dart proficiency: 95%">
-                  <div class="skill-progress" style="width: 95%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">ERP Integration / REST APIs</span>
-                  <span class="text-gray-500 text-sm" aria-label="90 percent proficiency">90%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" aria-label="ERP Integration and REST APIs proficiency: 90%">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">Firebase / Backend Services</span>
-                  <span class="text-gray-500 text-sm" aria-label="85 percent proficiency">85%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Firebase and Backend Services proficiency: 85%">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">3D / AR Development</span>
-                  <span class="text-gray-500 text-sm" aria-label="80 percent proficiency">80%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="3D and AR Development proficiency: 80%">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">macOS / Desktop Apps</span>
-                  <span class="text-gray-500 text-sm" aria-label="75 percent proficiency">75%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100" aria-label="macOS and desktop app development proficiency: 75%">
-                  <div class="skill-progress" style="width: 75%"></div>
-                </div>
-              </div>
+        <div class="contact-grid">
+          <form id="contact-form" class="glass form" aria-label="Send a project inquiry">
+            <div class="field"><input id="f-name" name="name" required autocomplete="name" placeholder=" " /><label for="f-name">Your name</label></div>
+            <div class="field"><input id="f-email" type="email" name="email" required autocomplete="email" placeholder=" " /><label for="f-email">Email</label></div>
+            <div class="field chips" role="radiogroup" aria-label="Project type">
+              <label><input type="radio" name="project-type" value="AI assistant" checked /><span>AI assistant</span></label>
+              <label><input type="radio" name="project-type" value="Flutter App Development" /><span>App</span></label>
+              <label><input type="radio" name="project-type" value="ERP Development" /><span>ERP</span></label>
+              <label><input type="radio" name="project-type" value="3D Development" /><span>3D / AR</span></label>
+              <label><input type="radio" name="project-type" value="Other" /><span>Other</span></label>
             </div>
-
-            <!-- Design & Tool Skills -->
-            <div class="space-y-8" role="list" aria-label="Design and tool skills">
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">UI/UX Design</span>
-                  <span class="text-gray-500 text-sm" aria-label="90 percent proficiency">90%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100" aria-label="UI/UX Design proficiency: 90%">
-                  <div class="skill-progress" style="width: 90%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">Figma / Adobe Suite</span>
-                  <span class="text-gray-500 text-sm" aria-label="85 percent proficiency">85%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Figma and Adobe Suite proficiency: 85%">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">Video Editing / Animations</span>
-                  <span class="text-gray-500 text-sm" aria-label="80 percent proficiency">80%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" aria-label="Video Editing and Animations proficiency: 80%">
-                  <div class="skill-progress" style="width: 80%"></div>
-                </div>
-              </div>
-              <div role="listitem">
-                <div class="flex justify-between mb-2">
-                  <span class="text-sm font-bold uppercase tracking-widest">Version Control / Git</span>
-                  <span class="text-gray-500 text-sm" aria-label="85 percent proficiency">85%</span>
-                </div>
-                <div class="skill-bar" role="progressbar" aria-valuenow="85" aria-valuemin="0" aria-valuemax="100" aria-label="Version Control and Git proficiency: 85%">
-                  <div class="skill-progress" style="width: 85%"></div>
-                </div>
-              </div>
+            <div class="field"><textarea id="f-msg" name="message" rows="4" required placeholder=" "></textarea><label for="f-msg">Tell me about it</label></div>
+            <button type="submit" id="submit-btn" class="btn btn-solid magnetic"><span>Send message</span></button>
+            <p id="form-status" class="mono form-status" role="status" aria-live="polite"></p>
+          </form>
+          <div class="contact-side">
+            <div class="cinfo"><small class="mono">Based in</small><b>Kerala, India</b></div>
+            <div class="cinfo"><small class="mono">Availability</small><b><span class="live-dot"></span> Open for freelance</b></div>
+            <div class="socials">
+              <a href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN" target="_blank" rel="noopener" class="scramble">Google Play</a>
+              <a href="https://github.com/Akshay-cp7" target="_blank" rel="noopener" class="scramble">GitHub</a>
+              <a href="https://in.linkedin.com/in/akshay-cp7" target="_blank" rel="noopener" class="scramble">LinkedIn</a>
+              <a href="https://www.instagram.com/akshay_c_p__/" target="_blank" rel="noopener" class="scramble">Instagram</a>
             </div>
           </div>
         </div>
       </section>
+    </main>
 
-      <!-- App Showcase Section -->
-      <section
-        id="app-showcase"
-        class="max-w-7xl mx-auto py-20 px-4"
-        aria-labelledby="app-showcase-heading"
-      >
-        <div class="w-full">
-          <div
-            class="flex flex-col md:flex-row md:items-end md:justify-between mb-12"
-          >
-            <div>
-              <h2 id="app-showcase-heading" class="text-3xl md:text-5xl font-bold mt-2 text-gradient">
-                More on Google Play &amp; Mac
-              </h2>
-            </div>
-            <a
-              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="mt-4 md:mt-0 text-sm text-gray-400 hover:text-white transition-colors flex items-center gap-2"
-              aria-label="View all published apps by Akshay CP on Google Play Store"
-            >
-              View all apps
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-4 h-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                aria-hidden="true"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17 8l4 4m0 0l-4 4m4-4H3"
-                />
-              </svg>
-            </a>
-          </div>
-
-          <div class="bento-grid" role="list" aria-label="Published mobile applications">
-            <!-- Featured Large App - PhotoWall AR -->
-            <a
-              href="https://play.google.com/store/apps/details?id=com.arzdrz.photowall.ar&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item bento-large group"
-              role="listitem"
-              aria-label="PhotoWall AR - Featured app: Place any image from your gallery onto real walls using Augmented Reality"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="Android" />
-              <meta itemprop="applicationCategory" content="UtilitiesApplication" />
-              <div class="bento-content">
-                <div class="bento-icon-large">
-                  <img
-                    src="https://play-lh.googleusercontent.com/xYkpJIM-kLmxGfzUbItoTbH2xsBUYTCDi76ScmQnWZkePZ0PqS4bStuBT7chgadGq_FNKy_fvIfPhDd3HxrY8_k=w480-h960-rw"
-                    alt="PhotoWall AR app icon - place images on real walls using augmented reality"
-                    loading="lazy"
-                    decoding="async"
-                    width="256"
-                    height="256"
-                    itemprop="image"
-                  />
-                </div>
-                <div class="bento-text">
-                  <span class="bento-badge">Featured</span>
-                  <h3 class="bento-title" itemprop="name">PhotoWall AR</h3>
-                  <p class="bento-desc" itemprop="description">
-                    Place any image from your gallery onto real walls using Augmented Reality, so you can see how it looks before you commit.
-                  </p>
-                </div>
-              </div>
-              <div class="bento-arrow" aria-hidden="true">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M7 17L17 7M17 7H7M17 7v10"
-                  />
-                </svg>
-              </div>
-            </a>
-
-            <!-- Regular Apps -->
-            <a
-              href="https://play.google.com/store/apps/details?id=com.arzdrz.pdf_to_booklets&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="PDF & Images to Booklet - Convert PDF documents and images into booklet format for easy printing"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="Android" />
-              <div class="bento-content-small">
-                <img
-                  src="https://play-lh.googleusercontent.com/hbK2Sj7rpvYErfe3-CUvcg3l9JX72X7CR6nhudHjeOOcdG0b6LgU2YgtHoix0qX55VsM3CKPcl7nktmrP9p0=w480-h960-rw"
-                  alt="PDF & Images to Booklet app icon - convert PDF documents and images into booklet format for easy printing"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">PDF & Images to Booklet</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">Utilities</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <a
-              href="https://play.google.com/store/apps/details?id=com.arzdrz.idcard_pdf_maker&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="ID Card to PDF, number one on Google Play India for aadhaar to pdf"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="Android" />
-              <div class="bento-content-small">
-                <img
-                  src="https://play-lh.googleusercontent.com/rhR-LoSxuWCMpp_vxRIV4QTaAdJEUT4fbaL6UMc2lVR5xK0_geqyAvb2NETYJilIyA=s256-rw"
-                  alt="ID Cards to PDF app icon - convert identification cards to PDF documents"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">ID Cards to PDF</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">#1 for &ldquo;aadhaar to pdf&rdquo;</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <!-- Air Mouse -->
-            <a
-              href="https://play.google.com/store/apps/details?id=com.pixelapplogic.GyroAir&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="Air Mouse - Control your device with gestures"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="Android" />
-              <div class="bento-content-small">
-                <img
-                  src="https://play-lh.googleusercontent.com/atKbAdMzLKsNJ6W3lbDy0b5syPt712jzg6RLzAr1p1ui6z87-oqKcHudFL8Xa8q6OLodes73UqXhnBSfotMbiA=w480-h960-rw"
-                  alt="Air Mouse app icon - control your device with gestures"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">Air Mouse - Gyroair</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">Utilities</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <a
-              href="https://play.google.com/store/apps/details?id=com.arzdrz.pinspace&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="Vision Board - Mood Board App for Android"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="Android" />
-              <div class="bento-content-small">
-                <img
-                  src="https://play-lh.googleusercontent.com/YYVxmCC2xammRO3Cwu-t-z6_G9uvV5yB75zfCUkLk-_mNbcZBxGlTFlsLA1LGf_zvfqSmucr7pM60U5W2RE2PZE=w480-h960-rw"
-                  alt="Vision Board - Mood Board App icon for Android"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">Vision Board - Mood Board App</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">Tools</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <!-- macOS - Mac App Store -->
-            <a
-              href="https://apps.apple.com/in/app/pdf-images-to-booklet/id6794624542"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="PDF and Images to Booklet for Mac - native macOS app on the Mac App Store"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="macOS" />
-              <div class="bento-content-small">
-                <img
-                  src="https://is1-ssl.mzstatic.com/image/thumb/Purple221/v4/a9/f2/b8/a9f2b8ec-cd17-1f9d-b5d2-f7b8f0b00e62/AppIcon-0-0-85-220-0-5-0-2x.png/256x256bb.png"
-                  alt="PDF and Images to Booklet app icon - native macOS booklet printing app on the Mac App Store"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">PDF &amp; Images to Booklet for Mac</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">macOS &middot; Mac App Store</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <a
-              href="https://apps.apple.com/in/app/vision-board-mood-board/id6812633506?mt=12"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item group"
-              role="listitem"
-              aria-label="Vision Board - Mood Board App for Mac - paid native macOS app on the Mac App Store"
-              itemscope
-              itemtype="https://schema.org/SoftwareApplication"
-            >
-              <meta itemprop="operatingSystem" content="macOS" />
-              <div class="bento-content-small">
-                <img
-                  src="https://is1-ssl.mzstatic.com/image/thumb/Features116/v4/6e/e2/e7/6ee2e7db-bf98-0d30-7adf-15aa80debeb5/721e011e-109f-4227-8978-1f8c6071c48f.png/256x256bb.png"
-                  alt="Vision Board - Mood Board App icon - native macOS mood board app on the Mac App Store"
-                  class="bento-icon"
-                  loading="lazy"
-                  decoding="async"
-                  width="64"
-                  height="64"
-                  itemprop="image"
-                />
-                <div>
-                  <h3 class="bento-title-sm" itemprop="name">Vision Board for Mac</h3>
-                  <p class="bento-cat" itemprop="applicationCategory">macOS &middot; Mac App Store</p>
-                </div>
-              </div>
-              <span class="bento-arrow-sm" aria-hidden="true">→</span>
-            </a>
-
-            <!-- Stats Box -->
-            <a
-              href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="bento-item bento-stats-box bento-span2"
-              role="listitem"
-              aria-label="30+ published apps on Google Play Store - View all"
-            >
-              <div class="stats-number" aria-hidden="true">30+</div>
-              <div class="stats-label">Published Apps</div>
-              <div class="stats-sub">on Google Play, plus macOS on the Mac App Store</div>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Services Section -->
-      <section
-        id="services"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="services-heading"
-        itemscope
-        itemtype="https://schema.org/Service"
-      >
-        <div class="w-full">
-          <h2 id="services-heading" class="text-5xl font-bold mb-4 text-gradient">SERVICES</h2>
-          <p class="text-gray-400 text-lg mb-12 max-w-2xl" itemprop="description">
-            Specialized solutions tailored to bring your digital vision to life
-            with cutting-edge technology and creative excellence.
-          </p>
-
-          <div
-            class="grid grid-cols-1 md:grid-cols-3 gap-8"
-            role="list"
-            aria-label="Professional services offered"
-          >
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEiPjQNNlQC5DwMbOOyS1Em8wQqEItYWEF_IJla8UO1feLwryzG63uXfX7U3Y9hngiDHDZnVxzQX6g1D3WOYRmHLcXtqcOHYiJWLpbvyub3Z58sxhlGxAjeMPF6ODCxLlH7X5H6zWsI25B5EqqWCsGFfSVhKUY-TX37udk88K3ZiWBJ1lOn6J0OFYCiJI0Oo"
-                  alt="Flutter app development service illustration showing cross-platform mobile development"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">Flutter App Development</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                Full-stack app development with Flutter. From responsive
-                landing pages to complex cross-platform applications for Android, iOS and macOS.
-              </p>
-            </article>
-
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEjTfkSSSHsALb4ds528eiOffyNYPuMUSKi2XGvmKZzyluLD_OmLxZHj-7HlKlKTG3sK1zri_3n1CCABJD0Ar9OMzBEXkps3S2N6R0ET8kh_tmtWXdszWVxFRg9LsA94TI6-qKdlI49PQsMtsJ8pEN8fufRbLmr7Fn9dHgmojfICf9evHKEq2euQJWHuOaO9"
-                  alt="3D development and interactive experience creation"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">3D Development</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                Immersive 3D experiences for web and mobile. Interactive
-                visualizations, AR integrations, and virtual environments.
-              </p>
-            </article>
-
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEhLNq74ne_dibmT0ijfZPCF73lZjNn8_OqOOtRNdLlXUlvmwSvF28ymPZuAqtAc-yWOHnPlbQq7Axxv-5xVFr3Jed8rheFyxZiPfYZag8bsjX24yotWs-OBDLRmfIhYYhCuVQoRVYX9ai_js3GhFbsTdiIMZ_3HflG7dm_Sm-c3sIda4AQeUXaijZyKtM9n"
-                  alt="UI UX design service showing user interface prototyping and design systems"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">UI/UX Design</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                User-centered design with focus on aesthetics and usability.
-                Prototyping and design systems.
-              </p>
-            </article>
-
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEgZiL4WxydiKJ8REBvX5UPbz35ZYUEJgm04C5lTEcMOn69pmJ5wiVJxl6blakHzqzaAAoUhDqj6QbiJHM0ObOkhYH2l4NV4oGtAWtjVyvtv7YPqIvOW2MRmDPfvKSirOXCe2XtGnFxbxiCI_N0KzlahF2KsbaCH7QZX5ouTrhVUfLs2EFfTWmGtW1A8Fqqk"
-                  alt="Application performance optimization service for Core Web Vitals and code auditing"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">Performance Optimization</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                Speed up your existing applications. Core Web Vitals
-                optimization and code auditing.
-              </p>
-            </article>
-
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEgyna81PbevAw6A6AhaFxYRYHQCY6kxWgcmqWwvcIhrRnWXLAEQjcHTDSf7By4FcNFd7jMql77KBgR5jq9gki6IeGmPsoAxkHiEGVkso14Fqyfsf-hWMKA8KLEo290NFhkROk_QZ5ktllKyupbB--nhm7k38L3X6KOBbO0-AxQyxeDxpnQnHVqdtj-m3gc-"
-                  alt="Responsive mobile-first web design service for all devices and screen sizes"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">Responsive Design</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                Mobile-first approach ensuring seamless experience across all
-                devices and screen sizes.
-              </p>
-            </article>
-
-            <article
-              class="glass p-6 service-card group hover:bg-white/5 transition-all duration-500 overflow-hidden"
-              role="listitem"
-              itemscope
-              itemtype="https://schema.org/Service"
-            >
-              <div class="service-image-container">
-                <img
-                  src="https://blogger.googleusercontent.com/img/a/AVvXsEjfSuiS4rnk-qsUFeWC9SYHiGLwWWnHWpUkKn8aSrZtN7iTOs9updslqXX1vs7FAc7T1whp8JFAU5vrJ34_H036XWdCc5N3xj8FlSd0LHXQonaSWgq3RthBEXIUn9sPVj7aUVrnetmEgUAPmJRHhsJb6aLczOlx7Z7DMOHqvT7lC_bdTaR3ctBd1Q12thu5"
-                  alt="Video editing and motion design animation service using GSAP and CSS animations"
-                  class="service-image"
-                  loading="lazy"
-                  decoding="async"
-                  width="400"
-                  height="300"
-                  itemprop="image"
-                />
-              </div>
-              <h3 class="text-xl font-bold mb-3" itemprop="name">Video & Animation</h3>
-              <p class="text-gray-400 text-sm leading-relaxed" itemprop="description">
-                Motion design and micro-interactions that bring interfaces to
-                life using GSAP and CSS animations.
-              </p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- Contact Section -->
-      <section
-        id="contact"
-        class="max-w-7xl mx-auto"
-        aria-labelledby="contact-heading"
-        itemscope
-        itemtype="https://schema.org/ContactPage"
-      >
-        <div class="w-full">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h2 id="contact-heading" class="text-5xl font-bold mb-4 text-gradient">
-                LET'S CREATE<br />TOGETHER
-              </h2>
-              <p class="text-gray-400 text-lg mb-8 max-w-md">
-                Have a project in mind? Let's discuss how we can bring your
-                vision to life with cutting-edge technology.
-              </p>
-
-              <address class="space-y-6 not-italic" itemscope itemtype="https://schema.org/Person">
-                <meta itemprop="name" content="Akshay CP" />
-                <a
-                  href="mailto:com.akshaycp@gmail.com"
-                  class="flex items-center gap-4 group hover:opacity-80 transition-opacity"
-                  aria-label="Send email to com.akshaycp@gmail.com"
-                >
-                  <div
-                    class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-5 h-5"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p
-                      class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                    >
-                      Email
-                    </p>
-                    <p class="text-white group-hover:underline" itemprop="email">
-                      com.akshaycp@gmail.com
-                    </p>
-                  </div>
-                </a>
-
-                <div class="flex items-center gap-4" itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-                  <div
-                    class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-5 h-5"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"
-                      />
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p
-                      class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                    >
-                      Location
-                    </p>
-                    <p class="text-white">
-                      <span itemprop="addressRegion">Kerala</span>,
-                      <span itemprop="addressCountry">India</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div class="flex items-center gap-4">
-                  <div
-                    class="w-12 h-12 glass flex items-center justify-center"
-                    aria-hidden="true"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke-width="1.5"
-                      stroke="currentColor"
-                      class="w-5 h-5"
-                      aria-hidden="true"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  </div>
-                  <div>
-                    <p
-                      class="text-xs font-bold tracking-widest text-gray-500 uppercase"
-                    >
-                      Availability
-                    </p>
-                    <p class="text-white">Open for freelance projects</p>
-                  </div>
-                </div>
-              </address>
-
-              <div class="flex gap-4 mt-8" role="list" aria-label="Social media profiles">
-                <!-- GitHub -->
-                <a
-                  href="https://github.com/Akshay-cp7"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="Visit Akshay CP's GitHub profile"
-                  aria-label="GitHub - View source code and open source projects"
-                  role="listitem"
-                  itemprop="sameAs"
-                >
-                  <span class="sr-only">Akshay CP GitHub profile</span>
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
-                    />
-                  </svg>
-                </a>
-                <!-- LinkedIn -->
-                <a
-                  href="https://in.linkedin.com/in/akshay-cp7"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="Connect with Akshay CP on LinkedIn"
-                  aria-label="LinkedIn - Professional profile and networking"
-                  role="listitem"
-                  itemprop="sameAs"
-                >
-                  <span class="sr-only">Akshay CP LinkedIn profile</span>
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"
-                    />
-                  </svg>
-                </a>
-                <!-- Instagram -->
-                <a
-                  href="https://www.instagram.com/akshay_c_p__/"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="Follow Akshay CP on Instagram"
-                  aria-label="Instagram - View Akshay CP's profile and updates"
-                  role="listitem"
-                  itemprop="sameAs"
-                >
-                  <span class="sr-only">Akshay CP Instagram profile</span>
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M7.75 2h8.5A5.756 5.756 0 0122 7.75v8.5A5.756 5.756 0 0116.25 22h-8.5A5.756 5.756 0 012 16.25v-8.5A5.756 5.756 0 017.75 2zm0 1.5A4.255 4.255 0 003.5 7.75v8.5A4.255 4.255 0 007.75 20.5h8.5a4.255 4.255 0 004.25-4.25v-8.5a4.255 4.255 0 00-4.25-4.25h-8.5zm8.875 1.125a.875.875 0 110 1.75.875.875 0 010-1.75zM12 6.5A5.5 5.5 0 1112 17.5 5.5 5.5 0 0112 6.5zm0 1.5A4 4 0 1012 16a4 4 0 000-8z"
-                    />
-                  </svg>
-                </a>
-                <!-- Google Play Store -->
-                <a
-                  href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-                  target="_blank"
-                  rel="me noopener noreferrer"
-                  class="w-12 h-12 glass flex items-center justify-center hover:bg-white/10 transition-all"
-                  title="View Akshay CP's apps on Google Play Store"
-                  aria-label="Google Play Store - Browse published mobile applications"
-                  role="listitem"
-                  itemprop="sameAs"
-                >
-                  <span class="sr-only">Akshay CP Google Play developer profile</span>
-                  <svg
-                    class="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                    aria-hidden="true"
-                  >
-                    <path
-                      d="M3.609 1.814L13.792 12 3.61 22.186a.996.996 0 01-.61-.92V2.734a1 1 0 01.609-.92zm10.89 10.893l2.302 2.302-10.937 6.333 8.635-8.635zm3.199-3.199l2.302 2.302a1 1 0 010 1.38l-2.302 2.302L15.2 12.694l2.498-3.186zM5.864 2.658L16.8 8.991l-2.302 2.302L5.864 2.658z"
-                    />
-                  </svg>
-                </a>
-              </div>
-            </div>
-
-<!-- Contact Form -->
-<div class="glass p-8">
-  <form
-    id="contact-form"
-    class="space-y-6"
-    aria-label="Contact form - Send a project inquiry to Akshay CP"
-    name="contact-form"
-  >
-    <div>
-      <label
-        for="contact-name"
-        class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
-      >
-        Name
-      </label>
-      <input
-        type="text"
-        id="contact-name"
-        name="name"
-        required
-        autocomplete="name"
-        class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
-        placeholder="John Doe"
-        aria-required="true"
-      />
-    </div>
-    <div>
-      <label
-        for="contact-email"
-        class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
-      >
-        Email
-      </label>
-      <input
-        type="email"
-        id="contact-email"
-        name="email"
-        required
-        autocomplete="email"
-        class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
-        placeholder="john@example.com"
-        aria-required="true"
-      />
-    </div>
-    <div>
-      <label
-        for="contact-project-type"
-        class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
-      >
-        Project Type
-      </label>
-      <select
-        id="contact-project-type"
-        name="project-type"
-        required
-        class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all"
-        aria-required="true"
-      >
-        <option value="" class="bg-zinc-900" disabled selected>
-          Select a service
-        </option>
-        <option value="flutter-app" class="bg-zinc-900">
-          Flutter App Development
-        </option>
-        <option value="erp" class="bg-zinc-900">
-          ERP Development
-        </option>
-        <option value="3d" class="bg-zinc-900">3D Development</option>
-        <option value="design" class="bg-zinc-900">
-          UI/UX Design
-        </option>
-        <option value="other" class="bg-zinc-900">Other</option>
-      </select>
-    </div>
-    <div>
-      <label
-        for="contact-message"
-        class="text-xs font-bold tracking-widest text-gray-500 uppercase block mb-2"
-      >
-        Message
-      </label>
-      <textarea
-        id="contact-message"
-        name="message"
-        rows="4"
-        required
-        class="w-full bg-transparent border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-white/30 transition-all resize-none"
-        placeholder="Tell me about your project..."
-        aria-required="true"
-      ></textarea>
-    </div>
-
-    <!-- Status Message -->
-    <div id="form-status" class="text-sm text-center hidden"></div>
-
-    <button
-      type="submit"
-      id="submit-btn"
-      class="w-full px-8 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs hover:bg-gray-200 transition-all duration-300 rounded-lg"
-      aria-label="Submit contact form and send message"
-    >
-      Send Message
-    </button>
-  </form>
-</div>
-
-    <!-- Footer -->
-    <footer
-      class="p-12 text-center text-gray-600 text-sm tracking-widest border-t border-white/5"
-      role="contentinfo"
-      itemscope
-      itemtype="https://schema.org/WPFooter"
-    >
-      <nav class="mb-4" aria-label="Footer navigation">
-        <a
-          href="https://play.google.com/store/apps/dev?id=7948075848513102467&hl=en_IN"
-          target="_blank"
-          rel="me noopener noreferrer"
-          class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="View Akshay CP's apps on Google Play"
-        >
-          Google Play
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
-        <a
-          href="https://github.com/Akshay-cp7"
-          target="_blank"
-          rel="me noopener noreferrer"
-          class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="Visit Akshay CP's GitHub repositories"
-        >
-          GitHub
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
-        <a
-          href="https://in.linkedin.com/in/akshay-cp7"
-          target="_blank"
-          rel="me noopener noreferrer"
-          class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="View Akshay CP's LinkedIn profile"
-        >
-          LinkedIn
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
-        <a
-          href="https://www.instagram.com/akshay_c_p__/"
-          target="_blank"
-          rel="me noopener noreferrer"
-          class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="View Akshay CP's Instagram profile"
-        >
-          Instagram
-        </a>
-        <span class="text-gray-700" aria-hidden="true">·</span>
-        <a
-          href="mailto:com.akshaycp@gmail.com"
-          class="hover:text-gray-400 transition-colors mx-3"
-          aria-label="Send an email to Akshay CP"
-        >
-          Email
-        </a>
-      </nav>
-      <!-- <p>
-        <small>&copy; <time datetime="2025">2026</time> AKSHAY CP. MADE WITH CODE & PASSION.</small>
-      </p> -->
+    <footer class="footer">
+      <div class="footer-big" aria-hidden="true">AKSHAY&nbsp;CP</div>
+      <div class="footer-row mono">
+        <span>© 2026 Akshay CP</span>
+        <span><a href="/store/">Store</a> · <a href="/privacypolicy/">Privacy</a> · <a href="/support/">Support</a></span>
+        <a href="#home" class="to-top magnetic">Back to top ↑</a>
+      </div>
     </footer>
-
-    <!-- Main Script - Deferred -->
-    <script src="script.js" defer></script>
   </body>
 </html>
