@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GradeClick for Windows</title>
+<meta name="description" content="GradeClick for Windows. Answer script valuation for Farook College evaluators, on your PC.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#f6f2e8">
+<link rel="icon" href="icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#f6f2e8;--paper2:#efe9db;--card:#fffdf8;--ink:#14223b;--ink2:#3d4a63;--muted:#77809a;
+  --rule:rgba(46,92,160,.13);--margin:rgba(200,55,45,.42);--line:#e2dccd;
+  --red:#c8372d;--navy:#16356b;--navy2:#0f264f;--gold:#b8862b;
+  --win:#f3f3f3;--winbar:#ebebeb;--winline:#e0e0e0;--winink:#1b1b1b;--accent:#0f5bb8;
+  --night:#0f1b31;--nightink:#e9edf5;--nightmuted:#9aa6bf;
+  --shadow:0 30px 60px -20px rgba(20,34,59,.35),0 12px 24px -12px rgba(20,34,59,.18);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:#0e1628;--paper2:#121c33;--card:#16213a;--ink:#ecf0f7;--ink2:#c3cbdc;--muted:#8d98b2;
+  --rule:rgba(120,160,230,.08);--margin:rgba(232,90,78,.38);--line:#26324d;
+  --red:#ef6a5c;--navy:#8db6f2;--navy2:#6f9ee6;--gold:#e0b25a;
+  --win:#202020;--winbar:#1a1a1a;--winline:#333;--winink:#f0f0f0;--accent:#6aa8f5;
+  --night:#091020;--shadow:0 30px 60px -20px rgba(0,0,0,.6);color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:#0e1628;--paper2:#121c33;--card:#16213a;--ink:#ecf0f7;--ink2:#c3cbdc;--muted:#8d98b2;
+  --rule:rgba(120,160,230,.08);--margin:rgba(232,90,78,.38);--line:#26324d;
+  --red:#ef6a5c;--navy:#8db6f2;--navy2:#6f9ee6;--gold:#e0b25a;
+  --win:#202020;--winbar:#1a1a1a;--winline:#333;--winink:#f0f0f0;--accent:#6aa8f5;
+  --night:#091020;--shadow:0 30px 60px -20px rgba(0,0,0,.6);color-scheme:dark;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Inter,system-ui,sans-serif;background:var(--paper);color:var(--ink);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+a{color:inherit}
+.wrap{max-width:1160px;margin:0 auto;padding:0 28px}
+.serif{font-family:'Instrument Serif',Georgia,serif;font-weight:400}
+.pen{font-family:Caveat,cursive;color:var(--red);font-weight:700}
+
+/* ruled answer sheet */
+.sheet{position:relative;background:
+  linear-gradient(90deg,transparent 0 calc(var(--mx) - 1px),var(--margin) calc(var(--mx) - 1px) calc(var(--mx) + 1px),transparent calc(var(--mx) + 1px)),
+  repeating-linear-gradient(180deg,transparent 0 31px,var(--rule) 31px 32px);
+  --mx:64px}
+
+/* nav */
+nav{position:relative;z-index:3}
+nav .wrap{display:flex;align-items:center;justify-content:space-between;height:78px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none}
+.brand img{width:38px;height:38px;border-radius:50%;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.brand b{font-size:17px;font-weight:700;letter-spacing:-.2px;display:block;line-height:1.1}
+.brand small{font-size:12px;color:var(--muted)}
+.navr{display:flex;align-items:center;gap:22px;font-size:14px;color:var(--ink2)}
+.navr a{text-decoration:none}
+.navr a:hover{color:var(--ink)}
+.navr .chip{border:1px solid var(--line);background:var(--card);padding:8px 14px;border-radius:99px;font-weight:600;color:var(--ink)}
+
+/* hero */
+.hero{padding:40px 0 110px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.08fr);gap:56px;align-items:center}
+.eyebrow{font-size:28px;transform:rotate(-2deg);display:inline-block;margin-bottom:6px}
+h1{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(52px,6.6vw,88px);line-height:.98;letter-spacing:-1.5px}
+h1 i{color:var(--navy)}
+.lead{margin-top:24px;font-size:18.5px;color:var(--ink2);max-width:470px;line-height:1.55}
+.get{margin-top:34px;max-width:470px}
+.get label{display:block;font-size:13px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.field{display:flex;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:6px;box-shadow:0 1px 0 rgba(20,34,59,.04),0 10px 30px -18px rgba(20,34,59,.3);transition:border-color .2s,box-shadow .2s}
+.field:focus-within{border-color:var(--navy);box-shadow:0 0 0 4px color-mix(in srgb,var(--navy) 14%,transparent)}
+.field svg.lock{width:18px;height:18px;margin:0 6px 0 12px;color:var(--muted);flex-shrink:0}
+.field input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:16px;color:var(--ink);padding:12px 8px;outline:0}
+.field input::placeholder{color:var(--muted)}
+.dl{display:inline-flex;align-items:center;gap:10px;border:0;cursor:pointer;font:inherit;font-weight:600;font-size:15.5px;background:var(--navy);color:#fff;padding:13px 20px;border-radius:11px;white-space:nowrap;transition:background .2s,transform .2s}
+:root[data-theme="dark"] .dl{color:#0e1628}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .dl{color:#0e1628}}
+.dl:hover{background:var(--navy2)}
+.dl:active{transform:scale(.98)}
+.dl:disabled{opacity:.65;cursor:progress}
+.dl svg{width:17px;height:17px}
+.status{min-height:24px;margin-top:10px;font-size:14px;color:var(--muted)}
+.status.bad{color:var(--red);font-weight:600}
+.status.good{color:#1f8a55;font-weight:600}
+.bar2{height:3px;border-radius:3px;background:var(--line);overflow:hidden;margin-top:8px;display:none}
+.bar2 i{display:block;height:100%;width:0;background:var(--navy);transition:width .2s}
+.facts{display:flex;flex-wrap:wrap;gap:8px 22px;margin-top:22px;font-size:13.5px;color:var(--muted)}
+.facts span{display:inline-flex;align-items:center;gap:7px}
+.facts svg{width:15px;height:15px}
+
+/* windows 11 window */
+.stage{position:relative}
+.win{position:relative;z-index:2;background:var(--win);color:var(--winink);border-radius:10px;box-shadow:var(--shadow),0 0 0 1px rgba(0,0,0,.08);overflow:hidden;font-family:'Segoe UI Variable','Segoe UI',Inter,system-ui,sans-serif;font-size:13px}
+.tb{display:flex;align-items:center;height:36px;background:var(--winbar);padding-left:12px;gap:8px;font-size:12px}
+.tb img{width:16px;height:16px;border-radius:50%;background:#fff}
+.tb .ctl{margin-left:auto;display:flex}
+.tb .ctl span{width:46px;height:36px;display:grid;place-items:center;font-size:11px;opacity:.75}
+.app{display:grid;grid-template-columns:150px 1fr;min-height:420px}
+.rail{border-right:1px solid var(--winline);padding:14px 10px;display:flex;flex-direction:column;gap:3px;font-size:12.5px}
+.rail div{padding:8px 10px;border-radius:6px;opacity:.75}
+.rail .on{background:color-mix(in srgb,var(--accent) 12%,transparent);opacity:1;font-weight:600;position:relative}
+.rail .on::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:3px;background:var(--accent)}
+.rail .who{margin-top:auto;font-size:11.5px;opacity:.6;padding:8px 10px}
+.pane{padding:18px 20px}
+.ph{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:14px}
+.ph b{font-size:17px;font-weight:600}
+.ph small{display:block;opacity:.6;font-size:11.5px}
+.inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.inp{border:1px solid var(--winline);border-bottom:2px solid var(--winline);border-radius:6px;padding:7px 10px;background:color-mix(in srgb,var(--win) 60%,#fff 40%);position:relative;min-height:46px}
+:root[data-theme="dark"] .inp{background:#2a2a2a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .inp{background:#2a2a2a}}
+.inp label{display:block;font-size:10.5px;opacity:.6}
+.inp .v{font-weight:600;font-variant-numeric:tabular-nums;min-height:18px}
+.inp.focus{border-bottom-color:var(--accent)}
+.inp .ok{position:absolute;right:9px;top:13px;font-size:11px;font-weight:600;color:#1f8a55;opacity:0;transform:translateY(3px);transition:.3s}
+.inp.done .ok{opacity:1;transform:none}
+.sec{border:1px solid var(--winline);border-radius:8px;overflow:hidden}
+.sec .sh{display:flex;justify-content:space-between;padding:8px 12px;background:color-mix(in srgb,var(--winbar) 70%,transparent);font-size:11.5px;font-weight:600;letter-spacing:.3px;text-transform:uppercase;opacity:.85}
+.q{display:grid;grid-template-columns:54px 1fr 70px;align-items:center;padding:6px 12px;border-top:1px solid var(--winline);font-variant-numeric:tabular-nums}
+.q .n{opacity:.6}
+.q .max{opacity:.45;font-size:11.5px}
+.q .m{justify-self:end;width:62px;text-align:right;border:1px solid var(--winline);border-radius:5px;padding:3px 8px;font-weight:600;min-height:25px}
+.q.cur .m{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.q.cur{background:color-mix(in srgb,var(--accent) 6%,transparent)}
+.caret::after{content:"";display:inline-block;width:1px;height:13px;background:var(--accent);margin-left:1px;vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.tot{display:flex;justify-content:space-between;align-items:center;margin-top:12px;padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--accent) 9%,transparent)}
+.tot span{font-size:11.5px;font-weight:600;letter-spacing:.5px;text-transform:uppercase;opacity:.75}
+.tot b{font-size:19px;font-variant-numeric:tabular-nums}
+.actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+.wb{padding:6px 14px;border-radius:5px;border:1px solid var(--winline);font-size:12.5px;background:var(--win)}
+.wb.p{background:var(--accent);border-color:var(--accent);color:#fff}
+.wb.p.press{filter:brightness(.85)}
+.toast{position:absolute;left:50%;top:48px;transform:translate(-50%,12px);background:#1f2937;color:#fff;font-size:12px;padding:8px 14px;border-radius:6px;opacity:0;transition:.35s;white-space:nowrap;z-index:3}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.toast{transform:translate(-50%,-8px)}
+.key{position:absolute;z-index:4;right:-16px;bottom:96px;background:var(--card);border:1px solid var(--line);border-bottom-width:3px;border-radius:9px;padding:6px 12px;font-size:13px;font-weight:600;color:var(--ink);box-shadow:0 8px 20px -10px rgba(20,34,59,.4);opacity:0;transition:opacity .2s,transform .12s}
+.key.show{opacity:1}
+.key.down{transform:translateY(2px);border-bottom-width:1px}
+.circle{position:absolute;z-index:5;right:-58px;bottom:34px;width:150px;height:120px;pointer-events:none}
+.circle svg{width:100%;height:100%;overflow:visible}
+.circle path{fill:none;stroke:var(--red);stroke-width:3;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;transition:stroke-dashoffset 1s ease}
+.circle .num{position:absolute;inset:0;display:grid;place-items:center;font-size:46px;opacity:0;transition:opacity .5s .5s;transform:rotate(-6deg)}
+.circle.on path{stroke-dashoffset:0}
+.circle.on .num{opacity:1}
+.note1{position:absolute;left:-26px;bottom:-54px;font-size:24px;transform:rotate(-3deg);z-index:5;white-space:nowrap}
+.note1 svg{width:44px;height:30px;vertical-align:-8px;margin-left:4px}
+
+/* sections */
+section{padding:110px 0}
+.kick{font-size:13px;font-weight:600;letter-spacing:1.4px;text-transform:uppercase;color:var(--red)}
+h2{font-family:'Instrument Serif',Georgia,serif;font-weight:400;font-size:clamp(38px,4.6vw,58px);line-height:1.04;letter-spacing:-.8px;margin-top:12px;max-width:720px}
+h2 i{color:var(--navy)}
+.intro{color:var(--ink2);font-size:17.5px;max-width:560px;margin-top:16px}
+
+/* flow */
+.flow{display:grid;grid-template-columns:repeat(4,1fr);margin-top:60px;border-top:1px solid var(--ink)}
+.fs{padding:26px 26px 0 0;position:relative}
+.fs+.fs{padding-left:26px;border-left:1px solid var(--line)}
+.fs .no{font-family:'Instrument Serif',serif;font-size:64px;line-height:1;color:var(--navy)}
+.fs b{display:block;font-size:17px;margin:16px 0 6px}
+.fs p{color:var(--ink2);font-size:15px}
+.fs .mini{margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13px;font-variant-numeric:tabular-nums}
+.mini .r{display:flex;justify-content:space-between;padding:3px 0}
+.mini .r span{color:var(--muted)}
+.mini .g{color:#1f8a55;font-weight:600}
+
+/* bento */
+.bento{display:grid;grid-template-columns:1.25fr 1fr;gap:18px;margin-top:56px}
+.bento.b2{grid-template-columns:1fr 1.25fr;margin-top:18px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:30px;position:relative;overflow:hidden}
+.tile h3{font-family:'Instrument Serif',serif;font-weight:400;font-size:32px;line-height:1.08;letter-spacing:-.3px}
+.tile p{color:var(--ink2);font-size:15.5px;margin-top:10px;max-width:420px}
+.tile.big{display:flex;flex-direction:column}
+.keys{margin-top:auto;padding-top:26px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.kc{min-width:76px;height:76px;padding:0 20px;border-radius:14px;font-size:20px !important;background:var(--paper);border:1px solid var(--line);border-bottom-width:4px;display:grid;place-items:center;font-weight:600;font-size:15px;color:var(--ink)}
+.kc.w{min-width:150px}
+.kc.hot{background:var(--navy);border-color:var(--navy2);color:#fff}
+.keys .cap{width:100%;font-size:13px;color:var(--muted);margin-top:6px}
+.lockrow{display:flex;align-items:center;gap:10px;margin-top:22px;background:var(--paper);border:1px dashed var(--line);border-radius:12px;padding:12px 14px;font-size:14px}
+.lockrow svg{width:18px;height:18px;color:var(--red);flex-shrink:0}
+.zero{margin-top:22px;border-radius:12px;border:1px solid var(--line);padding:14px;background:var(--paper);font-size:14px}
+.zero b{display:block;margin-bottom:2px}
+.zero .btns{display:flex;gap:8px;margin-top:10px}
+.zero .btns span{font-size:12.5px;padding:5px 12px;border-radius:7px;border:1px solid var(--line);background:var(--card)}
+.zero .btns span:last-child{background:var(--red);border-color:var(--red);color:#fff}
+.slip{position:absolute;right:-20px;bottom:-30px;width:170px;background:#fff;color:#222;border-radius:6px;padding:14px;font-size:9.5px;line-height:1.5;transform:rotate(6deg);box-shadow:0 20px 40px -16px rgba(0,0,0,.35)}
+.slip i{display:block;height:5px;border-radius:2px;background:#e8e8e8;margin:5px 0}
+.slip .s{font-family:Caveat,cursive;font-size:22px;color:#c8372d;text-align:right;line-height:1}
+.tile.pdf{padding-right:190px;min-height:260px}
+
+/* install band */
+.night{background:var(--night);color:var(--nightink);border-radius:36px;margin:0 16px;padding:100px 0}
+.night .kick{color:#f0a49a}
+.night h2 i{color:#9cc1f5}
+.night .intro{color:var(--nightmuted)}
+.inst{display:grid;grid-template-columns:1fr 1.05fr;gap:60px;margin-top:56px;align-items:start}
+.steps{list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:grid;grid-template-columns:44px 1fr;gap:16px;padding:20px 0;border-top:1px solid rgba(255,255,255,.1)}
+.steps li:last-child{border-bottom:1px solid rgba(255,255,255,.1)}
+.steps li::before{content:counter(s,decimal-leading-zero);font-family:'Instrument Serif',serif;font-size:30px;line-height:1;color:#9cc1f5}
+.steps b{display:block;font-size:17px;font-weight:600}
+.steps p{color:var(--nightmuted);font-size:15px;margin-top:4px}
+kbd{font-family:inherit;font-size:13px;font-weight:600;padding:1px 7px;border-radius:6px;border:1px solid rgba(255,255,255,.2);border-bottom-width:2px;color:#fff;white-space:nowrap}
+.ss{background:#0a5bbd;border-radius:6px;padding:34px 34px 26px;color:#fff;font-family:'Segoe UI Variable','Segoe UI',Inter,sans-serif;box-shadow:0 40px 80px -30px rgba(0,0,0,.7);position:relative}
+.ss h4{font-size:28px;font-weight:300;line-height:1.15}
+.ss p{font-size:14px;margin-top:16px;opacity:.95;line-height:1.5}
+.ss u{text-decoration:underline;text-underline-offset:3px;position:relative}
+.ss .meta{font-size:13.5px;margin-top:18px;opacity:.9;line-height:1.7}
+.ss .btns{display:flex;justify-content:flex-end;gap:8px;margin-top:28px}
+.ss .btns span{border:2px solid rgba(255,255,255,.85);padding:6px 22px;font-size:14px}
+.ss .hl{position:relative}
+.ss .hl::after{content:"";position:absolute;inset:-9px -14px;border:2.5px solid #ffd45c;border-radius:50%;transform:rotate(-3deg)}
+.ss .hl::before{content:attr(data-n);position:absolute;left:-40px;top:50%;transform:translateY(-50%);font-family:Caveat,cursive;font-size:30px;font-weight:700;color:#ffd45c;line-height:1}
+.ss .xx{position:absolute;font-family:Caveat,cursive;font-size:24px;color:#ffd45c;white-space:nowrap;line-height:1}
+.ss .ring{position:absolute;border:2.5px solid #ffd45c;border-radius:50%}
+.ss .t1{left:-8px;top:118px}
+.ss .r1{left:26px;top:146px;width:96px;height:36px}
+.ss .r2{right:20px;bottom:18px;width:118px;height:48px}
+.ss .t2{right:14px;bottom:-34px}
+
+/* faq */
+.faq{display:grid;grid-template-columns:1fr 1.4fr;gap:60px;align-items:start}
+details{border-top:1px solid var(--line);padding:22px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;gap:20px;font-size:18px;font-weight:600}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-weight:400;font-size:24px;line-height:1;color:var(--muted);transition:transform .2s}
+details[open] summary::after{transform:rotate(45deg)}
+details p{color:var(--ink2);margin-top:10px;font-size:15.5px;max-width:560px}
+
+/* final cta */
+.end{text-align:center;padding:120px 0 90px}
+.end h2{margin:12px auto 0}
+.end .get{margin:34px auto 0;text-align:left}
+footer{border-top:1px solid var(--line);padding:28px 0 40px;font-size:13.5px;color:var(--muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s ease,transform .8s ease}
+.rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+
+@media (max-width:980px){
+  .hero .wrap,.inst,.faq{grid-template-columns:1fr}
+  .hero{padding-bottom:90px}
+  .flow{grid-template-columns:1fr 1fr}
+  .fs:nth-child(3){border-left:0;padding-left:0}
+  .fs:nth-child(n+3){margin-top:30px;border-top:1px solid var(--line)}
+  .bento,.bento.b2{grid-template-columns:1fr}
+  .tile.big{grid-row:auto}
+  .circle{right:-10px}
+}
+@media (max-width:620px){
+  .wrap{padding:0 16px}
+  .sheet{--mx:7px}
+  .navr a:not(.chip){display:none}
+  .app{grid-template-columns:1fr}
+  .rail{display:none}
+  .flow{grid-template-columns:1fr}
+  .fs,.fs+.fs{padding:24px 0 0;border-left:0}
+  .fs+.fs{margin-top:28px;border-top:1px solid var(--line)}
+  .field{flex-wrap:wrap}
+  .field input{flex-basis:60%}
+  .dl{width:100%;justify-content:center}
+  .tile.pdf{padding-right:30px;padding-bottom:190px}
+  .slip{right:20px;bottom:-40px}
+  .night{margin:0;border-radius:24px}
+  .ss{padding:26px 22px 22px}
+  .ss h4{font-size:23px}
+  .circle{width:110px;height:90px;right:-6px;bottom:40px}
+  .circle .num{font-size:36px}
+  .note1{left:0;font-size:21px}
+  .key{right:6px}
+  section{padding:80px 0}
+}
+</style>
+</head>
+<body>
+
+<div class="sheet">
+<nav><div class="wrap">
+  <a class="brand" href="#top"><img src="icon.png" alt=""><span><b>GradeClick</b><small>Farook College</small></span></a>
+  <div class="navr"><a href="#how">How it works</a><a href="#install">Install</a><a href="#faq">Questions</a><a class="chip" href="#get">Download</a></div>
+</div></nav>
+
+<header class="hero" id="top"><div class="wrap">
+  <div>
+    <span class="pen eyebrow">for evaluators</span>
+    <h1>Valuation,<br>done at <i>your desk.</i></h1>
+    <p class="lead">GradeClick on Windows. Verify the false number, type the marks, and the totals add up while you work. Internal and external evaluators sign in with the login they already have.</p>
+    <form class="get" id="get" data-dl>
+      <label for="pw1">Download password</label>
+      <div class="field">
+        <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+        <input id="pw1" type="password" autocomplete="off" placeholder="Enter password">
+        <button class="dl" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download</button>
+      </div>
+      <div class="bar2"><i></i></div>
+      <p class="status" aria-live="polite"></p>
+    </form>
+    <div class="facts">
+      <span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5 10.5 4.5v7H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"/></svg>Windows 10 and 11</span>
+      <span>Version 4.5.0</span>
+      <span>19.5 MB</span>
+      <span>No installer needed</span>
+    </div>
+  </div>
+
+  <div class="stage rv" aria-hidden="true">
+    <div class="circle" id="circle"><svg viewBox="0 0 150 120"><path d="M80 10 C30 8 6 40 12 70 C18 100 70 114 110 100 C142 88 148 52 124 30 C104 12 70 8 52 18"/></svg><span class="num pen" id="cnum">31</span></div>
+    <div class="win">
+      <div class="tb"><img src="icon.png" alt="">GradeClick<div class="ctl"><span>&#9472;</span><span>&#9744;</span><span>&#10005;</span></div></div>
+      <div class="app">
+        <div class="rail"><div>Home</div><div class="on">Valuation</div><div>Mark records</div><div>Print</div><div class="who">Evaluator</div></div>
+        <div class="pane">
+          <div class="ph"><div><small>Assigned paper</small><b>Mark entry</b></div><small id="cnt">Script 14 of 40</small></div>
+          <div class="inputs">
+            <div class="inp" id="fno"><label>False No</label><div class="v" id="fnov"></div><span class="ok">&#10003; Verified</span></div>
+            <div class="inp" id="qc"><label>Question Code</label><div class="v" id="qcv"></div><span class="ok">&#10003; Found</span></div>
+          </div>
+          <div class="sec">
+            <div class="sh"><span>Section 1</span><span>Total <b id="st">0</b></span></div>
+            <div class="q" data-m="6"><span class="n">Q1</span><span class="max">of 8</span><span class="m"></span></div>
+            <div class="q" data-m="7.5"><span class="n">Q2</span><span class="max">of 8</span><span class="m"></span></div>
+            <div class="q" data-m="5"><span class="n">Q3</span><span class="max">of 8</span><span class="m"></span></div>
+            <div class="q" data-m="8"><span class="n">Q4</span><span class="max">of 8</span><span class="m"></span></div>
+            <div class="q" data-m="4.5"><span class="n">Q5</span><span class="max">of 8</span><span class="m"></span></div>
+          </div>
+          <div class="tot"><span>Overall total</span><b id="ot">0</b></div>
+          <div class="actions"><span class="wb">Print slip</span><span class="wb p" id="save">Save All</span></div>
+        </div>
+      </div>
+      <div class="toast" id="toast">Saved marks for script 10243</div>
+    </div>
+    <div class="key" id="key">Tab</div>
+    <div class="note1 pen">adds up as you type<svg viewBox="0 0 44 30" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 22 C14 26 30 22 38 8M30 9l8-2 1 8"/></svg></div>
+  </div>
+</div></header>
+</div>
+
+<section id="how"><div class="wrap">
+  <div class="rv">
+    <span class="kick">How a script goes through</span>
+    <h2>Four steps per script, and <i>no paper register.</i></h2>
+  </div>
+  <div class="flow">
+    <div class="fs rv"><div class="no">1</div><b>Verify the false number</b><p>Type the number from the answer book. GradeClick will not take a single mark until the false number is verified.</p>
+      <div class="mini"><div class="r"><span>False No</span>10243</div><div class="r"><span>Status</span><span class="g">Verified</span></div></div></div>
+    <div class="fs rv"><div class="no">2</div><b>Open the question paper</b><p>Enter the question code and the right sections and questions appear, with each maximum shown.</p>
+      <div class="mini"><div class="r"><span>Question code</span>BCS3C05</div><div class="r"><span>Sections</span>3</div></div></div>
+    <div class="fs rv"><div class="no">3</div><b>Type the marks</b><p>Question by question. Section totals and the overall total update on every keystroke.</p>
+      <div class="mini"><div class="r"><span>Section 1</span>31</div><div class="r"><span>Overall</span><b>58.5</b></div></div></div>
+    <div class="fs rv"><div class="no">4</div><b>Save, and print if needed</b><p>Save All sends the script to the college server. A mark slip with your name and date is one click away.</p>
+      <div class="mini"><div class="r"><span>Server</span><span class="g">Saved</span></div><div class="r"><span>Slip</span>PDF</div></div></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0"><div class="wrap">
+  <div class="rv">
+    <span class="kick">Why the PC version</span>
+    <h2>A full keyboard for a <i>full bundle</i> of scripts.</h2>
+  </div>
+  <div class="bento">
+    <div class="tile big rv">
+      <h3>Hands stay on the keys.</h3>
+      <p>A whole bundle of scripts on a phone keypad is slow work. On a PC you type a mark, press Tab, type the next, and press Save All at the end. Half marks like 7.5 go in as you write them.</p>
+      <div class="keys">
+        <span class="kc">7</span><span class="kc">.</span><span class="kc">5</span><span class="kc w hot">Tab &#8677;</span><span class="kc">6</span>
+        <span class="cap">Mark, Tab, mark. That is the whole job.</span>
+      </div>
+    </div>
+    <div class="tile rv">
+      <h3>Locked means locked.</h3>
+      <p>Once an entry or a class is locked, its marks cannot be changed by accident, by anyone.</p>
+      <div class="lockrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>Entry is locked. Cannot modify marks.</div>
+    </div>
+  </div>
+  <div class="bento b2">
+    <div class="tile rv">
+      <h3>A zero gets a second look.</h3>
+      <p>Enter a zero and GradeClick asks before awarding it, so a slip of the finger never becomes a real zero.</p>
+      <div class="zero"><b>Zero mark?</b>You have entered zero mark. Do you really want to award zero mark?<div class="btns"><span>Cancel</span><span>Award Zero</span></div></div>
+    </div>
+    <div class="tile pdf rv">
+      <h3>Mark slips and OBE reports, as PDF.</h3>
+      <p>Print straight to the office printer or save the file. Every slip carries the false number, the question code, the marks by question and the evaluator's name.</p>
+      <div class="slip"><b>MARK SLIP</b><br>False No: 10243<br>Question Code: BCS3C05<i></i><i></i><i></i><i style="width:60%"></i><div class="s">58.5</div></div>
+    </div>
+  </div>
+</div></section>
+
+<div class="night" id="install"><div class="wrap">
+  <div class="rv">
+    <span class="kick">Install</span>
+    <h2>Ready in under <i>a minute.</i></h2>
+    <p class="intro">There is no installer. GradeClick runs straight from its folder, so it works on office PCs where you cannot install software.</p>
+  </div>
+  <div class="inst">
+    <ol class="steps rv">
+      <li><div><b>Download with the password</b><p>You get GradeClick-Windows.zip in your Downloads folder.</p></div></li>
+      <li><div><b>Extract the whole zip</b><p>Right click it, choose <kbd>Extract All</kbd>, then <kbd>Extract</kbd>. Keep every file in that folder; the app needs all of them.</p></div></li>
+      <li><div><b>Open grade_click.exe</b><p>Windows may show the blue box on the right the first time. Click <kbd>More info</kbd>, then <kbd>Run anyway</kbd>. It appears for any app that does not come from the Microsoft Store.</p></div></li>
+      <li><div><b>Sign in and pin it</b><p>Use your usual email and password. While it is open, right click its icon in the taskbar and choose <kbd>Pin to taskbar</kbd> for next time.</p></div></li>
+    </ol>
+    <div class="rv" style="padding:10px 10px 40px">
+      <div class="ss" aria-hidden="true">
+        <h4>Windows protected your PC</h4>
+        <p>Microsoft Defender SmartScreen prevented an unrecognised app from starting. Running this app might put your PC at risk.</p>
+        <p><u class="hl" data-n="1">More info</u></p>
+        <div class="meta">App: grade_click.exe<br>Publisher: Unknown publisher</div>
+        <div class="btns"><span class="hl" data-n="2">Run anyway</span><span>Don't run</span></div>
+      </div>
+    </div>
+  </div>
+</div></div>
+
+<section id="faq"><div class="wrap faq">
+  <div class="rv">
+    <span class="kick">Questions</span>
+    <h2>Before you <i>start.</i></h2>
+  </div>
+  <div class="rv">
+    <details open><summary>Which login do I use?</summary><p>The same email and password you use in the GradeClick phone app. College teachers and external evaluators both sign in here.</p></details>
+    <details><summary>Does it work outside the campus?</summary><p>Yes, it works anywhere with internet. Marks are saved straight to the college server when you press Save All, so you need to be online while you work.</p></details>
+    <details><summary>Will it run on my computer?</summary><p>Any 64 bit PC with Windows 10 or Windows 11. It does not need admin rights and nothing else has to be installed.</p></details>
+    <details><summary>Windows says the app is not recognised.</summary><p>That message shows for apps that are not sold through the Microsoft Store. Click More info and then Run anyway. You only do this once.</p></details>
+    <details><summary>How do I update to a new version?</summary><p>Download again from this page, extract it, and replace the old folder. Your marks live on the college server, not on the PC, so nothing is lost.</p></details>
+  </div>
+</div></section>
+
+<div class="sheet"><div class="end"><div class="wrap">
+  <span class="pen eyebrow">ready?</span>
+  <h2 class="rv">Get GradeClick <i>for Windows.</i></h2>
+  <form class="get" data-dl>
+    <label for="pw2">Download password</label>
+    <div class="field">
+      <svg class="lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <input id="pw2" type="password" autocomplete="off" placeholder="Enter password">
+      <button class="dl" type="submit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Download</button>
+    </div>
+    <div class="bar2"><i></i></div>
+    <p class="status" aria-live="polite"></p>
+  </form>
+</div></div></div>
+
+<footer><div class="wrap"><span>GradeClick, Farook College, Kozhikode</span><span>Made by <a href="https://akshaycp.com/">Akshay C P</a></span></div></footer>
+
+<script>
+/* download: the zip is stored AES-GCM encrypted; the password unlocks it here */
+(function(){
+  var data=null,loading=null;
+  function fetchData(onp){
+    if(data)return Promise.resolve(data);
+    if(loading)return loading;
+    loading=fetch('GradeClick-Windows.bin').then(function(r){
+      if(!r.ok)throw 0;
+      var total=+r.headers.get('content-length')||19529216,got=0,chunks=[],rd=r.body&&r.body.getReader?r.body.getReader():null;
+      if(!rd)return r.arrayBuffer().then(function(b){return new Uint8Array(b)});
+      function pump(){return rd.read().then(function(x){
+        if(x.done){var out=new Uint8Array(got),o=0;chunks.forEach(function(c){out.set(c,o);o+=c.length});return out}
+        chunks.push(x.value);got+=x.value.length;onp(Math.min(1,got/total));return pump()})}
+      return pump();
+    }).then(function(d){data=d;return d}).catch(function(e){loading=null;throw e});
+    return loading;
+  }
+  document.querySelectorAll('[data-dl]').forEach(function(form){
+    var inp=form.querySelector('input'),btn=form.querySelector('button'),st=form.querySelector('.status'),bar=form.querySelector('.bar2'),fill=bar.querySelector('i');
+    function say(t,c){st.textContent=t;st.className='status'+(c?' '+c:'')}
+    form.addEventListener('submit',async function(e){
+      e.preventDefault();
+      if(!inp.value){say('Type the password first.','bad');inp.focus();return}
+      btn.disabled=true;
+      try{
+        var b;
+        if(!data){bar.style.display='block';say('Downloading...');b=await fetchData(function(p){fill.style.width=(p*100).toFixed(0)+'%';say('Downloading... '+Math.round(p*100)+'%')})}
+        else b=data;
+        bar.style.display='none';
+        say('Checking password...');
+        var base=await crypto.subtle.importKey('raw',new TextEncoder().encode(inp.value),'PBKDF2',false,['deriveKey']);
+        var key=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b.slice(0,16),iterations:250000,hash:'SHA-256'},base,{name:'AES-GCM',length:256},false,['decrypt']);
+        var zip;
+        try{zip=await crypto.subtle.decrypt({name:'AES-GCM',iv:b.slice(16,28)},key,b.slice(28))}
+        catch(x){say('That password is not right. Try again.','bad');inp.select();return}
+        var url=URL.createObjectURL(new Blob([zip],{type:'application/zip'})),a=document.createElement('a');
+        a.href=url;a.download='GradeClick-Windows.zip';document.body.appendChild(a);a.click();a.remove();
+        setTimeout(function(){URL.revokeObjectURL(url)},60000);
+        say('Done. GradeClick-Windows.zip is in your Downloads folder.','good');
+      }catch(x){bar.style.display='none';say('The download did not finish. Check the internet and try again.','bad')}
+      finally{btn.disabled=false}
+    });
+  });
+})();
+
+/* reveal on scroll */
+(function(){
+  var els=document.querySelectorAll('.rv');
+  if(!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});
+  els.forEach(function(e){io.observe(e)});
+})();
+
+/* the window plays through one real script */
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var qs=[].slice.call(document.querySelectorAll('.q')),key=$('key'),circle=$('circle');
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var script=10242,shown=13;
+  function fmt(n){return (Math.round(n*10)/10).toString()}
+  function sleep(ms){return new Promise(function(r){setTimeout(r,ms)})}
+  async function type(el,text,speed){el.classList.add('caret');for(var i=1;i<=text.length;i++){el.textContent=text.slice(0,i);await sleep(speed)}el.classList.remove('caret')}
+  async function press(label){key.textContent=label;key.classList.add('show','down');await sleep(130);key.classList.remove('down');await sleep(250)}
+  function totals(){var t=0;qs.forEach(function(q){var v=parseFloat(q.querySelector('.m').textContent);if(!isNaN(v))t+=v});$('st').textContent=fmt(t);$('ot').textContent=fmt(t);return t}
+  function finalState(){$('fnov').textContent='10243';$('qcv').textContent='BCS3C05';$('fno').classList.add('done');$('qc').classList.add('done');qs.forEach(function(q){q.querySelector('.m').textContent=q.dataset.m});totals();$('cnum').textContent=fmt(totals());circle.classList.add('on')}
+  if(reduce){finalState();return}
+  async function loop(){
+    for(;;){
+      script++;shown++;
+      $('cnt').textContent='Script '+shown+' of 40';
+      ['fno','qc'].forEach(function(i){$(i).classList.remove('done','focus')});
+      $('fnov').textContent='';$('qcv').textContent='';
+      qs.forEach(function(q){q.classList.remove('cur');q.querySelector('.m').textContent=''});
+      totals();circle.classList.remove('on');key.classList.remove('show');
+      await sleep(900);
+      $('fno').classList.add('focus');await type($('fnov'),String(script),110);await press('Enter');
+      $('fno').classList.remove('focus');$('fno').classList.add('done');await sleep(500);
+      $('qc').classList.add('focus');await type($('qcv'),'BCS3C05',85);await press('Enter');
+      $('qc').classList.remove('focus');$('qc').classList.add('done');await sleep(450);
+      for(var i=0;i<qs.length;i++){
+        var q=qs[i],m=q.querySelector('.m');q.classList.add('cur');
+        await type(m,q.dataset.m,150);totals();await sleep(220);
+        if(i<qs.length-1)await press('Tab');else await sleep(300);q.classList.remove('cur');
+      }
+      key.classList.remove('show');
+      $('save').classList.add('press');await sleep(180);$('save').classList.remove('press');
+      $('toast').textContent='Saved marks for script '+script;$('toast').classList.add('show');
+      $('cnum').textContent=fmt(totals());circle.classList.add('on');
+      await sleep(2300);$('toast').classList.remove('show');await sleep(1800);
+    }
+  }
+  var started=false,stage=document.querySelector('.stage');
+  new IntersectionObserver(function(es){if(es[0].isIntersecting&&!started){started=true;loop()}},{threshold:.3}).observe(stage);
+})();
+</script>
+</body>
+</html>
